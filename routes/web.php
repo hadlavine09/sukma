@@ -1,20 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TagController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Frontend\CartController;
-use App\Http\Controllers\Frontend\ShopController;
-use App\Http\Controllers\UserManagement\RoleController;
-use App\Http\Controllers\UserManagement\UserController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserManagement\HakAksesController;
 use App\Http\Controllers\UserManagement\PermissionController;
+use App\Http\Controllers\UserManagement\RoleController;
+use App\Http\Controllers\UserManagement\UserController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,56 +47,11 @@ Route::middleware(['auth'])->group(function () {
             return view('frontend.home');
         });
 
-        Route::get('/About', function () {
-            return view('frontend.about');
-        });
-
-        // Route::get('/Shop', function () {
-        //     return view('frontend.shop');
-        // });
-        Route::get('Checkout', [TransaksiController::class, 'checkout'])->name('checkout.index');
-        Route::post('Checkout_proses', [TransaksiController::class, 'checkout_proses'])->name('checkout.proses');
-        Route::post('Checkout_success', [TransaksiController::class, 'checkout_success'])->name('checkout.success');
-        Route::get('Cart', [CartController::class, 'index'])->name('cart.index');
-        Route::Post('Cart_Post', [CartController::class, 'cart_post'])->name('cart.post');
-        Route::Post('Cart_Update', [CartController::class, 'cart_update'])->name('cart.update');
-        Route::Post('Cart_Delete', [CartController::class, 'cart_delete'])->name('cart.delete');
-        Route::get('Shop', [ShopController::class, 'index'])->name('shop.index');
-        Route::get('Shop-Details/{kode_produk}', [ShopController::class, 'show_detail'])->name('show_detail.index');
-
-        Route::get('/Blog', function () {
-            return view('frontend.blog');
-        });
-
-        Route::get('/Blog-Detail', function () {
-            return view('frontend.blog_detial');
-        });
-
-        Route::get('/Contact', function () {
-            return view('frontend.contact');
-        });
-
-        // Route::get('/Cart', function () {
-        //     return view('frontend.cart');
-        // });
-
-        // Route::get('/Checkout', function () {
-        //     return view('frontend.checkout');
-        // });
-
-        Route::get('/Wisslist-Like', function () {
-            return view('frontend.wisslist_like');
-        });
-
-        // Route::get('/Shop-Details', function () {
-        //     return view('frontend.shop_detail');
-        // });
     });
 
     // Logout route
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
-
 
 Route::prefix('UserManagement')->group(function () {
     Route::prefix('User')->group(function () {
@@ -139,7 +89,6 @@ Route::prefix('UserManagement')->group(function () {
         Route::get('show/{id}', [HakAksesController::class, 'show'])->name('hakakses.show');
     });
 });
-
 
 Route::prefix('Manajemen-Produk')->group(function () {
 
