@@ -278,9 +278,108 @@
                 });
                 </script>
                 <!-- User logged out state -->
-                <a href="#" class="nav-login" tabindex="0">Daftar</a>
-                <span class="mx-1 text-black">|</span>
-                <a href="#" class="nav-login" tabindex="0">Login</a>
+                <style>
+                    /* Profil button (lingkaran dengan huruf awal) */
+.profile-btn {
+    background-color: #e5e7eb; /* Tailwind gray-200 */
+    border-radius: 9999px;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Dropdown */
+.profile-dropdown {
+    position: absolute;
+    right: 0;
+    margin-top: 0.5rem;
+    width: 10rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 100;
+}
+
+.profile-dropdown.show {
+    display: block;
+}
+
+.profile-dropdown a,
+.profile-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.profile-dropdown a:hover,
+.profile-dropdown button:hover {
+    background-color: #f3f4f6; /* Tailwind gray-100 */
+}
+                </style>
+               @auth
+               @php
+                   $emailInitial = strtoupper(substr(Auth::user()->email, 0, 1));
+               @endphp
+               <div class="inline-block">
+                   <div class="profile-btn" onclick="toggleDropdown()">
+                       {{ $emailInitial }}
+                   </div>
+                   <div id="dropdown" class="profile-dropdown">
+                       <a href="">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-5 h-5 mr-2 text-gray-600" fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4.992 4.992 0 0112 15a4.992 4.992 0 016.879 2.804M15 11a3 3 0 10-6 0 3 3 0 006 0z" />
+                           </svg>
+                           Profil
+                       </a>
+                       <form method="POST" action="{{ route('logout') }}">
+                           @csrf
+                           <button type="submit">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-5 h-5 mr-2 text-gray-600" fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor">
+                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                               </svg>
+                               Logout
+                           </button>
+                       </form>
+                   </div>
+               </div>
+           @else
+               <a href="#" class="nav-login" tabindex="0">Daftar</a>
+               <span class="mx-1 text-black">|</span>
+               <a href="{{ route('login') }}" class="nav-login" tabindex="0">Login</a>
+           @endauth
+           
+           
+
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById("dropdown");
+        dropdown.classList.toggle("show");
+    }
+
+    // Menutup dropdown saat klik di luar elemen
+    document.addEventListener('click', function(event) {
+        var profileBtn = document.querySelector('.profile-btn');
+        var dropdown = document.getElementById('dropdown');
+        if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+</script>
+
+
                 <!-- If user logged in, replace above with user dropdown -->
                 <!--
                 <div class="nav-user-dropdown" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="User account menu">
