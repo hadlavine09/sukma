@@ -22,10 +22,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Auth::routes();
-
+Route::get('/', function () {
+    return view('frontend.home');
+});
 // Routes untuk guest (belum login)
 Route::middleware('guest')->group(function () {
-    Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+    // Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 });
 
