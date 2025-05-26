@@ -166,12 +166,17 @@
                 <img class="login-head" src="{{ asset('logo/logo2.png') }}" style="width: 285px;">
             </div>
             <div class="navbar-center">
-                <form action="#" method="GET" class="search-form" role="search" aria-label="Product search form" onsubmit="return false;">
+                <form action="#" method="GET" class="search-form" role="search"
+                    aria-label="Product search form" onsubmit="return false;">
                     <div class="search-input-wrapper">
-                        <input type="text" name="q" id="search-input" placeholder="Cari produk, brand, dan lainnya" autocomplete="off" aria-autocomplete="list" aria-controls="search-suggestions" aria-expanded="false" />
+                        <input type="text" name="q" id="search-input"
+                            placeholder="Cari produk, brand, dan lainnya" autocomplete="off" aria-autocomplete="list"
+                            aria-controls="search-suggestions" aria-expanded="false" />
                         <button type="submit" aria-label="Search">
-                            <svg fill="#777" height="20" width="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                                <path d="M21.71 20.29l-3.388-3.388a7.918 7.918 0 001.62-5.092C19.942 7.015 16.927 4 13.221 4S6.5 7.015 6.5 10.71c0 3.696 3.015 6.71 6.721 6.71a7.918 7.918 0 005.092-1.62l3.388 3.388c.39.39 1.025.39 1.414 0a1 1 0 000-1.414zM8 10.71a5.22 5.22 0 015.221-5.21 5.22 5.22 0 015.22 5.21 5.22 5.22 0 01-5.22 5.21A5.22 5.22 0 018 10.71z"/>
+                            <svg fill="#777" height="20" width="20" viewBox="0 0 24 24"
+                                aria-hidden="true" focusable="false">
+                                <path
+                                    d="M21.71 20.29l-3.388-3.388a7.918 7.918 0 001.62-5.092C19.942 7.015 16.927 4 13.221 4S6.5 7.015 6.5 10.71c0 3.696 3.015 6.71 6.721 6.71a7.918 7.918 0 005.092-1.62l3.388 3.388c.39.39 1.025.39 1.414 0a1 1 0 000-1.414zM8 10.71a5.22 5.22 0 015.221-5.21 5.22 5.22 0 015.22 5.21 5.22 5.22 0 01-5.22 5.21A5.22 5.22 0 018 10.71z" />
                             </svg>
                         </button>
                     </div>
@@ -180,12 +185,17 @@
             </div>
             <div class="navbar-right">
                 <div class="nav-cart-dropdown-wrapper position-relative" style="display:inline-block;">
-                    <a href="#" class="nav-icon" aria-label="Keranjang Belanja" title="Keranjang Belanja" id="cartDropdownBtn">
-                        <svg fill="#fff" height="24" width="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M7 18c-1.104 0-2 .895-2 2 0 1.104.896 2 2 2 1.104 0 2-.896 2-2 0-1.105-.896-2-2-2zm10 0c-1.104 0-2 .895-2 2 0 1.104.896 2 2 2 1.104 0 2-.896 2-2 0-1.105-.896-2-2-2zM7.2 13h9.599c.75 0 1.423-.436 1.734-1.115l3.732-7.221-1.972-.972-3.069 5.917-5.727-.008L6.473 2.28A1 1 0 005.58 2H2v2h2.41l3.413 9.336a1.001 1.001 0 00.38.384l.998.6a1.007 1.007 0 00.999 0z"/>
+                    <a href="#" class="nav-icon" aria-label="Keranjang Belanja" title="Keranjang Belanja"
+                        id="cartDropdownBtn">
+                        <svg fill="#fff" height="24" width="24" viewBox="0 0 24 24" aria-hidden="true"
+                            focusable="false">
+                            <path
+                                d="M7 18c-1.104 0-2 .895-2 2 0 1.104.896 2 2 2 1.104 0 2-.896 2-2 0-1.105-.896-2-2-2zm10 0c-1.104 0-2 .895-2 2 0 1.104.896 2 2 2 1.104 0 2-.896 2-2 0-1.105-.896-2-2-2zM7.2 13h9.599c.75 0 1.423-.436 1.734-1.115l3.732-7.221-1.972-.972-3.069 5.917-5.727-.008L6.473 2.28A1 1 0 005.58 2H2v2h2.41l3.413 9.336a1.001 1.001 0 00.38.384l.998.6a1.007 1.007 0 00.999 0z" />
                         </svg>
                     </a>
-                    <div id="cartDropdownCard" class="cart-dropdown-card card shadow border-0 position-absolute end-0 mt-2" style="min-width:320px; z-index:1000; display:none; opacity:0; transform:translateY(10px); transition:opacity 0.25s, transform 0.25s;">
+                    <div id="cartDropdownCard"
+                        class="cart-dropdown-card card shadow border-0 position-absolute end-0 mt-2"
+                        style="min-width:320px; z-index:1000; display:none; opacity:0; transform:translateY(10px); transition:opacity 0.25s, transform 0.25s;">
                         <div class="card-body p-3">
                             <h6 class="mb-3">Keranjang Belanja</h6>
                             <ul class="list-group mb-3">
@@ -220,60 +230,62 @@
                     </div>
                 </div>
                 <style>
-                .cart-dropdown-card.show {
-                    display: block !important;
-                    opacity: 1 !important;
-                    transform: translateY(0) !important;
-                    pointer-events: auto;
-                }
-                .cart-dropdown-card.hiding {
-                    opacity: 0 !important;
-                    transform: translateY(10px) !important;
-                    pointer-events: none;
-                    transition: opacity 0.25s, transform 0.25s;
-                }
+                    .cart-dropdown-card.show {
+                        display: block !important;
+                        opacity: 1 !important;
+                        transform: translateY(0) !important;
+                        pointer-events: auto;
+                    }
+
+                    .cart-dropdown-card.hiding {
+                        opacity: 0 !important;
+                        transform: translateY(10px) !important;
+                        pointer-events: none;
+                        transition: opacity 0.25s, transform 0.25s;
+                    }
                 </style>
                 <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const cartBtn = document.getElementById('cartDropdownBtn');
-                    const cartCard = document.getElementById('cartDropdownCard');
-                    const wrapper = cartBtn.closest('.nav-cart-dropdown-wrapper');
-                    let hideTimeout = null;
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const cartBtn = document.getElementById('cartDropdownBtn');
+                        const cartCard = document.getElementById('cartDropdownCard');
+                        const wrapper = cartBtn.closest('.nav-cart-dropdown-wrapper');
+                        let hideTimeout = null;
 
-                    function showCartCard() {
-                        clearTimeout(hideTimeout);
-                        cartCard.style.display = 'block';
-                        // Remove hiding class if present
-                        cartCard.classList.remove('hiding');
-                        // Force reflow for transition
-                        void cartCard.offsetWidth;
-                        cartCard.classList.add('show');
-                    }
-                    function hideCartCard() {
-                        cartCard.classList.remove('show');
-                        cartCard.classList.add('hiding');
-                        hideTimeout = setTimeout(() => {
-                            cartCard.style.display = 'none';
+                        function showCartCard() {
+                            clearTimeout(hideTimeout);
+                            cartCard.style.display = 'block';
+                            // Remove hiding class if present
                             cartCard.classList.remove('hiding');
-                        }, 250); // match transition duration
-                    }
+                            // Force reflow for transition
+                            void cartCard.offsetWidth;
+                            cartCard.classList.add('show');
+                        }
 
-                    wrapper.addEventListener('mouseenter', showCartCard);
-                    wrapper.addEventListener('mouseleave', function() {
-                        hideTimeout = setTimeout(hideCartCard, 120); // delay before hiding
-                    });
+                        function hideCartCard() {
+                            cartCard.classList.remove('show');
+                            cartCard.classList.add('hiding');
+                            hideTimeout = setTimeout(() => {
+                                cartCard.style.display = 'none';
+                                cartCard.classList.remove('hiding');
+                            }, 250); // match transition duration
+                        }
 
-                    cartBtn.addEventListener('focus', showCartCard);
-                    cartBtn.addEventListener('blur', function() {
-                        hideTimeout = setTimeout(hideCartCard, 120);
+                        wrapper.addEventListener('mouseenter', showCartCard);
+                        wrapper.addEventListener('mouseleave', function() {
+                            hideTimeout = setTimeout(hideCartCard, 120); // delay before hiding
+                        });
+
+                        cartBtn.addEventListener('focus', showCartCard);
+                        cartBtn.addEventListener('blur', function() {
+                            hideTimeout = setTimeout(hideCartCard, 120);
+                        });
+                        cartCard.addEventListener('mouseenter', function() {
+                            clearTimeout(hideTimeout);
+                        });
+                        cartCard.addEventListener('mouseleave', function() {
+                            hideTimeout = setTimeout(hideCartCard, 120);
+                        });
                     });
-                    cartCard.addEventListener('mouseenter', function() {
-                        clearTimeout(hideTimeout);
-                    });
-                    cartCard.addEventListener('mouseleave', function() {
-                        hideTimeout = setTimeout(hideCartCard, 120);
-                    });
-                });
                 </script>
                 <!-- User logged out state -->
                 <a href="#" class="nav-login" tabindex="0">Daftar</a>
@@ -320,7 +332,8 @@
                                                     Now</a>
                                             </div>
                                             <div class="img-wrapper col-md-5">
-                                                <img src="{{('assets_frontend/images/product-thumb-1.png')}}" class="img-fluid">
+                                                <img src="{{ 'assets_frontend/images/product-thumb-1.png' }}"
+                                                    class="img-fluid">
                                             </div>
                                         </div>
                                     </div>
@@ -337,7 +350,8 @@
                                                     Collection</a>
                                             </div>
                                             <div class="img-wrapper col-md-5">
-                                                <img src="{{('assets_frontend/images/product-thumb-1.png')}}" class="img-fluid">
+                                                <img src="{{ 'assets_frontend/images/product-thumb-1.png' }}"
+                                                    class="img-fluid">
                                             </div>
                                         </div>
                                     </div>
@@ -354,7 +368,8 @@
                                                     Collection</a>
                                             </div>
                                             <div class="img-wrapper col-md-5">
-                                                <img src="{{('assets_frontend/images/product-thumb-2.png')}}" class="img-fluid">
+                                                <img src="{{ 'assets_frontend/images/product-thumb-2.png' }}"
+                                                    class="img-fluid">
                                             </div>
                                         </div>
                                     </div>
@@ -408,27 +423,33 @@
                     <div class="category-carousel swiper">
                         <div class="swiper-wrapper">
                             <a href="index.html" class="nav-link category-item swiper-slide">
-                                <img src="{{asset('assets_frontend/images/icon-vegetables-broccoli.png')}}" alt="Category Thumbnail">
+                                <img src="{{ asset('assets_frontend/images/icon-vegetables-broccoli.png') }}"
+                                    alt="Category Thumbnail">
                                 <h3 class="category-title">Fruits & Veges</h3>
                             </a>
                             <a href="index.html" class="nav-link category-item swiper-slide">
-                                <img src="{{asset('assets_frontend/images/icon-bread-baguette.png')}}" alt="Category Thumbnail">
+                                <img src="{{ asset('assets_frontend/images/icon-bread-baguette.png') }}"
+                                    alt="Category Thumbnail">
                                 <h3 class="category-title">Breads & Sweets</h3>
                             </a>
                             <a href="index.html" class="nav-link category-item swiper-slide">
-                                <img src="{{asset('assets_frontend/images/icon-soft-drinks-bottle.png')}}" alt="Category Thumbnail">
+                                <img src="{{ asset('assets_frontend/images/icon-soft-drinks-bottle.png') }}"
+                                    alt="Category Thumbnail">
                                 <h3 class="category-title">Fruits & Veges</h3>
                             </a>
                             <a href="index.html" class="nav-link category-item swiper-slide">
-                                <img src="{{asset('assets_frontend/images/icon-wine-glass-bottle.png')}}" alt="Category Thumbnail">
+                                <img src="{{ asset('assets_frontend/images/icon-wine-glass-bottle.png') }}"
+                                    alt="Category Thumbnail">
                                 <h3 class="category-title">Fruits & Veges</h3>
                             </a>
                             <a href="index.html" class="nav-link category-item swiper-slide">
-                                <img src="{{asset('assets_frontend/images/icon-animal-products-drumsticks.png')}}" alt="Category Thumbnail">
+                                <img src="{{ asset('assets_frontend/images/icon-animal-products-drumsticks.png') }}"
+                                    alt="Category Thumbnail">
                                 <h3 class="category-title">Fruits & Veges</h3>
                             </a>
                             <a href="index.html" class="nav-link category-item swiper-slide">
-                                <img src="{{asset('assets_frontend/images/icon-bread-herb-flour.png')}}" alt="Category Thumbnail">
+                                <img src="{{ asset('assets_frontend/images/icon-bread-herb-flour.png') }}"
+                                    alt="Category Thumbnail">
                                 <h3 class="category-title">Fruits & Veges</h3>
                             </a>
                         </div>
@@ -439,7 +460,7 @@
         </div>
     </section>
 
-            
+
 
 
 
@@ -611,7 +632,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-bananas.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-bananas.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -658,7 +680,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-biscuits.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-biscuits.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -704,7 +727,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-cucumber.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-cucumber.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -750,7 +774,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-milk.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-milk.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -796,7 +821,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-bananas.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-bananas.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -842,7 +868,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-biscuits.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-biscuits.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -888,7 +915,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-cucumber.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-cucumber.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -934,7 +962,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-milk.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-milk.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -980,7 +1009,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-bananas.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-bananas.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1026,7 +1056,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-biscuits.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-biscuits.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1072,7 +1103,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-bananas.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-bananas.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1119,7 +1151,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-biscuits.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-biscuits.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1165,7 +1198,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-cucumber.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-cucumber.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1211,7 +1245,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-milk.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-milk.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1257,7 +1292,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-bananas.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-bananas.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1303,7 +1339,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-biscuits.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-biscuits.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1349,7 +1386,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-cucumber.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-cucumber.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1395,7 +1433,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-milk.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-milk.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1441,7 +1480,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-bananas.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-bananas.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1487,7 +1527,8 @@
                                                 </svg></a>
                                             <figure>
                                                 <a href="index.html" title="Product Title">
-                                                    <img src="{{asset('assets_frontend/images/thumb-biscuits.png')}}" class="tab-image">
+                                                    <img src="{{ asset('assets_frontend/images/thumb-biscuits.png') }}"
+                                                        class="tab-image">
                                                 </a>
                                             </figure>
                                             <h3>Sunstar Fresh Melon Juice</h3>
@@ -1796,7 +1837,8 @@
                 </div>
                 <div class="col-md-6 credit-link text-start text-md-end">
                     <p>Free HTML Template by <a href="https://templatesjungle.com/">TemplatesJungle</a> Distributed by
-                        <a href="https://themewagon">ThemeWagon</a></p>
+                        <a href="https://themewagon">ThemeWagon</a>
+                    </p>
                 </div>
             </div>
         </div>
@@ -1809,81 +1851,81 @@
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous">
     </script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('search-input');
-        const suggestions = document.getElementById('search-suggestions');
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const suggestions = document.getElementById('search-suggestions');
 
-        // Sample suggestion data
-        const suggestionList = [
-            'Handphone',
-            'Laptop',
-            'Sepatu Sneakers',
-            'Tas Wanita',
-            'Kamera DSLR',
-            'Jam Tangan',
-            'Headphone',
-            'Baju Anak',
-            'Kulkas',
-            'Sepeda'
-        ];
+            // Sample suggestion data
+            const suggestionList = [
+                'Handphone',
+                'Laptop',
+                'Sepatu Sneakers',
+                'Tas Wanita',
+                'Kamera DSLR',
+                'Jam Tangan',
+                'Headphone',
+                'Baju Anak',
+                'Kulkas',
+                'Sepeda'
+            ];
 
-        function filterSuggestions(query) {
-            if (!query) {
-                return [];
+            function filterSuggestions(query) {
+                if (!query) {
+                    return [];
+                }
+                const lowerQuery = query.toLowerCase();
+                return suggestionList.filter(item => item.toLowerCase().includes(lowerQuery));
             }
-            const lowerQuery = query.toLowerCase();
-            return suggestionList.filter(item => item.toLowerCase().includes(lowerQuery));
-        }
 
-        function clearSuggestions() {
-            suggestions.innerHTML = '';
-            suggestions.hidden = true;
-            searchInput.setAttribute('aria-expanded', 'false');
-        }
-
-        function renderSuggestions(items) {
-            suggestions.innerHTML = '';
-            if (items.length === 0) {
-                clearSuggestions();
-                return;
+            function clearSuggestions() {
+                suggestions.innerHTML = '';
+                suggestions.hidden = true;
+                searchInput.setAttribute('aria-expanded', 'false');
             }
-            items.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.textContent = item;
-                li.setAttribute('role', 'option');
-                li.tabIndex = 0;
-                li.addEventListener('click', () => {
-                    searchInput.value = item;
+
+            function renderSuggestions(items) {
+                suggestions.innerHTML = '';
+                if (items.length === 0) {
                     clearSuggestions();
+                    return;
+                }
+                items.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    li.setAttribute('role', 'option');
+                    li.tabIndex = 0;
+                    li.addEventListener('click', () => {
+                        searchInput.value = item;
+                        clearSuggestions();
+                    });
+                    li.addEventListener('keydown', e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            li.click();
+                        }
+                    });
+                    suggestions.appendChild(li);
                 });
-                li.addEventListener('keydown', e => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        li.click();
-                    }
-                });
-                suggestions.appendChild(li);
+                suggestions.hidden = false;
+                searchInput.setAttribute('aria-expanded', 'true');
+            }
+
+            searchInput.addEventListener('input', e => {
+                const filtered = filterSuggestions(e.target.value.trim());
+                renderSuggestions(filtered);
             });
-            suggestions.hidden = false;
-            searchInput.setAttribute('aria-expanded', 'true');
-        }
 
-        searchInput.addEventListener('input', e => {
-            const filtered = filterSuggestions(e.target.value.trim());
-            renderSuggestions(filtered);
-        });
+            searchInput.addEventListener('blur', () => {
+                // Delay to allow click event on suggestions
+                setTimeout(clearSuggestions, 150);
+            });
 
-        searchInput.addEventListener('blur', () => {
-            // Delay to allow click event on suggestions
-            setTimeout(clearSuggestions, 150);
+            searchInput.addEventListener('focus', e => {
+                const filtered = filterSuggestions(e.target.value.trim());
+                renderSuggestions(filtered);
+            });
         });
-
-        searchInput.addEventListener('focus', e => {
-            const filtered = filterSuggestions(e.target.value.trim());
-            renderSuggestions(filtered);
-        });
-    });
-  </script>
+    </script>
 </body>
 
 </html>
