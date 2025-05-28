@@ -954,6 +954,176 @@
                                     @endfor
 
                                 </div>
+                                <meta name="csrf-token" content="{{ csrf_token() }}">
+                                <meta name="base-url" content="{{ url('/') }}">
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // --- Cart Data ---
+                                        let cart = [];
+                                        const cartBtn = document.getElementById('cartDropdownBtn');
+                                        const cartCard = document.getElementById('cartDropdownCard');
+                                        const cartList = cartCard.querySelector('ul.list-group');
+                                        const cartTotal = cartCard.querySelector('strong');
+                                        const cartDropdownWrapper = document.querySelector('.nav-cart-dropdown-wrapper');
+
+                                        // --- Helper: Format currency ---
+                                        function formatRupiah(num) {
+                                            return 'Rp' + num.toLocaleString('id-ID');
+                                        }
+
+                                        // --- Update Cart Dropdown ---
+                                        function updateCartDropdown() {
+                                            // Remove all except last (total) li
+                                            cartList.querySelectorAll('li:not(:last-child)').forEach(li => li.remove());
+                                            let total = 0;
+                                            cart.forEach(item => {
+                                                total += item.price * item.qty;
+                                                const li = document.createElement('li');
+                                                li.className = "list-group-item d-flex justify-content-between lh-sm";
+                                                li.innerHTML = `
+                    <div>
+                        <h6 class="my-0">${item.name}</h6>
+                        <small class="text-body-secondary">${item.desc}</small>
+                        <span class="badge bg-secondary ms-2">${item.qty}x</span>
+                    </div>
+                    <span class="text-body-secondary">${formatRupiah(item.price * item.qty)}</span>
+                `;
+                                                cartList.insertBefore(li, cartList.lastElementChild);
+                                            });
+                                            cartTotal.textContent = formatRupiah(total);
+                                        }
+
+                                        // --- Animate to Cart ---
+                                        function animateToCart(img, startRect, endRect) {
+                                            const flyingImg = img.cloneNode(true);
+                                            flyingImg.style.position = 'fixed';
+                                            flyingImg.style.zIndex = 2000;
+                                            flyingImg.style.left = startRect.left + 'px';
+                                            flyingImg.style.top = startRect.top + 'px';
+                                            flyingImg.style.width = startRect.width + 'px';
+                                            flyingImg.style.height = startRect.height + 'px';
+                                            flyingImg.style.transition = 'all 0.7s cubic-bezier(.6,-0.28,.74,.05)';
+                                            document.body.appendChild(flyingImg);
+
+                                            setTimeout(() => {
+                                                flyingImg.style.left = (endRect.left + endRect.width / 2 - startRect.width / 2) + 'px';
+                                                flyingImg.style.top = (endRect.top + endRect.height / 2 - startRect.height / 2) + 'px';
+                                                flyingImg.style.width = '24px';
+                                                flyingImg.style.height = '24px';
+                                                flyingImg.style.opacity = 0.5;
+                                            }, 10);
+
+                                            setTimeout(() => {
+                                                flyingImg.remove();
+                                                // Show cart dropdown after animation
+                                                cartCard.style.display = 'block';
+                                                cartCard.classList.add('show');
+                                            }, 700);
+                                        }
+
+                                        // --- Quantity Input Group Logic ---
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            document.querySelectorAll('.product-item').forEach(product => {
+                                                const minusBtn = product.querySelector('.quantity-left-minus');
+                                                const plusBtn = product.querySelector('.quantity-right-plus');
+                                                const qtyInput = product.querySelector('input[name="quantity"]');
+
+                                                if (!qtyInput || !minusBtn || !plusBtn) return;
+
+                                                minusBtn.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    let currentQty = parseInt(qtyInput.value) || 1;
+                                                    if (currentQty > 1) {
+                                                        qtyInput.value = currentQty - 1;
+                                                    }
+                                                });
+
+                                                plusBtn.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    let currentQty = parseInt(qtyInput.value) || 1;
+                                                    qtyInput.value = currentQty + 1;
+                                                });
+
+                                                qtyInput.addEventListener('input', function() {
+                                                    this.value = this.value.replace(/[^0-9]/g, '');
+                                                    if (this.value === '' || parseInt(this.value) < 1) {
+                                                        this.value = 1;
+                                                    }
+                                                });
+                                            });
+                                        });
+
+
+
+
+
+                                        // --- Add to Cart Event ---
+                                        // --- Add to Cart Event ---
+                                        document.querySelectorAll('.product-item .nav-link').forEach(btn => {
+                                            if (btn.textContent.trim().toLowerCase().includes('add to cart')) {
+                                                btn.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+
+                                                    // Ambil base URL dari meta tag
+                                                    const baseUrl = document.querySelector('meta[name="base-url"]').content;
+
+                                                    // Cek auth menggunakan data dari Laravel (cara lebih efisien)
+                                                    const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+
+                                                    if (!isAuthenticated) {
+                                                        // Redirect ke login dengan return url
+                                                        const returnUrl = encodeURIComponent(window.location.href);
+                                                        window.location.href = `${baseUrl}/login?redirect=${returnUrl}`;
+                                                        return;
+                                                    }
+
+                                                    // Proses add to cart
+                                                    const product = btn.closest('.product-item');
+                                                    const name = product.querySelector('h3').textContent.trim();
+                                                    const price = parseInt(product.querySelector('.price').textContent.replace(
+                                                        /[^0-9]/g, ''));
+                                                    const desc = product.querySelector('.qty')?.textContent || '';
+                                                    const img = product.querySelector('img');
+                                                    const qtyInput = product.querySelector('input[name="quantity"]');
+                                                    let qty = parseInt(qtyInput?.value) || 1;
+
+                                                    // Add to cart (increase qty if exists)
+                                                    let found = cart.find(item => item.name === name);
+                                                    if (found) {
+                                                        found.qty += qty;
+                                                    } else {
+                                                        cart.push({
+                                                            name,
+                                                            price,
+                                                            desc,
+                                                            qty
+                                                        });
+                                                    }
+                                                    updateCartDropdown();
+
+                                                    // Animate image to cart
+                                                    const imgRect = img.getBoundingClientRect();
+                                                    const cartRect = cartBtn.getBoundingClientRect();
+                                                    animateToCart(img, imgRect, cartRect);
+                                                });
+                                            }
+                                        });
+
+                                        // --- Cart Dropdown Toggle ---
+                                        cartBtn.addEventListener('click', function() {
+                                            cartCard.classList.toggle('show');
+                                            cartCard.style.display = cartCard.classList.contains('show') ? 'block' : 'none';
+                                        });
+
+                                        // --- Hide cart dropdown if click outside ---
+                                        document.addEventListener('mousedown', function(e) {
+                                            if (!cartDropdownWrapper.contains(e.target)) {
+                                                cartCard.classList.remove('show');
+                                                cartCard.style.display = 'none';
+                                            }
+                                        });
+                                    });
+                                </script>
                                 <!-- / product-grid -->
 
                             </div>
@@ -1313,158 +1483,7 @@
             });
         });
     </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- Cart Data ---
-            let cart = [];
-            const cartBtn = document.getElementById('cartDropdownBtn');
-            const cartCard = document.getElementById('cartDropdownCard');
-            const cartList = cartCard.querySelector('ul.list-group');
-            const cartTotal = cartCard.querySelector('strong');
-            const cartDropdownWrapper = document.querySelector('.nav-cart-dropdown-wrapper');
 
-            // --- Helper: Format currency ---
-            function formatRupiah(num) {
-                return 'Rp' + num.toLocaleString('id-ID');
-            }
-
-            // --- Update Cart Dropdown ---
-            function updateCartDropdown() {
-                // Remove all except last (total) li
-                cartList.querySelectorAll('li:not(:last-child)').forEach(li => li.remove());
-                let total = 0;
-                cart.forEach(item => {
-                    total += item.price * item.qty;
-                    const li = document.createElement('li');
-                    li.className = "list-group-item d-flex justify-content-between lh-sm";
-                    li.innerHTML = `
-                    <div>
-                        <h6 class="my-0">${item.name}</h6>
-                        <small class="text-body-secondary">${item.desc}</small>
-                        <span class="badge bg-secondary ms-2">${item.qty}x</span>
-                    </div>
-                    <span class="text-body-secondary">${formatRupiah(item.price * item.qty)}</span>
-                `;
-                    cartList.insertBefore(li, cartList.lastElementChild);
-                });
-                cartTotal.textContent = formatRupiah(total);
-            }
-
-            // --- Animate to Cart ---
-            function animateToCart(img, startRect, endRect) {
-                const flyingImg = img.cloneNode(true);
-                flyingImg.style.position = 'fixed';
-                flyingImg.style.zIndex = 2000;
-                flyingImg.style.left = startRect.left + 'px';
-                flyingImg.style.top = startRect.top + 'px';
-                flyingImg.style.width = startRect.width + 'px';
-                flyingImg.style.height = startRect.height + 'px';
-                flyingImg.style.transition = 'all 0.7s cubic-bezier(.6,-0.28,.74,.05)';
-                document.body.appendChild(flyingImg);
-
-                setTimeout(() => {
-                    flyingImg.style.left = (endRect.left + endRect.width / 2 - startRect.width / 2) + 'px';
-                    flyingImg.style.top = (endRect.top + endRect.height / 2 - startRect.height / 2) + 'px';
-                    flyingImg.style.width = '24px';
-                    flyingImg.style.height = '24px';
-                    flyingImg.style.opacity = 0.5;
-                }, 10);
-
-                setTimeout(() => {
-                    flyingImg.remove();
-                    // Show cart dropdown after animation
-                    cartCard.style.display = 'block';
-                    cartCard.classList.add('show');
-                }, 700);
-            }
-
-            // --- Quantity Input Group Logic ---
-            document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('.product-item').forEach(product => {
-                    const minusBtn = product.querySelector('.quantity-left-minus');
-                    const plusBtn = product.querySelector('.quantity-right-plus');
-                    const qtyInput = product.querySelector('input[name="quantity"]');
-
-                    if (!qtyInput || !minusBtn || !plusBtn) return;
-
-                    minusBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        let currentQty = parseInt(qtyInput.value) || 1;
-                        if (currentQty > 1) {
-                            qtyInput.value = currentQty - 1;
-                        }
-                    });
-
-                    plusBtn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        let currentQty = parseInt(qtyInput.value) || 1;
-                        qtyInput.value = currentQty + 1;
-                    });
-
-                    qtyInput.addEventListener('input', function() {
-                        this.value = this.value.replace(/[^0-9]/g, '');
-                        if (this.value === '' || parseInt(this.value) < 1) {
-                            this.value = 1;
-                        }
-                    });
-                });
-            });
-
-
-
-
-
-            // --- Add to Cart Event ---
-            document.querySelectorAll('.product-item .nav-link').forEach(btn => {
-                // Pastikan hanya tombol Add to Cart yang diberi event
-                if (btn.textContent.trim().toLowerCase().includes('add to cart')) {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const product = btn.closest('.product-item');
-                        const name = product.querySelector('h3').textContent.trim();
-                        const price = parseInt(product.querySelector('.price').textContent.replace(
-                            /[^0-9]/g, ''));
-                        const desc = product.querySelector('.qty')?.textContent || '';
-                        const img = product.querySelector('img');
-                        const qtyInput = product.querySelector('input[name="quantity"]');
-                        let qty = parseInt(qtyInput?.value) || 1; // Ambil nilai input quantity
-                        // Add to cart (increase qty if exists)
-                        let found = cart.find(item => item.name === name);
-                        if (found) {
-                            found.qty += qty;
-                        } else {
-                            cart.push({
-                                name,
-                                price,
-                                desc,
-                                qty
-                            });
-                        }
-                        updateCartDropdown();
-
-                        // Animate image to cart
-                        const imgRect = img.getBoundingClientRect();
-                        const cartRect = cartBtn.getBoundingClientRect();
-                        animateToCart(img, imgRect, cartRect);
-                    });
-                }
-            });
-
-            // --- Cart Dropdown Toggle ---
-            cartBtn.addEventListener('click', function() {
-                cartCard.classList.toggle('show');
-                cartCard.style.display = cartCard.classList.contains('show') ? 'block' : 'none';
-            });
-
-            // --- Hide cart dropdown if click outside ---
-            document.addEventListener('mousedown', function(e) {
-                if (!cartDropdownWrapper.contains(e.target)) {
-                    cartCard.classList.remove('show');
-                    cartCard.style.display = 'none';
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
