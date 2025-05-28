@@ -729,185 +729,262 @@ h1,h2,h3,h4,h5,h6 {
   height: 60px;
   display: flex;
   align-items: center;
-  box-shadow: 0 15px 8px rgba(0, 0, 0, 0.1); /* lebih halus dan menyebar ke bawah */
+  box-shadow: 0 15px 8px rgba(0, 0, 0, 0.1);
   user-select: none;
   position: relative;
 }
 
-    .container {
-        width: 100%;
-        max-width: 1180px;
-        margin: 0 auto;
-        padding: 0 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 60px;
-    }
-    .navbar-left .logo {
-        font-size: 26px;
-        font-weight: 700;
-        color: #fff;
-        text-decoration: none;
-        letter-spacing: 1px;
-    }
-    .navbar-center {
-        flex: 1 1 auto;
-        margin: 0 135px;
-        position: relative;
-    }
-    .search-form {
-        width: 100%;
-    }
-    .search-input-wrapper {
-        display: flex;
-        align-items: center;
-        background-color: #fff;
-        border-radius: 50px;
-        overflow: hidden;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    #search-input {
-        border: none;
-        outline: none;
-        padding: 8px 16px;
-        flex-grow: 1;
-        font-size: 15px;
-        color: #333;
-        width: 255px;
-        height: 35px;
-    }
-    #search-input::placeholder {
-        color: #999;
-    }
-    .search-input-wrapper button {
-        border: none;
-        background: transparent;
-        padding: 0 12px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .search-input-wrapper button svg {
-        pointer-events: none;
-    }
-    .suggestions {
-        background: #fff;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        max-height: 260px;
-        overflow-y: auto;
-        box-shadow: 0 3px 12px #1b1c1c;
-        border-radius: 0 0 5px 5px;
-        z-index: 50;
-        padding: 0;
-        /* width: 20px; */
-        margin: 0;
-        list-style: none;
-    }
-    .suggestions li {
-        padding: 10px 16px;
-        cursor: pointer;
-        border-bottom: 1px solid #eee;
-        color: #333;
-        font-size: 14px;
-    }
-    .suggestions li:last-child {
-        border-bottom: none;
-    }
-    .suggestions li:hover,
-    .suggestions li:focus {
-        background-color: #282a2a;
-        color: #fff;
-        outline: none;
-    }
-    .navbar-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-    .nav-icon svg {
-        fill: rgb(0, 0, 0);
-        width: 24px;
-        height: 24px;
-        transition: fill 0.2s ease;
-    }
-    .nav-icon:hover svg {
-        fill: rgb(131, 131, 131);
-    }
-    .nav-login {
-        font-weight: 600;
-        color: rgb(2, 2, 2);
-        text-decoration: none;
-        font-size: 15px;
-        cursor: pointer;
-        padding: 6px 12px;
-        transition: background-color 0.2s ease;
-        border-radius: 3px;
-    }
-    .nav-login:hover {
-        background-color: rgb(116, 116, 116);
-    }
-    .nav-user-dropdown {
-        position: relative;
-        color: #fff;
-        font-size: 15px;
-        cursor: pointer;
-        user-select: none;
-        outline: none;
-    }
-    .nav-user-dropdown:focus > .dropdown-menu,
-    .nav-user-dropdown:hover > .dropdown-menu {
-        display: block;
-    }
-    .dropdown-menu {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 120%;
-        background: #fff;
-        color: #333;
-        min-width: 140px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-        border-radius: 4px;
-        list-style: none;
-        padding: 6px 0;
-        z-index: 100;
-    }
-    .dropdown-menu li {
-        padding: 8px 16px;
-        white-space: nowrap;
-    }
-    .dropdown-menu li a,
-    .dropdown-menu li button {
-        color: #333;
-        text-decoration: none;
-        display: block;
-        width: 100%;
-        background: none;
-        border: none;
-        text-align: left;
-        cursor: pointer;
-        font-size: 14px;
-        padding: 0;
-    }
-    .dropdown-menu li a:hover,
-    .dropdown-menu li button:hover {
-        background-color: #121212;
-        color: #fff;
-    }
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+.navbar-left .logo {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+.navbar-center {
+  flex: 1 1 auto;
+  margin: 0 135px;
+  position: relative;
+}
+.search-form {
+  width: 100%;
+}
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 50px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+#search-input {
+  border: none;
+  outline: none;
+  padding: 8px 16px;
+  flex-grow: 1;
+  font-size: 15px;
+  color: #333;
+  width: 255px;
+  height: 35px;
+}
+#search-input::placeholder {
+  color: #999;
+}
+.search-input-wrapper button {
+  border: none;
+  background: transparent;
+  padding: 0 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-input-wrapper button svg {
+  pointer-events: none;
+}
+.suggestions {
+  background: #fff;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  box-shadow: 0 3px 12px #1b1c1c;
+  border-radius: 0 0 5px 5px;
+  z-index: 50;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.suggestions li {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-size: 14px;
+}
+.suggestions li:last-child {
+  border-bottom: none;
+}
+.suggestions li:hover,
+.suggestions li:focus {
+  background-color: #282a2a;
+  color: #fff;
+  outline: none;
+}
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.nav-icon svg {
+  fill: rgb(0, 0, 0);
+  width: 24px;
+  height: 24px;
+  transition: fill 0.2s ease;
+}
+.nav-icon:hover svg {
+  fill: rgb(131, 131, 131);
+}
+.nav-login {
+  font-weight: 600;
+  color: rgb(2, 2, 2);
+  text-decoration: none;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 6px 12px;
+  transition: background-color 0.2s ease;
+  border-radius: 3px;
+}
+.nav-login:hover {
+  background-color: rgb(116, 116, 116);
+}
+.nav-user-dropdown {
+  position: relative;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+.nav-user-dropdown:focus > .dropdown-menu,
+.nav-user-dropdown:hover > .dropdown-menu {
+  display: block;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 120%;
+  background: #fff;
+  color: #333;
+  min-width: 140px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  border-radius: 4px;
+  list-style: none;
+  padding: 6px 0;
+  z-index: 100;
+}
+.dropdown-menu li {
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+.dropdown-menu li a,
+.dropdown-menu li button {
+  color: #333;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+.dropdown-menu li a:hover,
+.dropdown-menu li button:hover {
+  background-color: #121212;
+  color: #fff;
+}
 
-    @media (max-width: 768px) {
-        .container {
-            padding: 0 12px;
-        }
-        .navbar-center {
-            margin: 0 12px;
-        }
-        .nav-login {
-            padding: 6px 10px;
-        }
-    }
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+  .navbar-center {
+    margin: 0 40px;
+  }
+  #search-input {
+    width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    padding: 0 8px;
+  }
+  .shopee-navbar {
+    height: auto;
+    min-height: 60px;
+    flex-direction: column;
+    align-items: stretch;
+    padding-bottom: 8px;
+  }
+  .navbar-left, .navbar-right {
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+  }
+  .navbar-left {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .navbar-center {
+    margin: 0 0 8px 0;
+    width: 100%;
+  }
+  .search-input-wrapper {
+    width: 100%;
+  }
+  #search-input {
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
+  }
+  .navbar-right {
+    gap: 10px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .nav-login {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-left .logo {
+    font-size: 20px;
+  }
+  .navbar-center {
+    margin: 0 0 6px 0;
+  }
+  .search-input-wrapper {
+    box-shadow: none;
+    border-radius: 8px;
+  }
+  #search-input {
+    font-size: 13px;
+    padding: 7px 10px;
+    height: 32px;
+  }
+  .navbar-right {
+    gap: 6px;
+  }
+  .nav-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  .dropdown-menu {
+    min-width: 110px;
+    font-size: 13px;
+  }
+}

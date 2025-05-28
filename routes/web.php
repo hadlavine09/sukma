@@ -1,15 +1,16 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\TagController;
-use App\Http\Controllers\UserManagement\HakAksesController;
-use App\Http\Controllers\UserManagement\PermissionController;
-use App\Http\Controllers\UserManagement\RoleController;
-use App\Http\Controllers\UserManagement\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DetailProdukController;
+use App\Http\Controllers\UserManagement\RoleController;
+use App\Http\Controllers\UserManagement\UserController;
+use App\Http\Controllers\UserManagement\HakAksesController;
+use App\Http\Controllers\UserManagement\PermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -129,6 +130,16 @@ Route::prefix('Manajemen-Produk')->group(function () {
         Route::post('destroy', [HakAksesController::class, 'destroy'])->name('supplier.destroy');
         Route::get('edit/{id}', [HakAksesController::class, 'edit'])->name('supplier.edit');
         Route::get('show/{id}', [HakAksesController::class, 'show'])->name('supplier.show');
+    });
+    
+    Route::prefix('detail')->group(function () {
+        Route::get('index', [DetailProdukController::class, 'index'])->name('detail.index');
+        Route::get('create', [DetailProdukController::class, 'create'])->name('detail.create');
+        Route::post('store', [DetailProdukController::class, 'store'])->name('detail.store');
+        Route::put('update/{id}', [DetailProdukController::class, 'update'])->name('detail.update');
+        Route::post('destroy', [DetailProdukController::class, 'destroy'])->name('detail.destroy');
+        Route::get('edit/{id}', [DetailProdukController::class, 'edit'])->name('detail.edit');
+        Route::get('show/{id}', [DetailProdukController::class, 'show'])->name('detail.show');
     });
 });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
