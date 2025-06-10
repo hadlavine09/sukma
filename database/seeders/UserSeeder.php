@@ -11,12 +11,12 @@ use Carbon\Carbon;
 
 class UserSeeder extends Seeder
 {
-    public function run()
+  public function run()
     {
         // Roles
         $roles = [
             ['name' => 'superadmin', 'display_name' => 'Super Administrator', 'description' => 'Full access'],
-            ['name' => 'admin', 'display_name' => 'Administrator', 'description' => 'Limited access'],
+            ['name' => 'toko', 'display_name' => 'Administrator', 'description' => 'Limited access'],
             ['name' => 'user', 'display_name' => 'User', 'description' => 'Basic access'],
         ];
 
@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             Role::firstOrCreate(['name' => $role['name']], $role);
         }
 
-        // Users
+        // Users (1 untuk setiap role)
         $users = [
             [
                 'name' => 'Super Admin',
@@ -39,47 +39,23 @@ class UserSeeder extends Seeder
                 'role' => 'superadmin',
             ],
             [
-                'name' => 'Admin',
-                'email' => 'admin@example.com',
-                'username' => 'admin',
+                'name' => 'Admin Toko',
+                'email' => 'toko@example.com',
+                'username' => 'toko',
                 'no_hp' => '0812222222',
                 'no_ktp' => '2345678901234567',
                 'profile' => 'default.png',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('password'),
                 'remember_token' => Str::random(10),
-                'role' => 'admin',
+                'role' => 'toko',
             ],
             [
-                'name' => 'Ikhsan',
-                'email' => 'ikhsan@example.com',
-                'username' => 'ikhsan',
+                'name' => 'User Biasa',
+                'email' => 'user@example.com',
+                'username' => 'user',
                 'no_hp' => '0813333333',
                 'no_ktp' => '3456789012345678',
-                'profile' => 'default.png',
-                'email_verified_at' => Carbon::now(),
-                'password' => Hash::make('password'),
-                'remember_token' => Str::random(10),
-                'role' => 'user',
-            ],
-            [
-                'name' => 'Sofyan',
-                'email' => 'sofyan@example.com',
-                'username' => 'sofyan',
-                'no_hp' => '0814444444',
-                'no_ktp' => '4567890123456789',
-                'profile' => 'default.png',
-                'email_verified_at' => Carbon::now(),
-                'password' => Hash::make('password'),
-                'remember_token' => Str::random(10),
-                'role' => 'user',
-            ],
-            [
-                'name' => 'Haddad',
-                'email' => 'haddad@example.com',
-                'username' => 'haddad',
-                'no_hp' => '0815555555',
-                'no_ktp' => '5678901234567890',
                 'profile' => 'default.png',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('password'),

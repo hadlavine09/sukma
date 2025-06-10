@@ -94,56 +94,58 @@
     <script>
         $(document).ready(function() {
             var kategoriTable = $('#kategoriTable').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
+                processing: false,
+                serverSide: false,
+                responsive: false,
+                scrollX: false,
+                scrollY: false,
                 ajax: '{!! route('kategori.index') !!}',  // Get data through AJAX
                 columns: [
-    { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },
-    { data: 'kode_kategori', name: 'kode_kategori' },
-    { data: 'nama_kategori', name: 'nama_kategori' },
-    { data: 'gambar_kategori', name: 'gambar_kategori', className: "text-center",
-        render: function(data, type, row) {
-            // Menggunakan Storage::url() untuk mendapatkan URL gambar yang benar
-            var imageUrl = "{{ asset('storage') }}/" + data; // Menggunakan Blade untuk memulai URL
-            if (data) {
-                return `<img src="${imageUrl}" alt="gambar" height="50">`; // Menampilkan gambar
-            } else {
-                return '<span class="text-muted">Tidak ada</span>';
-            }
-        }
-    },
-    { data: 'deskripsi_kategori', name: 'deskripsi_kategori' },
-    { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
-],
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },
+                    { data: 'kode_kategori', name: 'kode_kategori' },
+                    { data: 'nama_kategori', name: 'nama_kategori' },
+                    { data: 'gambar_kategori', name: 'gambar_kategori', className: "text-center",
+                        render: function(data, type, row) {
+                            // Menggunakan Storage::url() untuk mendapatkan URL gambar yang benar
+                            var imageUrl = "{{ asset('storage') }}/" + data; // Menggunakan Blade untuk memulai URL
+                            if (data) {
+                                return `<img src="${imageUrl}" alt="gambar" height="50">`; // Menampilkan gambar
+                            } else {
+                                return '<span class="text-muted">Tidak ada</span>';
+                            }
+                        }
+                    },
+                    { data: 'deskripsi_kategori', name: 'deskripsi_kategori' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
+                ],
 
             });
 
             $(document).ready(function() {
-    // Handle delete button click
-    $(document).on('click', '.delete-btn', function() {
-        var kategoriKode = $(this).data('id');  // Get the kode_kategori from the clicked button
-        var kategoriName = $(this).data('nm');  // Get the name from the button
+                // Handle delete button click
+                $(document).on('click', '.delete-btn', function() {
+                    var kategoriKode = $(this).data('id');  // Get the kode_kategori from the clicked button
+                    var kategoriName = $(this).data('nm');  // Get the name from the button
 
-        // Update the name in the modal
-        $('#kategori-name').text(kategoriName);
+                    // Update the name in the modal
+                    $('#kategori-name').text(kategoriName);
 
-        // Update the action URL for the form
-        $('#deletekategoriForm').attr('action', '{{ route('kategori.destroy') }}');  // POST to destroy route
+                    // Update the action URL for the form
+                    $('#deletekategoriForm').attr('action', '{{ route('kategori.destroy') }}');  // POST to destroy route
 
-        // Update the hidden input field with the kategoriKode (kode_kategori)
-        $('#deletekategoriForm').find('input[name="kode_kategori"]').val(kategoriKode);
+                    // Update the hidden input field with the kategoriKode (kode_kategori)
+                    $('#deletekategoriForm').find('input[name="kode_kategori"]').val(kategoriKode);
 
-        // Show the modal
-        $('#deleteModal').modal('show');
-    });
+                    // Show the modal
+                    $('#deleteModal').modal('show');
+                });
 
-    // Auto-dismiss alert after 3 seconds
-    setTimeout(function() {
-            $('#success-alert').fadeOut('slow');
-            $('#error-alert').fadeOut('slow');
-        }, 3000); // 3000 milliseconds = 3 seconds
-    });
+                // Auto-dismiss alert after 3 seconds
+                setTimeout(function() {
+                        $('#success-alert').fadeOut('slow');
+                        $('#error-alert').fadeOut('slow');
+                }, 3000); // 3000 milliseconds = 3 seconds
+            });
 
         });
     </script>

@@ -48,7 +48,6 @@
                                     <th>Harga Produk</th>
                                     <th>Gambar</th> <!-- Kolom gambar -->
                                     <th>Status Produk</th>
-                                    <th>Waktu Dibuat</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -98,9 +97,11 @@
     <script>
         $(document).ready(function() {
             var produkTable = $('#produkTable').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
+               processing: false,
+                serverSide: false,
+                responsive: false,
+                scrollX: false,
+                scrollY: false,
                 ajax: '{!! route('produk.index') !!}',  // Get data through AJAX
                 columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },
@@ -120,7 +121,6 @@
                     }
                 },
                 { data: 'status_produk', name: 'status_produk', className: "text-center" },
-                { data: 'created_at', name: 'created_at' },
                 { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
             ],
 

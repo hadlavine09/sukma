@@ -3,8 +3,10 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\UserManagement\RoleController;
@@ -114,7 +116,7 @@ Route::prefix('Manajemen-Produk')->group(function () {
         Route::get('show/{id}', [KategoriController::class, 'show'])->name('kategori.show');
     });
     Route::prefix('produk')->group(function () {
-        Route::get('index', [ProdukController::class, 'index'])->name('produk.index');
+        Route::get('/', [ProdukController::class, 'index'])->name('produk.index');
         Route::get('create', [ProdukController::class, 'create'])->name('produk.create');
         Route::post('store', [ProdukController::class, 'store'])->name('produk.store');
         Route::put('update/{id}', [ProdukController::class, 'update'])->name('produk.update');
@@ -123,15 +125,15 @@ Route::prefix('Manajemen-Produk')->group(function () {
         Route::get('show/{id}', [ProdukController::class, 'show'])->name('produk.show');
     });
     Route::prefix('supplier')->group(function () {
-        Route::get('index', [HakAksesController::class, 'index'])->name('supplier.index');
-        Route::get('create', [HakAksesController::class, 'create'])->name('supplier.create');
-        Route::post('store', [HakAksesController::class, 'store'])->name('supplier.store');
-        Route::put('update/{id}', [HakAksesController::class, 'update'])->name('supplier.update');
-        Route::post('destroy', [HakAksesController::class, 'destroy'])->name('supplier.destroy');
-        Route::get('edit/{id}', [HakAksesController::class, 'edit'])->name('supplier.edit');
-        Route::get('show/{id}', [HakAksesController::class, 'show'])->name('supplier.show');
+        Route::get('index', [SupplierController::class, 'index'])->name('supplier.index');
+        Route::get('create', [SupplierController::class, 'create'])->name('supplier.create');
+        Route::post('store', [SupplierController::class, 'store'])->name('supplier.store');
+        Route::put('update/{id}', [SupplierController::class, 'update'])->name('supplier.update');
+        Route::post('destroy', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+        Route::get('edit/{id}', [SupplierController::class, 'edit'])->name('supplier.edit');
+        Route::get('show/{id}', [SupplierController::class, 'show'])->name('supplier.show');
     });
-    
+
     Route::prefix('detail')->group(function () {
         Route::get('index', [DetailProdukController::class, 'index'])->name('detail.index');
         Route::get('create', [DetailProdukController::class, 'create'])->name('detail.create');
