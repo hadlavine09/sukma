@@ -393,7 +393,7 @@
                         </div>
                     </div>
                 @else
-                    <a href="#" class="nav-login" tabindex="0">Daftar</a>
+                    <a href="{{ route('register2') }}" class="nav-login" tabindex="0">Daftar</a>
                     <span class="mx-1 text-black">|</span>
                     <a href="{{ route('login') }}" class="nav-login" tabindex="0">Login</a>
                 @endauth

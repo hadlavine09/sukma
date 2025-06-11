@@ -9,6 +9,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DetailProdukController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserManagement\RoleController;
 use App\Http\Controllers\UserManagement\UserController;
 use App\Http\Controllers\UserManagement\HakAksesController;
@@ -32,10 +33,14 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     // Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register2');
 });
 
 // Proses login
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+
+// Proses registrasi
+Route::post('/register-action', [RegisterController::class, 'register'])->name('register.post');
 
 // Routes yang hanya bisa diakses oleh user yang sudah login
 Route::middleware(['auth'])->group(function () {
