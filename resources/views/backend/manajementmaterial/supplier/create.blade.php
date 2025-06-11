@@ -8,8 +8,8 @@
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="bi bi-house-door fs-6"></i></li>
-            <li class="breadcrumb-item">Forms</li>
-            <li class="breadcrumb-item active"><a href="#">Tambah Supplier</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('supplier.index') }}">Supplier</a></li>
+            <li class="breadcrumb-item active">Tambah Supplier</li>
         </ul>
     </div>
 
@@ -38,55 +38,46 @@
                     <form action="{{ route('supplier.store') }}" method="POST">
                         @csrf
                         <div class="row mb-3">
-                            <!-- Nama Supplier -->
                             <div class="col-md-6">
                                 <label for="nama_supplier" class="form-label">Nama Supplier</label>
                                 <input type="text" class="form-control" name="nama_supplier" id="nama_supplier" required>
                             </div>
-
-                            <!-- No Supplier -->
                             <div class="col-md-6">
-                                <label for="no_supplier" class="form-label">No Supplier</label>
-                                <input type="text" class="form-control" name="no_supplier" id="no_supplier" required>
+                                <label for="contact_supplier" class="form-label">Kontak Supplier (opsional)</label>
+                                <input type="text" class="form-control" name="contact_supplier" id="contact_supplier">
                             </div>
                         </div>
-
                         <div class="row mb-3">
-                            <!-- No HP Supplier -->
                             <div class="col-md-6">
-                                <label for="no_hp_supplier" class="form-label">No HP Supplier</label>
-                                <input type="text" class="form-control" name="no_hp_supplier" id="no_hp_supplier" required>
-                            </div>
-
-                            <!-- Alamat Supplier -->
-                            <div class="col-md-6">
-                                <label for="alamat_supplier" class="form-label">Alamat Supplier</label>
-                                <textarea class="form-control" name="alamat_supplier" id="alamat_supplier" rows="3" required></textarea>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <!-- Toko ID -->
-                            {{-- <div class="col-md-6">
-                                <label for="toko_id" class="form-label">Toko</label>
-                                <select class="form-select" name="toko_id" id="toko_id" required>
-                                    <option value="" disabled selected>-- Pilih Toko --</option>
-                                    @foreach($tokos as $toko)
-                                        <option value="{{ $toko->id }}">{{ $toko->nama_toko }}</option>
+                                <label for="material_id" class="form-label">Material</label>
+                                <select class="form-control" name="material_id" id="material_id">
+                                    <option disabled selected hidden>-- Pilih Material --</option>
+                                    @foreach ($materials as $item)
+                                        <option value="{{ $item->id }}">{{ $item->nama_material }}</option>
                                     @endforeach
                                 </select>
-                            </div> --}}
-
-                            <!-- Status Supplier -->
+                            </div>
                             <div class="col-md-6">
-                                <label for="status_supplier" class="form-label">Status Supplier</label>
-                                <select class="form-select" name="status_supplier" id="status_supplier" required>
-                                    <option value="Aktif" selected>Aktif</option>
-                                    <option value="Tidak Aktif">Tidak Aktif</option>
-                                </select>
+                                <label for="jumlah_material_supplier" class="form-label">Jumlah Material</label>
+                                <input type="number" class="form-control" name="jumlah_material_supplier" id="jumlah_material_supplier" required>
                             </div>
                         </div>
-
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="total_harga_material_supplier" class="form-label">Total Harga Material</label>
+                                <input type="number" class="form-control" name="total_harga_material_supplier" id="total_harga_material_supplier" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="alamat_supplier" class="form-label">Alamat Supplier (opsional)</label>
+                                <textarea class="form-control" name="alamat_supplier" id="alamat_supplier" rows="1"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="deskripsi" class="form-label">Deskripsi (opsional)</label>
+                                <textarea class="form-control" name="deskripsi" id="deskripsi" rows="2"></textarea>
+                            </div>
+                        </div>
                         <div class="tile-footer">
                             <button class="btn btn-primary" type="submit"><i class="bi bi-check-circle"></i> Simpan</button>
                             <a href="{{ route('supplier.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Kembali</a>

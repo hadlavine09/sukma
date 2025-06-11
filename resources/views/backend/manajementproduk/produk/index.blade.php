@@ -97,7 +97,7 @@
     <script>
         $(document).ready(function() {
             var produkTable = $('#produkTable').DataTable({
-               processing: false,
+                processing: false,
                 serverSide: false,
                 responsive: false,
                 scrollX: false,

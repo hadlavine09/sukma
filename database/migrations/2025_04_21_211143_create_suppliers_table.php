@@ -15,11 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('kode_supplier');
             $table->string('nama_supplier');
-            $table->string('contact_supplier')->nulable();
-            $table->string('alamat_supplier')->nulable();
-            $table->unsignedBigInteger('toko_id');
+            $table->string('contact_supplier')->nullable();
+            $table->string('alamat_supplier')->nullable();
+            // Ubah ke unsignedBigInteger dan tambah foreign key
+            $table->unsignedBigInteger('material_id')->nullable();
+            $table->integer('jumlah_material_supplier');
+            $table->decimal('total_harga_material_supplier', 15, 2);
+            $table->string('deskripsi')->nullable();
+            $table->date('tanggal');
             $table->timestamps();
+            $table->softDeletes();
+            // Foreign key constraint
+            $table->foreign('material_id')->references('id')->on('materials')->onDelete('set null');
         });
+
     }
 
     /**
