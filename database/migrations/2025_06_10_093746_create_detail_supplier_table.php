@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('nama_material');
             $table->string('jumlah_material');
             $table->string('harga_material');
-            $table->unsignedBigInteger('toko_id');
             $table->timestamps();
         });
     }

@@ -16,7 +16,11 @@ return new class extends Migration
             $table->string('kode_material');
             $table->string('nama_material');
             $table->string('jumlah_material');
+            $table->string('harga_material');
+            $table->string('deskripsi_material');
             $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 

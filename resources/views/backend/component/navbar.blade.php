@@ -3,10 +3,6 @@
         <!-- Sidebar toggle button--><a class="app-sidebar__toggle" href="{{ asset('assets_backend/#')}}" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
         <!-- Navbar Right Menu-->
         <ul class="app-nav">
-          <li class="app-search">
-            <input class="app-search__input" type="search" placeholder="Search">
-            <button class="app-search__button"><i class="bi bi-search"></i></button>
-          </li>
           <!--Notification Menu-->
           <li class="dropdown"><a class="app-nav__item" href="{{ asset('assets_backend/#')}}" data-bs-toggle="dropdown" aria-label="Show notifications"><i class="bi bi-bell fs-5"></i></a>
             <ul class="app-notification dropdown-menu dropdown-menu-right">

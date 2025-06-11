@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\TransaksiMaterial;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DetailProdukController;
@@ -142,6 +144,36 @@ Route::prefix('Manajemen-Produk')->group(function () {
         Route::post('destroy', [DetailProdukController::class, 'destroy'])->name('detail.destroy');
         Route::get('edit/{id}', [DetailProdukController::class, 'edit'])->name('detail.edit');
         Route::get('show/{id}', [DetailProdukController::class, 'show'])->name('detail.show');
+    });
+});
+
+Route::prefix('Manajemen-Material')->group(function () {
+    Route::prefix('Material')->group(function () {
+        Route::get('/', [MaterialController::class, 'index'])->name('material.index');
+        Route::get('create', [MaterialController::class, 'create'])->name('material.create');
+        Route::post('store', [MaterialController::class, 'store'])->name('material.store');
+        Route::put('update/{id}', [MaterialController::class, 'update'])->name('material.update');
+        Route::post('destroy', [MaterialController::class, 'destroy'])->name('material.destroy');
+        Route::get('edit/{id}', [MaterialController::class, 'edit'])->name('material.edit');
+        Route::get('show/{id}', [MaterialController::class, 'show'])->name('material.show');
+    });
+    Route::prefix('supplier')->group(function () {
+        Route::get('index', [SupplierController::class, 'index'])->name('supplier.index');
+        Route::get('create', [SupplierController::class, 'create'])->name('supplier.create');
+        Route::post('store', [SupplierController::class, 'store'])->name('supplier.store');
+        Route::put('update/{id}', [SupplierController::class, 'update'])->name('supplier.update');
+        Route::post('destroy', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+        Route::get('edit/{id}', [SupplierController::class, 'edit'])->name('supplier.edit');
+        Route::get('show/{id}', [SupplierController::class, 'show'])->name('supplier.show');
+    });
+    Route::prefix('transaksi')->group(function () {
+        Route::get('/', [TransaksiMaterial::class, 'index'])->name('transaksi_material.index');
+        Route::get('create', [TransaksiMaterial::class, 'create'])->name('transaksi_material.create');
+        Route::post('store', [TransaksiMaterial::class, 'store'])->name('transaksi_material.store');
+        Route::put('update/{id}', [TransaksiMaterial::class, 'update'])->name('transaksi_material.update');
+        Route::post('destroy', [TransaksiMaterial::class, 'destroy'])->name('transaksi_material.destroy');
+        Route::get('edit/{id}', [TransaksiMaterial::class, 'edit'])->name('transaksi_material.edit');
+        Route::get('show/{id}', [TransaksiMaterial::class, 'show'])->name('transaksi_material.show');
     });
 });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');

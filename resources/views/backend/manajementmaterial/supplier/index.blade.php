@@ -41,11 +41,9 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Kode Supplier</th>
                                     <th>Nama Supplier</th>
-                                    <th>No Supplier</th>
-                                    <th>No HP</th>
-                                    <th>Alamat</th>
-                                    <th>Status</th>
+                                    <th>Tanggal</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -66,7 +64,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus Supplier</h5>
+                <h5 class="modal-title text-danger" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Konfirmasi Hapus Data Supplier
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -76,7 +76,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 <form action="{{ route('supplier.destroy') }}" method="POST" id="deleteSupplierForm" class="d-inline">
                     @csrf
-                    <input type="hidden" name="no_supplier" value="">
+                    <input type="hidden" name="id" value="">
                     <button type="submit" class="btn btn-primary">Hapus</button>
                 </form>
             </div>
@@ -94,27 +94,28 @@
     <script>
         $(document).ready(function() {
             var supplierTable = $('#supplierTable').DataTable({
-                processing: true,
-                serverSide: true,
+                processing: false,
+                serverSide: false,
+                responsive: false,
+                scrollX: false,
+                scrollY: false,
                 ajax: '{!! route('supplier.index') !!}',
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },
+                    { data: 'kode_supplier', name: 'kode_supplier' },
                     { data: 'nama_supplier', name: 'nama_supplier' },
-                    { data: 'no_supplier', name: 'no_supplier' },
-                    { data: 'no_hp_supplier', name: 'no_hp_supplier' },
-                    { data: 'alamat_supplier', name: 'alamat_supplier' },
-                    { data: 'status_supplier', name: 'status_supplier', className: "text-center" },
+                    { data: 'tanggal', name: 'tanggal' },
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
                 ]
             });
 
             $(document).on('click', '.delete-btn', function() {
-                var no_supplier = $(this).data('id');
+                var id = $(this).data('id');
                 var nama_supplier = $(this).data('nm');
 
                 $('#supplier-name').text(nama_supplier);
                 $('#deleteSupplierForm').attr('action', '{{ route('supplier.destroy') }}');
-                $('#deleteSupplierForm').find('input[name="no_supplier"]').val(no_supplier);
+                $('#deleteSupplierForm').find('input[name="id"]').val(id);
                 $('#deleteModal').modal('show');
             });
 
