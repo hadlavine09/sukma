@@ -130,11 +130,11 @@ class ProdukController extends Controller
             }
         }
 
-        // Validasi status produk
-        $status = $request->status_produk;
-        if (!in_array($status, ['Aktif', 'Tidak Aktif'])) {
-            return $redirectWithError('Status produk wajib dipilih dan hanya boleh "Aktif" atau "Tidak Aktif".');
-        }
+        // // Validasi status produk
+        // $status = $request->status_produk;
+        // if (!in_array($status, ['Aktif', 'Tidak Aktif'])) {
+        //     return $redirectWithError('Status produk wajib dipilih dan hanya boleh "Aktif" atau "Tidak Aktif".');
+        // }
 
         // Generate kode produk
         $kode_produk = 'PRD-' . strtoupper(uniqid());
@@ -155,7 +155,7 @@ class ProdukController extends Controller
             'harga_produk'     => $request->harga_produk,
             'gambar_produk'    => $gambar,
             'kode_kategori'    => $request->kode_kategori,
-            'status_produk'    => $status,
+            // 'status_produk'    => $status,
         ]);
 
         // Simpan tag produk
@@ -411,7 +411,115 @@ class ProdukController extends Controller
     }
 
 
+public function GetTagFrontEnd(Request $request)
+{
+    $lastSentData = null;
 
+    $response = new StreamedResponse(function () use (&$lastSentData) {
+        while (true) {
+            try {
+                // Ambil semua data tag yang belum dihapus (soft delete)
+                $tagData = DB::table('tags')
+                    ->whereNull('deleted_at')
+                    ->select('kode_tag', 'nama_tag', 'gambar_tag', 'deskripsi_tag')
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+                $tagResult = $tagData->toArray();
+
+                // Bandingkan data sekarang dengan data terakhir
+                if ($lastSentData && json_encode($lastSentData) === json_encode($tagResult)) {
+                    sleep(1);
+                    continue;
+                }
+
+                // Kirim data baru jika berbeda
+                echo "data: " . json_encode([
+                    'status' => 'success',
+                    'tag' => $tagResult,
+                ]) . "\n\n";
+
+                $lastSentData = $tagResult;
+
+                ob_flush();
+                flush();
+
+            } catch (\Exception $e) {
+                echo "data: " . json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ]) . "\n\n";
+
+                ob_flush();
+                flush();
+            }
+
+            sleep(1); // polling setiap 1 detik
+        }
+    });
+
+    // Header SSE
+    $response->headers->set('Content-Type', 'text/event-stream');
+    $response->headers->set('Cache-Control', 'no-cache');
+    $response->headers->set('Connection', 'keep-alive');
+
+    return $response;
+}
+
+
+
+public function GetKategoriFrontEnd(Request $request)
+{
+    $lastSentData = null;
+
+    $response = new StreamedResponse(function () use (&$lastSentData) {
+        while (true) {
+            try {
+                // Ambil semua data kategori terbaru
+                $kategoriData = DB::table('kategoris')
+                    ->orderBy('id', 'desc')
+                    ->get();
+
+                $kategoriResult = $kategoriData->toArray(); // convert ke array biasa
+
+                // Bandingkan data sekarang dengan data terakhir
+                if ($lastSentData && json_encode($lastSentData) === json_encode($kategoriResult)) {
+                    sleep(1);
+                    continue;
+                }
+
+                // Kirim data baru jika berbeda
+                echo "data: " . json_encode([
+                    'status' => 'success',
+                    'kategori' => $kategoriResult,
+                ]) . "\n\n";
+
+                $lastSentData = $kategoriResult;
+
+                ob_flush();
+                flush();
+
+            } catch (\Exception $e) {
+                echo "data: " . json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ]) . "\n\n";
+
+                ob_flush();
+                flush();
+            }
+
+            sleep(1); // polling setiap 1 detik
+        }
+    });
+
+    // Header SSE
+    $response->headers->set('Content-Type', 'text/event-stream');
+    $response->headers->set('Cache-Control', 'no-cache');
+    $response->headers->set('Connection', 'keep-alive');
+
+    return $response;
+}
 
 public function GetProdukFrontEnd(Request $request)
 {

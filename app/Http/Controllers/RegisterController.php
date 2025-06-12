@@ -10,9 +10,10 @@ class RegisterController extends Controller
     {
         return view('auth.register');
     }
-    
+
     public function register(Request $request)
     {
+        // dd($request->all());
         // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',

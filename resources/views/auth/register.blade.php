@@ -193,8 +193,7 @@
             @csrf
             <div class="form-group">
                 <input id="username" type="username" class="form-control @error('username') is-invalid @enderror"
-                    placeholder=" " name="username" value="{{ old('username') }}" required autofocus>
-                <label for="username">Username</label>
+                    placeholder="Username" name="username" value="{{ old('username') }}" required autofocus>
                 @error('username')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -202,20 +201,18 @@
                 @enderror
             </div>
             <div class="form-group">
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                    placeholder=" " name="email" value="{{ old('email') }}" required autofocus>
-                <label for="email">EMAIL</label>
-                @error('email')
+                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
+                    placeholder="Password" name="password" required>
+                @error('password')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
             </div>
             <div class="form-group">
-                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                    placeholder=" " name="password" required>
-                <label for="password">PASSWORD</label>
-                @error('password')
+                <input id="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
+                    placeholder="Confirmation Password" name="password_confirmation" required>
+                @error('password_confirmation')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
@@ -226,6 +223,12 @@
                     <i class="bi bi-box-arrow-in-right me-2 fs-5"></i> Daftar
                 </button>
             </div>
+              <a href="{{ route('auth.google') }}" class="btn btn-danger">
+                <i class="fab fa-google"></i> Login with Google
+            </a>
+            <a href="{{ route('login') }}" class="btn btn-danger">
+                <i class="fab fa-google"></i> Login
+            </a>
         </form>
     </section>
     <!-- Essential javascripts for application to work-->

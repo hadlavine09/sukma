@@ -213,6 +213,12 @@
                     <i class="bi bi-box-arrow-in-right me-2 fs-5"></i>SIGN IN
                 </button>
             </div>
+            <a href="{{ route('auth.google') }}" class="btn btn-danger">
+                <i class="fab fa-google"></i> Login with Google
+            </a>
+            <a href="{{ route('register2') }}" class="btn btn-danger">
+                <i class="fab fa-google"></i> Register
+            </a>
         </form>
     </section>
     <!-- Essential javascripts for application to work-->

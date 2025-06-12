@@ -96,13 +96,13 @@
                                 </select>
                             </div>
                             <!-- Status Produk -->
-                            <div class="col-md-6">
-                                <label for="status_produk" class="form-label">Status Produk</label>
-                                <select class="form-select" name="status_produk" id="status_produk" required>
+                            {{-- <div class="col-md-6">
+                                <label for="status_draf_produk" class="form-label">Status Produk</label>
+                                <select class="form-select" name="status_draf_produk" id="status_draf_produk" required>
                                     <option value="Aktif" selected>Aktif</option>
                                     <option value="Tidak Aktif">Tidak Aktif</option>
                                 </select>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="tile-footer">

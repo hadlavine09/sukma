@@ -12,6 +12,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\UserManagement\RoleController;
 use App\Http\Controllers\UserManagement\UserController;
@@ -28,7 +29,7 @@ use App\Http\Controllers\UserManagement\PermissionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Auth::routes();
+Auth::routes(['verify'=>true]);
 Route::get('/', function () {
     return view('frontend.home');
 });
@@ -55,12 +56,12 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Routes yang hanya untuk role "user"
-    Route::middleware('role:user')->group(function () {
-        Route::get('/Home', function () {
-            return view('frontend.home');
-        });
+    // Route::middleware('role:user')->group(function () {
+    //     Route::get('/Home', function () {
+    //         return view('frontend.home');
+    //     });
 
-    });
+    // });
 
     // Logout route
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -212,9 +213,21 @@ Route::prefix('Manajemen-Transaksi')->group(function () {
     });
 });
 Route::prefix('FrontEnd')->group(function () {
+    Route::get('GetTagFrontEnd', [ProdukController::class, 'GetTagFrontEnd'])->name('frontend.GetTagFrontEnd');
+    Route::get('GetTagFrontEnd', [ProdukController::class, 'GetTagFrontEnd'])->name('frontend.GetTagFrontEnd');
+    Route::get('GetKategoriFrontEnd', [ProdukController::class, 'GetKategoriFrontEnd'])->name('frontend.GetKategoriFrontEnd');
     Route::get('GetProdukFrontEnd', [ProdukController::class, 'GetProdukFrontEnd'])->name('frontend.GetProdukFrontEnd');
     Route::get('GetDetailProdukFrontEnd', [ProdukController::class, 'GetDetailProdukFrontEnd'])->name('frontend.GetDetailProdukFrontEnd');
     Route::get('AddToCartFrontEnd', [ProdukController::class, 'AddToCartFrontEnd'])->name('frontend.AddToCartFrontEnd');
+});
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', function () {
+        return view('frontend.home');
+    });
 });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 

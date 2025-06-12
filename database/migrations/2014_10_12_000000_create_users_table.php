@@ -11,18 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('username')->unique();
-            $table->string('no_hp')->unique();
-            $table->string('no_ktp')->unique();
-            $table->string('profile');
+            $table->string('no_hp')->nullable();
+            $table->string('no_ktp')->nullable();
+            $table->string('profile')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable(); // Boleh nullable untuk pengguna Google login
+            $table->string('google_id')->nullable();
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            // Unique constraint untuk kolom nullable harus dibuat terpisah (index bersyarat)
+            $table->unique('no_hp');
+            $table->unique('no_ktp');
+            $table->unique('google_id');
         });
     }
 
@@ -34,3 +41,4 @@ return new class extends Migration
         Schema::dropIfExists('users');
     }
 };
+// K7VMLV9LCLJB4AUCE22A8C1V
