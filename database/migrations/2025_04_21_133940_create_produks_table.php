@@ -17,10 +17,11 @@ return new class extends Migration
             $table->string('nama_produk');
             $table->text('deskripsi_produk')->nullable();
             $table->unsignedInteger('stok_produk')->default(0);
-            $table->decimal('harga_produk', 12, 2);
+            $table->string('harga_produk');
             $table->string('gambar_produk')->nullable();
             $table->string('kode_kategori'); // ubah dari unsignedBigInteger
-            $table->enum('status_produk', ['Aktif', 'Tidak Aktif'])->default('Aktif');
+            $table->enum('status_produk', ['publik', 'private'])->default('private');
+            $table->enum('status_draf_produk', ['Aktif', 'Tidak Aktif'])->default('Aktif');
             $table->timestamps();
             $table->softDeletes();
 

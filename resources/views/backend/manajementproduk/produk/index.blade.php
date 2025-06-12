@@ -48,6 +48,7 @@
                                     <th>Harga Produk</th>
                                     <th>Gambar</th> <!-- Kolom gambar -->
                                     <th>Status Produk</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -121,6 +122,7 @@
                     }
                 },
                 { data: 'status_produk', name: 'status_produk', className: "text-center" },
+                { data: 'status_draf_produk', name: 'status_draf_produk', className: "text-center" },
                 { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
             ],
 

@@ -3,15 +3,16 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\TransaksiMaterial;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DetailProdukController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserManagement\RoleController;
 use App\Http\Controllers\UserManagement\UserController;
 use App\Http\Controllers\UserManagement\HakAksesController;
@@ -180,6 +181,40 @@ Route::prefix('Manajemen-Material')->group(function () {
         Route::get('edit/{id}', [TransaksiMaterial::class, 'edit'])->name('transaksi_material.edit');
         Route::get('show/{id}', [TransaksiMaterial::class, 'show'])->name('transaksi_material.show');
     });
+});
+Route::prefix('Manajemen-Transaksi')->group(function () {
+    Route::prefix('Cart')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('cart.index');
+        Route::get('create', [CartController::class, 'create'])->name('cart.create');
+        Route::get('checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+        Route::get('checkoutstore', [CartController::class, 'checkoutstore'])->name('cart.checkoutstore');
+        Route::post('store', [CartController::class, 'store'])->name('cart.store');
+        Route::put('update/{id}', [CartController::class, 'update'])->name('cart.update');
+        Route::delete('destroy/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+    });
+    Route::prefix('supplier')->group(function () {
+        Route::get('index', [SupplierController::class, 'index'])->name('supplier.index');
+        Route::get('create', [SupplierController::class, 'create'])->name('supplier.create');
+        Route::post('store', [SupplierController::class, 'store'])->name('supplier.store');
+        Route::put('update/{id}', [SupplierController::class, 'update'])->name('supplier.update');
+        Route::post('destroy', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+        Route::get('edit/{id}', [SupplierController::class, 'edit'])->name('supplier.edit');
+        Route::get('show/{id}', [SupplierController::class, 'show'])->name('supplier.show');
+    });
+    Route::prefix('transaksi')->group(function () {
+        Route::get('/', [TransaksiMaterial::class, 'index'])->name('transaksi_material.index');
+        Route::get('create', [TransaksiMaterial::class, 'create'])->name('transaksi_material.create');
+        Route::post('store', [TransaksiMaterial::class, 'store'])->name('transaksi_material.store');
+        Route::put('update/{id}', [TransaksiMaterial::class, 'update'])->name('transaksi_material.update');
+        Route::post('destroy', [TransaksiMaterial::class, 'destroy'])->name('transaksi_material.destroy');
+        Route::get('edit/{id}', [TransaksiMaterial::class, 'edit'])->name('transaksi_material.edit');
+        Route::get('show/{id}', [TransaksiMaterial::class, 'show'])->name('transaksi_material.show');
+    });
+});
+Route::prefix('FrontEnd')->group(function () {
+    Route::get('GetProdukFrontEnd', [ProdukController::class, 'GetProdukFrontEnd'])->name('frontend.GetProdukFrontEnd');
+    Route::get('GetDetailProdukFrontEnd', [ProdukController::class, 'GetDetailProdukFrontEnd'])->name('frontend.GetDetailProdukFrontEnd');
+    Route::get('AddToCartFrontEnd', [ProdukController::class, 'AddToCartFrontEnd'])->name('frontend.AddToCartFrontEnd');
 });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 

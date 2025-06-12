@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('kode_produk');
             $table->foreign('kode_produk')->references('kode_produk')->on('produks')->onDelete('cascade');
             $table->integer('quantity')->default(1);
+            $table->integer('harga_produk'); // Harga produk saat dimasukkan ke cart
             $table->timestamps();
             $table->softDeletes();
         });
+
     }
 
     /**

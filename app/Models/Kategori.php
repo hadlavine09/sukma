@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Produk;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Kategori extends Model
 {
@@ -27,5 +28,10 @@ class Kategori extends Model
     {
         return self::all(); // Ambil semua data dari tabel kategoris
     }
+    public function produks()
+{
+    return $this->hasMany(Produk::class, 'kode_kategori', 'kode_kategori');
+}
+
 
 }

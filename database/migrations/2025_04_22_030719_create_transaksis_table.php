@@ -44,3 +44,4 @@ return new class extends Migration
         Schema::dropIfExists('transaksis');
     }
 };
+// !9tARrQmD83iU@Z

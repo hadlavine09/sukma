@@ -114,7 +114,6 @@ class ManagementProdukSeeder extends Seeder
                 'harga_produk' => 25000.00,
                 'gambar_produk' => 'IMG003',
                 'kode_kategori' => 'KTG001',
-                'status_produk' => 'Aktif',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -126,7 +125,6 @@ class ManagementProdukSeeder extends Seeder
                 'harga_produk' => 8000.00,
                 'gambar_produk' => 'IMG004',
                 'kode_kategori' => 'KTG002',
-                'status_produk' => 'Aktif',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]

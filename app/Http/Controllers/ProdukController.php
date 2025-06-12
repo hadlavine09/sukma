@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProdukController extends Controller
 {
@@ -68,142 +69,115 @@ class ProdukController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // Start a database transaction
-        DB::beginTransaction();
+{
+    // Start a database transaction
+    DB::beginTransaction();
 
-        try {
-            // Cek duplikasi nama produk
-            $existingNama = DB::connection('pgsql')->table('produks')
-                ->where('nama_produk', $request->nama_produk)
-                ->exists();
-
-            if ($existingNama) {
-                DB::rollBack();
-                return redirect()->back()
-                    ->with('error', 'Nama Produk "' . $request->nama_produk . '" sudah ada di database.')
-                    ->withInput();
-            }
-
-            // Validasi deskripsi
-            if (empty($request->deskripsi_produk) || strlen($request->deskripsi_produk) < 10) {
-                DB::rollBack();
-                return redirect()->back()
-                    ->with('error', 'Deskripsi harus diisi dan minimal 10 karakter.')
-                    ->withInput();
-            }
-
-            // Validasi stok (minimal 1)
-            if (!is_numeric($request->stok_produk) || $request->stok_produk < 1) {
-                DB::rollBack();
-                return redirect()->back()
-                    ->with('error', 'Stok produk tidak boleh kosong atau kurang dari 1.')
-                    ->withInput();
-            }
-
-            // Validasi harga (minimal 1)
-            if (!is_numeric($request->harga_produk) || $request->harga_produk < 1) {
-                DB::rollBack();
-                return redirect()->back()
-                    ->with('error', 'Harga produk tidak boleh kosong atau kurang dari 1.')
-                    ->withInput();
-            }
-
-            // Validasi gambar
-            if (!$request->hasFile('gambar_produk')) {
-                DB::rollBack();
-                return redirect()->back()
-                    ->with('error', 'Gambar produk wajib diunggah.')
-                    ->withInput();
-            } else {
-                $ext = $request->file('gambar_produk')->extension();
-                $allowed = ['jpg', 'jpeg', 'png'];
-                if (!in_array($ext, $allowed)) {
-                    DB::rollBack();
-                    return redirect()->back()
-                        ->with('error', 'File gambar harus berupa JPG, JPEG, atau PNG.')
-                        ->withInput();
-                }
-            }
-
-            // Validasi kode_kategori
-            $kategoriAda = DB::connection('pgsql')->table('kategoris')
-                ->where('kode_kategori', $request->kode_kategori)
-                ->exists();
-
-            if (!$kategoriAda) {
-                DB::rollBack();
-                return redirect()->back()
-                    ->with('error', 'Kategori tidak ditemukan.')
-                    ->withInput();
-            }
-
-            // Validasi kode_tag
-            foreach ($request->tags as $tag) {
-                $cekTag = DB::connection('pgsql')->table('tags')
-                    ->where('kode_tag', $tag)
-                    ->exists();
-
-                if (!$cekTag) {
-                    DB::rollBack();
-                    return redirect()->back()
-                        ->with('error', 'Tag "' . $tag . '" tidak ditemukan.')
-                        ->withInput();
-                }
-            }
-
-            // Validasi status_produk
-            $status = $request->status_produk;
-            if (empty($status) || !in_array($status, ['Aktif', 'Tidak Aktif'])) {
-                DB::rollBack();
-                return redirect()->back()
-                    ->with('error', 'Status produk wajib dipilih dan hanya boleh "Aktif" atau "Tidak Aktif".')
-                    ->withInput();
-            }
-
-            // Simpan data produk
-            $kode_produk = 'PRD-' . strtoupper(uniqid());
-            $gambar = null;
-
-            // Cek & buat folder jika belum ada
-            if (!Storage::disk('public')->exists('produk')) {
-                Storage::disk('public')->makeDirectory('produk');
-            }
-
-            // Upload gambar
-            $gambar = $request->file('gambar_produk')->store('produk', 'public');
-
-            $save_produk = Produk::create([
-                'kode_produk'      => $kode_produk,
-                'nama_produk'      => $request->nama_produk,
-                'deskripsi_produk' => $request->deskripsi_produk,
-                'stok_produk'      => $request->stok_produk,
-                'harga_produk'     => $request->harga_produk,
-                'gambar_produk'    => $gambar,
-                'kode_kategori'    => $request->kode_kategori,
-                'status_produk'    => $status,
-            ]);
-
-            // Insert related tags to tag_produks
-            foreach ($request->tags as $tag) {
-                DB::table('tag_produks')->insert([
-                    'kode_tag'   => $tag,
-                    'kode_produk' => $save_produk->kode_produk,
-                ]);
-            }
-
-            // Commit the transaction
-            DB::commit();
-
-            return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');
-        } catch (\Exception $e) {
-            // Rollback in case of error
+    try {
+        // Helper: Redirect with rollback and error
+        $redirectWithError = function ($message) use ($request) {
             DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan saat menyimpan: ' . $e->getMessage())
-                ->withInput();
+            return redirect()->back()->with('error', $message)->withInput();
+        };
+
+        // Cek duplikasi nama produk
+        $existingNama = DB::connection('pgsql')->table('produks')
+            ->where('nama_produk', $request->nama_produk)
+            ->exists();
+        if ($existingNama) {
+            return $redirectWithError('Nama Produk "' . $request->nama_produk . '" sudah ada di database.');
         }
+
+        // Validasi deskripsi
+        if (empty($request->deskripsi_produk) || strlen($request->deskripsi_produk) < 10) {
+            return $redirectWithError('Deskripsi harus diisi dan minimal 10 karakter.');
+        }
+
+        // Validasi stok dan harga
+        if (!is_numeric($request->stok_produk) || $request->stok_produk < 1) {
+            return $redirectWithError('Stok produk tidak boleh kosong atau kurang dari 1.');
+        }
+
+        if (!is_numeric($request->harga_produk) || $request->harga_produk < 1) {
+            return $redirectWithError('Harga produk tidak boleh kosong atau kurang dari 1.');
+        }
+
+        // Validasi gambar
+        if (!$request->hasFile('gambar_produk')) {
+            return $redirectWithError('Gambar produk wajib diunggah.');
+        }
+
+        $ext = $request->file('gambar_produk')->extension();
+        if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
+            return $redirectWithError('File gambar harus berupa JPG, JPEG, atau PNG.');
+        }
+
+        // Validasi kategori
+        $kategoriAda = DB::connection('pgsql')->table('kategoris')
+            ->where('kode_kategori', $request->kode_kategori)
+            ->exists();
+        if (!$kategoriAda) {
+            return $redirectWithError('Kategori tidak ditemukan.');
+        }
+
+        // Validasi tags
+        foreach ($request->tags as $tag) {
+            $cekTag = DB::connection('pgsql')->table('tags')
+                ->where('kode_tag', $tag)
+                ->exists();
+            if (!$cekTag) {
+                return $redirectWithError('Tag "' . $tag . '" tidak ditemukan.');
+            }
+        }
+
+        // Validasi status produk
+        $status = $request->status_produk;
+        if (!in_array($status, ['Aktif', 'Tidak Aktif'])) {
+            return $redirectWithError('Status produk wajib dipilih dan hanya boleh "Aktif" atau "Tidak Aktif".');
+        }
+
+        // Generate kode produk
+        $kode_produk = 'PRD-' . strtoupper(uniqid());
+
+        // Upload gambar
+        if (!Storage::disk('public')->exists('produk')) {
+            Storage::disk('public')->makeDirectory('produk');
+        }
+
+        $gambar = $request->file('gambar_produk')->store('produk', 'public');
+
+        // Simpan produk
+        $save_produk = Produk::create([
+            'kode_produk'      => $kode_produk,
+            'nama_produk'      => $request->nama_produk,
+            'deskripsi_produk' => $request->deskripsi_produk,
+            'stok_produk'      => $request->stok_produk,
+            'harga_produk'     => $request->harga_produk,
+            'gambar_produk'    => $gambar,
+            'kode_kategori'    => $request->kode_kategori,
+            'status_produk'    => $status,
+        ]);
+
+        // Simpan tag produk
+        foreach ($request->tags as $tag) {
+            DB::table('tag_produks')->insert([
+                'kode_tag'    => $tag,
+                'kode_produk' => $save_produk->kode_produk,
+            ]);
+        }
+
+        // Commit transaksi
+        DB::commit();
+
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()
+            ->with('error', 'Terjadi kesalahan saat menyimpan: ' . $e->getMessage())
+            ->withInput();
     }
+}
+
 
 
 
@@ -435,5 +409,162 @@ class ProdukController extends Controller
             return redirect()->route('produk.index')->with('error', 'Terjadi kesalahan dalam menghapus produk.');
         }
     }
+
+
+
+
+public function GetProdukFrontEnd(Request $request)
+{
+    $lastSentData = null;
+
+    $response = new StreamedResponse(function () use (&$lastSentData) {
+        while (true) {
+            try {
+                // Ambil data produk beserta tag (left join)
+                $produkWithTagsRaw = DB::table('produks')
+                    ->leftJoin('tag_produks', 'produks.kode_produk', '=', 'tag_produks.kode_produk')
+                    ->leftJoin('tags', 'tag_produks.kode_tag', '=', 'tags.kode_tag')
+                    ->select('produks.*', 'tags.nama_tag')
+                    ->orderBy('produks.id', 'desc')
+                    ->get();
+
+                // Gabungkan tag dalam array per produk
+                $produkGrouped = [];
+                foreach ($produkWithTagsRaw as $item) {
+                    $kode = $item->kode_produk;
+
+                    if (!isset($produkGrouped[$kode])) {
+                        $produkGrouped[$kode] = (array) $item;
+                        $produkGrouped[$kode]['tags'] = [];
+                    }
+
+                    if (!is_null($item->nama_tag)) {
+                        $produkGrouped[$kode]['tags'][] = $item->nama_tag;
+                    }
+                }
+
+                $produkResult = array_values($produkGrouped); // pastikan array indeks
+
+                // Bandingkan data sekarang dengan yang terakhir dikirim
+                if ($lastSentData && json_encode($lastSentData) === json_encode($produkResult)) {
+                    sleep(1);
+                    continue;
+                }
+
+                // Kirim data baru jika ada perubahan
+                echo "data: " . json_encode([
+                    'status' => 'success',
+                    'produk' => $produkResult,
+                ]) . "\n\n";
+
+                // Simpan data terakhir untuk perbandingan
+                $lastSentData = $produkResult;
+
+                ob_flush();
+                flush();
+
+            } catch (\Exception $e) {
+                // Kirim pesan error jika terjadi kesalahan
+                echo "data: " . json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ]) . "\n\n";
+
+                ob_flush();
+                flush();
+            }
+
+            sleep(1); // jeda polling 1 detik
+        }
+    });
+
+    // Set header SSE
+    $response->headers->set('Content-Type', 'text/event-stream');
+    $response->headers->set('Cache-Control', 'no-cache');
+    $response->headers->set('Connection', 'keep-alive');
+
+    return $response;
+}
+
+public function GetDetailProdukFrontEnd($kode_produk = "PRD002")
+{
+    // Ambil data produk utama
+    $produk = DB::table('produks')
+        ->leftJoin('kategoris', 'produks.kode_kategori', '=', 'kategoris.kode_kategori')
+        ->where('produks.kode_produk', $kode_produk)
+        ->select(
+            'produks.*',
+            'kategoris.nama_kategori'
+        )
+        ->first();
+
+    if (!$produk) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Produk tidak ditemukan.',
+        ], 404);
+    }
+
+    // Ambil tag produk
+    $tags = DB::table('tag_produks')
+        ->join('tags', 'tag_produks.kode_tag', '=', 'tags.kode_tag')
+        ->where('tag_produks.kode_produk', $kode_produk)
+        ->pluck('tags.nama_tag');
+
+    // Gabungkan hasil
+    $produkDetail = (array) $produk;
+    $produkDetail['tags'] = $tags;
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $produkDetail,
+    ]);
+}
+public function AddToCartFrontEnd(Request $request)
+{
+    $kode_produk = $request->kode_produk;
+    $qty = $request->qty ?? 1;
+
+    // Ambil produk dari database
+    $produk = DB::table('produks')
+        ->where('kode_produk', $kode_produk)
+        ->select('kode_produk', 'nama_produk', 'harga_produk', 'gambar_produk', 'stok_produk')
+        ->first();
+
+    if (!$produk) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Produk tidak ditemukan.',
+        ], 404);
+    }
+
+    // Ambil cart dari session, jika belum ada inisialisasi array kosong
+    $cart = session()->get('cart', []);
+
+    // Jika produk sudah ada di keranjang, tambah qty-nya
+    if (isset($cart[$kode_produk])) {
+        $cart[$kode_produk]['qty'] += $qty;
+    } else {
+        // Jika belum ada, tambahkan produk ke cart
+        $cart[$kode_produk] = [
+            'kode_produk' => $produk->kode_produk,
+            'nama_produk' => $produk->nama_produk,
+            'harga_produk' => $produk->harga_produk,
+            'gambar_produk' => $produk->gambar_produk,
+            'qty' => $qty,
+        ];
+    }
+
+    // Simpan kembali ke session
+    session()->put('cart', $cart);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Produk berhasil ditambahkan ke keranjang.',
+        'cart' => $cart,
+    ]);
+}
+
+
 
 }
