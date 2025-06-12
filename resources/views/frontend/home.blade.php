@@ -213,16 +213,31 @@
                                     <strong>Rp0</strong>
                                 </li>
                             </ul>
-                            <a href="#" class="btn btn-primary w-100">Lihat Keranjang</a>
+                            <a href="" class="btn btn-primary w-100" id="lihatKeranjangBtn">Lihat
+                                Keranjang</a>
                         </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Optional: If you want to check if cart is empty before redirect
+                                const lihatBtn = document.getElementById('lihatKeranjangBtn');
+                                const cartList = document.querySelector('#cartDropdownCard ul.list-group');
+                                lihatBtn.addEventListener('click', function(e) {
+                                    const items = cartList.querySelectorAll('li:not(.empty-cart-message):not(:last-child)');
+                                    if (items.length === 0) {
+                                        e.preventDefault();
+                                        cartList.querySelector('.empty-cart-message').style.display = '';
+                                    }
+                                    // else: will go to cart page
+                                });
+                            });
+                        </script>
                     </div>
                     <script>
+                        // Sync cart dropdown with cart array
                         document.addEventListener('DOMContentLoaded', function() {
-                            // Update empty cart message visibility
                             function updateEmptyCartMessage() {
                                 const cartList = document.querySelector('#cartDropdownCard ul.list-group');
                                 const emptyMsg = cartList.querySelector('.empty-cart-message');
-                                // Count cart items (li except last and except empty message)
                                 const items = cartList.querySelectorAll('li:not(.empty-cart-message):not(:last-child)');
                                 if (items.length === 0) {
                                     emptyMsg.style.display = '';
@@ -267,9 +282,7 @@
                         function showCartCard() {
                             clearTimeout(hideTimeout);
                             cartCard.style.display = 'block';
-                            // Remove hiding class if present
                             cartCard.classList.remove('hiding');
-                            // Force reflow for transition
                             void cartCard.offsetWidth;
                             cartCard.classList.add('show');
                         }
@@ -280,12 +293,12 @@
                             hideTimeout = setTimeout(() => {
                                 cartCard.style.display = 'none';
                                 cartCard.classList.remove('hiding');
-                            }, 250); // match transition duration
+                            }, 250);
                         }
 
                         wrapper.addEventListener('mouseenter', showCartCard);
                         wrapper.addEventListener('mouseleave', function() {
-                            hideTimeout = setTimeout(hideCartCard, 120); // delay before hiding
+                            hideTimeout = setTimeout(hideCartCard, 120);
                         });
 
                         cartBtn.addEventListener('focus', showCartCard);
@@ -302,7 +315,6 @@
                 </script>
                 <!-- User logged out state -->
                 <style>
-                    /* Profil button (lingkaran dengan huruf awal) */
                     .profile-btn {
                         background-color: #e5e7eb;
                         border-radius: 9999px;
@@ -317,14 +329,10 @@
                         position: relative;
                         z-index: 101;
                     }
-
-                    /* Wrapper for positioning */
                     .profile-dropdown-wrapper {
                         position: relative;
                         display: inline-block;
                     }
-
-                    /* Dropdown */
                     .profile-dropdown {
                         position: absolute;
                         top: 110%;
@@ -337,11 +345,9 @@
                         display: none;
                         z-index: 100;
                     }
-
                     .profile-dropdown.show {
                         display: block;
                     }
-
                     .profile-dropdown a,
                     .profile-dropdown button {
                         display: block;
@@ -354,7 +360,6 @@
                         cursor: pointer;
                         font-size: 0.9rem;
                     }
-
                     .profile-dropdown a:hover,
                     .profile-dropdown button:hover {
                         background-color: #f3f4f6;
@@ -896,84 +901,108 @@
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-all" role="tabpanel"
                                 aria-labelledby="nav-all-tab">
-
-                                <div
-                                    class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
-                                    @for ($i = 0; $i < 20; $i++)
-                                        <div class="col">
-                                            <div class="product-item text-decoration-none text-dark"
-                                                style="cursor:pointer;">
-                                                <a href="{{ route('detail.index') }}" style="text-decoration: none;">
-                                                    <span class="badge bg-success position-absolute m-3">-30%</span>
-                                                    <span class="btn-wishlist"><svg width="24" height="24">
-                                                            <use xlink:href="#heart"></use>
-                                                        </svg></span>
-                                                    <figure>
-                                                        <img src="{{ asset('assets_frontend/images/thumb-bananas.png') }}"
-                                                            class="tab-image" alt="Product Image">
-                                                    </figure>
-                                                    <h3>Sunstar Fresh Melon Juice</h3>
-                                                    <span class="qty">1 Unit</span>
-                                                    <span class="rating">
-                                                        <svg width="24" height="24" class="text-primary">
-                                                            <use xlink:href="#star-solid"></use>
-                                                        </svg> 4.5
-                                                    </span>
-                                                    <span class="price">$18.00</span>
-                                                </a>
-
-                                                {{-- Keluarkan bagian input dan tombol dari <a> --}}
-                                                <div class="d-flex align-items-center justify-content-between mt-2">
-                                                    <div class="input-group product-qty">
-                                                        <span class="input-group-btn">
-                                                            <button type="button"
-                                                                class="quantity-left-minus btn btn-danger btn-number"
-                                                                data-type="minus">
-                                                                <svg width="16" height="16">
-                                                                    <use xlink:href="#minus"></use>
-                                                                </svg>
-                                                            </button>
-                                                        </span>
-                                                        <input type="text" id="quantity" name="quantity"
-                                                            class="form-control input-number" value="1">
-                                                        <span class="input-group-btn">
-                                                            <button type="button"
-                                                                class="quantity-right-plus btn btn-success btn-number"
-                                                                data-type="plus">
-                                                                <svg width="16" height="16">
-                                                                    <use xlink:href="#plus"></use>
-                                                                </svg>
-                                                            </button>
-                                                        </span>
-                                                    </div>
-                                                    <span class="nav-link">Add to Cart <iconify-icon
-                                                            icon="uil:shopping-cart"></iconify-icon></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endfor
-
+                                <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5"
+                                    id="product-grid">
+                                    <!-- Produk akan dimuat secara dinamis melalui SSE -->
                                 </div>
-                                <meta name="csrf-token" content="{{ csrf_token() }}">
-                                <meta name="base-url" content="{{ url('/') }}">
+
+
                                 <script>
+                                    const productGrid = document.getElementById('product-grid');
+
+                                    const formatRupiah = (number) => {
+                                        return new Intl.NumberFormat('id-ID', {
+                                            style: 'currency',
+                                            currency: 'IDR',
+                                            minimumFractionDigits: 0
+                                        }).format(number);
+                                    };
+
+                                    // Render produk dan pasang event handler setelah render
+                                    const renderProducts = (products) => {
+                                        productGrid.innerHTML = '';
+                                        products.forEach(item => {
+                                            const diskonBadge = item.diskon > 0 ?
+                                                `<span class="badge bg-success position-absolute m-3">-${item.diskon}%</span>` :
+                                                '';
+
+                                            const tags = item.tags && item.tags.length ?
+                                                `<div class="mt-1 small text-muted">Tags: ${item.tags.join(', ')}</div>` :
+                                                '';
+
+                                            const html = `
+                                                <div class="col">
+                                                    <div class="product-item text-decoration-none text-dark" style="cursor:pointer;">
+                                                        <a href="/detail/${item.id}" style="text-decoration: none;">
+                                                            ${diskonBadge}
+                                                            <span class="btn-wishlist">
+                                                                <svg width="24" height="24"><use xlink:href="#heart"></use></svg>
+                                                            </span>
+                                                            <figure>
+                                                                <img src="/storage/${item.gambar_produk}" class="tab-image" alt="${item.nama_produk}">
+                                                            </figure>
+                                                            <h3>${item.nama_produk}</h3>
+                                                            <span class="qty">${item.satuan ?? '1 Unit'}</span>
+                                                            <span class="rating">
+                                                                <svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5
+                                                            </span>
+                                                            <span class="price">${formatRupiah(item.harga_produk)}</span>
+                                                        </a>
+                                                        <div class="d-flex align-items-center justify-content-between mt-2">
+                                                            <div class="input-group product-qty">
+                                                                <span class="input-group-btn">
+                                                                    <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus">
+                                                                        <svg width="16" height="16"><use xlink:href="#minus"></use></svg>
+                                                                    </button>
+                                                                </span>
+                                                                <input type="text" name="quantity" class="form-control input-number" value="1">
+                                                                <span class="input-group-btn">
+                                                                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus">
+                                                                        <svg width="16" height="16"><use xlink:href="#plus"></use></svg>
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                            <span class="nav-link add-to-cart-btn" style="cursor:pointer;">Add to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon></span>
+                                                        </div>
+                                                        ${tags}
+                                                    </div>
+                                                </div>
+                                            `;
+                                            productGrid.insertAdjacentHTML('beforeend', html);
+                                        });
+
+                                        // Pasang event handler qty dan add to cart setelah render
+                                        setupProductEvents();
+                                    };
+
+                                    // SSE produk
+                                    const evtSource = new EventSource("{{ route('frontend.GetProdukFrontEnd') }}");
+                                    evtSource.onmessage = function(event) {
+                                        const data = JSON.parse(event.data);
+                                        if (data.status === 'success') {
+                                            renderProducts(data.produk);
+                                        } else {
+                                            console.error("Error fetching products:", data.message);
+                                        }
+                                    };
+                                    evtSource.onerror = function(err) {
+                                        console.error("SSE connection error:", err);
+                                    };
+
+                                    // --- Cart Logic ---
+                                    let cart = [];
                                     document.addEventListener('DOMContentLoaded', function() {
-                                        // --- Cart Data ---
-                                        let cart = [];
                                         const cartBtn = document.getElementById('cartDropdownBtn');
                                         const cartCard = document.getElementById('cartDropdownCard');
                                         const cartList = cartCard.querySelector('ul.list-group');
                                         const cartTotal = cartCard.querySelector('strong');
                                         const cartDropdownWrapper = document.querySelector('.nav-cart-dropdown-wrapper');
 
-                                        // --- Helper: Format currency ---
                                         function formatRupiah(num) {
                                             return 'Rp' + num.toLocaleString('id-ID');
                                         }
 
-                                        // --- Update Cart Dropdown ---
                                         function updateCartDropdown() {
-                                            // Remove all except last (total) li
                                             cartList.querySelectorAll('li:not(:last-child)').forEach(li => li.remove());
                                             let total = 0;
                                             cart.forEach(item => {
@@ -981,13 +1010,13 @@
                                                 const li = document.createElement('li');
                                                 li.className = "list-group-item d-flex justify-content-between lh-sm";
                                                 li.innerHTML = `
-                    <div>
-                        <h6 class="my-0">${item.name}</h6>
-                        <small class="text-body-secondary">${item.desc}</small>
-                        <span class="badge bg-secondary ms-2">${item.qty}x</span>
-                    </div>
-                    <span class="text-body-secondary">${formatRupiah(item.price * item.qty)}</span>
-                `;
+                                                    <div>
+                                                        <h6 class="my-0">${item.name}</h6>
+                                                        <small class="text-body-secondary">${item.desc}</small>
+                                                        <span class="badge bg-secondary ms-2">${item.qty}x</span>
+                                                    </div>
+                                                    <span class="text-body-secondary">${formatRupiah(item.price * item.qty)}</span>
+                                                `;
                                                 cartList.insertBefore(li, cartList.lastElementChild);
                                             });
                                             cartTotal.textContent = formatRupiah(total);
@@ -1003,6 +1032,7 @@
                                             flyingImg.style.width = startRect.width + 'px';
                                             flyingImg.style.height = startRect.height + 'px';
                                             flyingImg.style.transition = 'all 0.7s cubic-bezier(.6,-0.28,.74,.05)';
+                                            flyingImg.style.pointerEvents = 'none';
                                             document.body.appendChild(flyingImg);
 
                                             setTimeout(() => {
@@ -1015,99 +1045,10 @@
 
                                             setTimeout(() => {
                                                 flyingImg.remove();
-                                                // Show cart dropdown after animation
                                                 cartCard.style.display = 'block';
                                                 cartCard.classList.add('show');
                                             }, 700);
                                         }
-
-                                        // --- Quantity Input Group Logic ---
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            document.querySelectorAll('.product-item').forEach(product => {
-                                                const minusBtn = product.querySelector('.quantity-left-minus');
-                                                const plusBtn = product.querySelector('.quantity-right-plus');
-                                                const qtyInput = product.querySelector('input[name="quantity"]');
-
-                                                if (!qtyInput || !minusBtn || !plusBtn) return;
-
-                                                minusBtn.addEventListener('click', function(e) {
-                                                    e.preventDefault();
-                                                    let currentQty = parseInt(qtyInput.value) || 1;
-                                                    if (currentQty > 1) {
-                                                        qtyInput.value = currentQty - 1;
-                                                    }
-                                                });
-
-                                                plusBtn.addEventListener('click', function(e) {
-                                                    e.preventDefault();
-                                                    let currentQty = parseInt(qtyInput.value) || 1;
-                                                    qtyInput.value = currentQty + 1;
-                                                });
-
-                                                qtyInput.addEventListener('input', function() {
-                                                    this.value = this.value.replace(/[^0-9]/g, '');
-                                                    if (this.value === '' || parseInt(this.value) < 1) {
-                                                        this.value = 1;
-                                                    }
-                                                });
-                                            });
-                                        });
-
-
-
-
-
-                                        // --- Add to Cart Event ---
-                                        // --- Add to Cart Event ---
-                                        document.querySelectorAll('.product-item .nav-link').forEach(btn => {
-                                            if (btn.textContent.trim().toLowerCase().includes('add to cart')) {
-                                                btn.addEventListener('click', function(e) {
-                                                    e.preventDefault();
-
-                                                    // Ambil base URL dari meta tag
-                                                    const baseUrl = document.querySelector('meta[name="base-url"]').content;
-
-                                                    // Cek auth menggunakan data dari Laravel (cara lebih efisien)
-                                                    const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
-
-                                                    if (!isAuthenticated) {
-                                                        // Redirect ke login dengan return url
-                                                        const returnUrl = encodeURIComponent(window.location.href);
-                                                        window.location.href = `${baseUrl}/login?redirect=${returnUrl}`;
-                                                        return;
-                                                    }
-
-                                                    // Proses add to cart
-                                                    const product = btn.closest('.product-item');
-                                                    const name = product.querySelector('h3').textContent.trim();
-                                                    const price = parseInt(product.querySelector('.price').textContent.replace(
-                                                        /[^0-9]/g, ''));
-                                                    const desc = product.querySelector('.qty')?.textContent || '';
-                                                    const img = product.querySelector('img');
-                                                    const qtyInput = product.querySelector('input[name="quantity"]');
-                                                    let qty = parseInt(qtyInput?.value) || 1;
-
-                                                    // Add to cart (increase qty if exists)
-                                                    let found = cart.find(item => item.name === name);
-                                                    if (found) {
-                                                        found.qty += qty;
-                                                    } else {
-                                                        cart.push({
-                                                            name,
-                                                            price,
-                                                            desc,
-                                                            qty
-                                                        });
-                                                    }
-                                                    updateCartDropdown();
-
-                                                    // Animate image to cart
-                                                    const imgRect = img.getBoundingClientRect();
-                                                    const cartRect = cartBtn.getBoundingClientRect();
-                                                    animateToCart(img, imgRect, cartRect);
-                                                });
-                                            }
-                                        });
 
                                         // --- Cart Dropdown Toggle ---
                                         cartBtn.addEventListener('click', function() {
@@ -1122,8 +1063,83 @@
                                                 cartCard.style.display = 'none';
                                             }
                                         });
+
+                                        // --- Setup product events (qty & add to cart) ---
+                                        window.setupProductEvents = function() {
+                                            document.querySelectorAll('.product-item').forEach(product => {
+                                                const minusBtn = product.querySelector('.quantity-left-minus');
+                                                const plusBtn = product.querySelector('.quantity-right-plus');
+                                                const qtyInput = product.querySelector('input[name="quantity"]');
+
+                                                if (qtyInput && minusBtn && plusBtn) {
+                                                    minusBtn.addEventListener('click', function(e) {
+                                                        e.preventDefault();
+                                                        let currentQty = parseInt(qtyInput.value) || 1;
+                                                        if (currentQty > 1) {
+                                                            qtyInput.value = currentQty - 1;
+                                                        }
+                                                    });
+
+                                                    plusBtn.addEventListener('click', function(e) {
+                                                        e.preventDefault();
+                                                        let currentQty = parseInt(qtyInput.value) || 1;
+                                                        qtyInput.value = currentQty + 1;
+                                                    });
+
+                                                    qtyInput.addEventListener('input', function() {
+                                                        this.value = this.value.replace(/[^0-9]/g, '');
+                                                        if (this.value === '' || parseInt(this.value) < 1) {
+                                                            this.value = 1;
+                                                        }
+                                                    });
+                                                }
+
+                                                // Add to Cart button
+                                                const addToCartBtn = product.querySelector('.add-to-cart-btn');
+                                                if (addToCartBtn) {
+                                                    addToCartBtn.addEventListener('click', function(e) {
+                                                        e.preventDefault();
+                                                        const baseUrl = document.querySelector('meta[name="base-url"]').content;
+                                                        const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+                                                        if (!isAuthenticated) {
+                                                            const returnUrl = encodeURIComponent(window.location.href);
+                                                            window.location.href = `${baseUrl}/login?redirect=${returnUrl}`;
+                                                            return;
+                                                        }
+                                                        const name = product.querySelector('h3').textContent.trim();
+                                                        const price = parseInt(product.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
+                                                        const desc = product.querySelector('.qty')?.textContent || '';
+                                                        const img = product.querySelector('img');
+                                                        const qtyInput = product.querySelector('input[name="quantity"]');
+                                                        let qty = parseInt(qtyInput?.value) || 1;
+
+                                                        // Add to cart (increase qty if exists)
+                                                        let found = cart.find(item => item.name === name);
+                                                        if (found) {
+                                                            found.qty += qty;
+                                                        } else {
+                                                            cart.push({
+                                                                name,
+                                                                price,
+                                                                desc,
+                                                                qty
+                                                            });
+                                                        }
+                                                        updateCartDropdown();
+
+                                                        // Animate image to cart
+                                                        const imgRect = img.getBoundingClientRect();
+                                                        const cartRect = cartBtn.getBoundingClientRect();
+                                                        animateToCart(img, imgRect, cartRect);
+                                                    });
+                                                }
+                                            });
+                                        };
                                     });
                                 </script>
+
+                                <meta name="csrf-token" content="{{ csrf_token() }}">
+                                <meta name="base-url" content="{{ url('/') }}">
                                 <!-- / product-grid -->
 
                             </div>
