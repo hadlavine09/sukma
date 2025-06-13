@@ -11,8 +11,8 @@
     <li><a class="app-menu__item active" href="{{ asset('assets_backend/dashboard.html')}}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
     <li class="treeview"><a class="app-menu__item" href="{{ asset('assets_backend/#')}}" data-toggle="treeview"><i class="app-menu__icon bi bi-laptop"></i><span class="app-menu__label">User Management</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
       <ul class="treeview-menu">
-        <li><a class="treeview-item" href="{{ asset('assets_backend/bootstrap-components.html')}}"><i class="icon bi bi-circle-fill"></i> User</a></li>
-        <li><a class="treeview-item" href="https://icons.getbootstrap.com/" target="_blank" rel="noopener"><i class="icon bi bi-circle-fill"></i> Role</a></li>
+        <li><a class="treeview-item" href="{{ route('user.index')}}"><i class="icon bi bi-circle-fill"></i> User</a></li>
+        <li><a class="treeview-item" href="{{ route('role.index') }}" target="_blank" rel="noopener"><i class="icon bi bi-circle-fill"></i> Role</a></li>
         <li><a class="treeview-item" href="{{ route('permission.index')}}"><i class="icon bi bi-circle-fill"></i> Permissions</a></li>
         <li><a class="treeview-item" href="{{ route('hakakses.index')}}"><i class="icon bi bi-circle-fill"></i> Hakakses</a></li>
       </ul>

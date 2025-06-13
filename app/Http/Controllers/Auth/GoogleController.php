@@ -13,22 +13,41 @@ class GoogleController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback()
+  public function handleGoogleCallback()
 {
     $googleUser = Socialite::driver('google')->stateless()->user();
-        // dd($googleUser);
-        $user = User::updateOrCreate([
+
+    // Cari user berdasarkan email
+    $user = User::where('email', $googleUser->getEmail())->first();
+
+    if (!$user) {
+        // Jika user belum ada, buat baru dan berikan role 1
+        $user = User::create([
+            'name' => $googleUser->getName(),
+            'username' => $googleUser->getName(),
             'email' => $googleUser->getEmail(),
-        ], [
+            'google_id' => $googleUser->getId(),
+            'avatar' => $googleUser->getAvatar(),
+        ]);
+
+        // Assign role ID 1
+        $user->roles()->sync([1]);
+    } else {
+        // Jika user sudah ada, update data Google-nya
+        $user->update([
             'name' => $googleUser->getName(),
             'username' => $googleUser->getName(),
             'google_id' => $googleUser->getId(),
             'avatar' => $googleUser->getAvatar(),
         ]);
+    }
 
-        Auth::login($user);
+    // Login user
+    Auth::login($user);
 
-        return redirect('/home'); // diarahkan ke /Home setelah login
+    // Redirect ke halaman home
+    return redirect('/Home');
 }
+
 
 }

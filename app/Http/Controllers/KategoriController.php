@@ -287,4 +287,14 @@ class KategoriController extends Controller
             return redirect()->route('kategori.index')->with('error', 'Terjadi kesalahan dalam menghapus kategori.');
         }
     }
+  public function detail_kategori($nama_kategori)
+{
+    $kode_kategori = request()->query('kode');
+
+    $kategori = Kategori::where('kode_kategori', $kode_kategori)->firstOrFail();
+
+            return view("frontend.detail_kategori",compact('kategori'));
+
+}
+
 }

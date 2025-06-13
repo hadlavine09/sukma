@@ -939,10 +939,9 @@
                                                                 <svg width="24" height="24"><use xlink:href="#heart"></use></svg>
                                                             </span>
                                                             <figure>
-                                                                <img src="/storage/${item.gambar_produk}" class="tab-image" alt="${item.nama_produk}">
+                                                                <img src="{{ asset('storage/${item.gambar_produk}') }}" class="tab-image" alt="${item.nama_produk}">
                                                             </figure>
                                                             <h3>${item.nama_produk}</h3>
-                                                            <span class="qty">${item.satuan ?? '1 Unit'}</span>
                                                             <span class="rating">
                                                                 <svg width="24" height="24" class="text-primary"><use xlink:href="#star-solid"></use></svg> 4.5
                                                             </span>

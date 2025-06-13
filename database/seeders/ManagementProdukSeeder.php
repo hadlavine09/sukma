@@ -85,7 +85,7 @@ class ManagementProdukSeeder extends Seeder
         // Data kategori
         $kategoris = [
             [
-                'kode_kategori' => 'KTG001',
+                'kode_kategori' => 'KT001',
                 'nama_kategori' => 'Makanan',
                 'gambar_kategori' => 'IMG001',
                 'deskripsi_kategori' => 'Kategori untuk produk makanan',
@@ -93,7 +93,7 @@ class ManagementProdukSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'kode_kategori' => 'KTG002',
+                'kode_kategori' => 'KT002',
                 'nama_kategori' => 'Minuman',
                 'gambar_kategori' => 'IMG002',
                 'deskripsi_kategori' => 'Kategori untuk produk minuman',
@@ -113,7 +113,7 @@ class ManagementProdukSeeder extends Seeder
                 'stok_produk' => 50,
                 'harga_produk' => 25000.00,
                 'gambar_produk' => 'IMG003',
-                'kode_kategori' => 'KTG001',
+                'kode_kategori' => 'KT001',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -124,7 +124,7 @@ class ManagementProdukSeeder extends Seeder
                 'stok_produk' => 100,
                 'harga_produk' => 8000.00,
                 'gambar_produk' => 'IMG004',
-                'kode_kategori' => 'KTG002',
+                'kode_kategori' => 'KT002',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]

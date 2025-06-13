@@ -9,6 +9,7 @@ use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -410,6 +411,72 @@ class ProdukController extends Controller
         }
     }
 
+public function GetKeranjangFrontEnd(Request $request)
+{
+    $lastSentData = null;
+
+    $response = new StreamedResponse(function () use (&$lastSentData) {
+        while (true) {
+            try {
+                // Ambil data keranjang user yang sedang login
+                $keranjangData = DB::table('carts')
+                    ->join('produks', 'carts.kode_produk', '=', 'produks.kode_produk')
+                    ->leftJoin('kategoris', 'produks.kode_kategori', '=', 'kategoris.kode_kategori')
+                    ->where('carts.user_id', Auth::id())
+                    ->whereNull('carts.deleted_at')
+                    ->select(
+                        'carts.id',
+                        'carts.kode_produk',
+                        'carts.quantity',
+                        'carts.harga_produk',
+                        'produks.nama_produk',
+                        'produks.gambar_produk',
+                        'produks.stok_produk',
+                        'produks.kode_kategori',
+                        'kategoris.nama_kategori'
+                    )
+                    ->get();
+
+                $cartResult = $keranjangData->toArray();
+
+                // Cek apakah data berubah dari sebelumnya
+                if ($lastSentData && json_encode($lastSentData) === json_encode($cartResult)) {
+                    sleep(2); // Tidak ada perubahan, tunggu
+                    continue;
+                }
+
+                // Jika berubah, kirim ke client
+                echo "data: " . json_encode([
+                    'status' => 'success',
+                    'cart' => $cartResult
+                ]) . "\n\n";
+
+                $lastSentData = $cartResult;
+
+                ob_flush();
+                flush();
+
+            } catch (\Exception $e) {
+                echo "data: " . json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ]) . "\n\n";
+
+                ob_flush();
+                flush();
+            }
+
+            sleep(2); // Polling setiap 2 detik
+        }
+    });
+
+    // Header SSE
+    $response->headers->set('Content-Type', 'text/event-stream');
+    $response->headers->set('Cache-Control', 'no-cache');
+    $response->headers->set('Connection', 'keep-alive');
+
+    return $response;
+}
 
 public function GetTagFrontEnd(Request $request)
 {
@@ -510,6 +577,86 @@ public function GetKategoriFrontEnd(Request $request)
             }
 
             sleep(1); // polling setiap 1 detik
+        }
+    });
+
+    // Header SSE
+    $response->headers->set('Content-Type', 'text/event-stream');
+    $response->headers->set('Cache-Control', 'no-cache');
+    $response->headers->set('Connection', 'keep-alive');
+
+    return $response;
+}
+public function GetProdukDetailKategoriFrontEnd(Request $request)
+{
+    $kodeKategori = $request->query('kode_kategori', null);
+    $lastSentData = null;
+
+    // Validasi kode_kategori wajib diisi
+    if (!$kodeKategori) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Parameter kode_kategori wajib diisi.'
+        ]);
+    }
+
+    $response = new StreamedResponse(function () use (&$lastSentData, $kodeKategori) {
+        while (true) {
+            try {
+                // Ambil data produk + tags
+                $produkWithTagsRaw = DB::table('produks')
+                    ->leftJoin('tag_produks', 'produks.kode_produk', '=', 'tag_produks.kode_produk')
+                    ->leftJoin('tags', 'tag_produks.kode_tag', '=', 'tags.kode_tag')
+                    ->select('produks.*', 'tags.nama_tag')
+                    ->where('produks.kode_kategori', $kodeKategori)
+                    // ->where('produks.status_produk', 'publik')
+                    ->orderBy('produks.id', 'desc')
+                    ->get();
+
+                // Gabungkan tag dalam array per produk
+                $produkGrouped = [];
+                foreach ($produkWithTagsRaw as $item) {
+                    $kode = $item->kode_produk;
+
+                    if (!isset($produkGrouped[$kode])) {
+                        $produkGrouped[$kode] = (array) $item;
+                        $produkGrouped[$kode]['tags'] = [];
+                    }
+
+                    if (!is_null($item->nama_tag)) {
+                        $produkGrouped[$kode]['tags'][] = $item->nama_tag;
+                    }
+                }
+
+                $produkResult = array_values($produkGrouped); // reset indeks array
+
+                // Bandingkan dengan data terakhir
+                if ($lastSentData && json_encode($lastSentData) === json_encode($produkResult)) {
+                    sleep(1);
+                    continue;
+                }
+
+                // Kirim data baru jika berubah
+                echo "data: " . json_encode([
+                    'status' => 'success',
+                    'produk' => $produkResult,
+                ]) . "\n\n";
+
+                $lastSentData = $produkResult;
+
+                ob_flush();
+                flush();
+            } catch (\Exception $e) {
+                echo "data: " . json_encode([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ]) . "\n\n";
+
+                ob_flush();
+                flush();
+            }
+
+            sleep(1); // jeda 1 detik
         }
     });
 

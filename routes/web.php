@@ -31,7 +31,7 @@ use App\Http\Controllers\UserManagement\PermissionController;
 */
 Auth::routes(['verify'=>true]);
 Route::get('/', function () {
-    return view('frontend.home');
+    return view('frontend.produk');
 });
 // Routes untuk guest (belum login)
 Route::middleware('guest')->group(function () {
@@ -56,12 +56,20 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Routes yang hanya untuk role "user"
-    // Route::middleware('role:user')->group(function () {
-    //     Route::get('/Home', function () {
-    //         return view('frontend.home');
-    //     });
+    Route::middleware('role:user')->group(function () {
+        Route::get('/Home', function () {
+            return view('frontend.produk');
+        });
+        Route::get('/kategori/{nama_kategori}', [KategoriController::class, 'detail_kategori'])->name('frontend.detail_kategori');
+        Route::get('/detail/{nama_produk}', [DetailProdukController::class, 'detailproduk'])->name('frontend.detailproduk');
+        Route::post('tambahkeranjang', [CartController::class, 'tambahkeranjang'])->name('frontend.tambahkeranjang');
+        Route::get('keranjang', [CartController::class, 'keranjang'])->name('frontend.keranjang');
+        Route::get('checkout', [CartController::class, 'checkout'])->name('frontend.checkout');
+        Route::post('cartupdate', [CartController::class, 'cartupdate'])->name('frontend.cartupdate');
+        Route::delete('keranjang/destroy/{id}', [CartController::class, 'destroy'])->name('frontend.cartdestroy');
 
-    // });
+
+    });
 
     // Logout route
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -143,15 +151,7 @@ Route::prefix('Manajemen-Produk')->group(function () {
         Route::get('show/{id}', [SupplierController::class, 'show'])->name('supplier.show');
     });
 
-    Route::prefix('detail')->group(function () {
-        Route::get('index', [DetailProdukController::class, 'index'])->name('detail.index');
-        Route::get('create', [DetailProdukController::class, 'create'])->name('detail.create');
-        Route::post('store', [DetailProdukController::class, 'store'])->name('detail.store');
-        Route::put('update/{id}', [DetailProdukController::class, 'update'])->name('detail.update');
-        Route::post('destroy', [DetailProdukController::class, 'destroy'])->name('detail.destroy');
-        Route::get('edit/{id}', [DetailProdukController::class, 'edit'])->name('detail.edit');
-        Route::get('show/{id}', [DetailProdukController::class, 'show'])->name('detail.show');
-    });
+
 });
 
 Route::prefix('Manajemen-Material')->group(function () {
@@ -217,6 +217,8 @@ Route::prefix('FrontEnd')->group(function () {
     Route::get('GetTagFrontEnd', [ProdukController::class, 'GetTagFrontEnd'])->name('frontend.GetTagFrontEnd');
     Route::get('GetKategoriFrontEnd', [ProdukController::class, 'GetKategoriFrontEnd'])->name('frontend.GetKategoriFrontEnd');
     Route::get('GetProdukFrontEnd', [ProdukController::class, 'GetProdukFrontEnd'])->name('frontend.GetProdukFrontEnd');
+    Route::get('GetKeranjangFrontEnd', [ProdukController::class, 'GetKeranjangFrontEnd'])->name('frontend.GetKeranjangFrontEnd');
+    Route::get('GetProdukDetailKategoriFrontEnd', [ProdukController::class, 'GetProdukDetailKategoriFrontEnd'])->name('frontend.GetProdukDetailKategoriFrontEnd');
     Route::get('GetDetailProdukFrontEnd', [ProdukController::class, 'GetDetailProdukFrontEnd'])->name('frontend.GetDetailProdukFrontEnd');
     Route::get('AddToCartFrontEnd', [ProdukController::class, 'AddToCartFrontEnd'])->name('frontend.AddToCartFrontEnd');
 });
@@ -224,11 +226,11 @@ Route::prefix('FrontEnd')->group(function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', function () {
-        return view('frontend.home');
-    });
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/home', function () {
+//         return view('frontend.home');
+//     });
+// });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

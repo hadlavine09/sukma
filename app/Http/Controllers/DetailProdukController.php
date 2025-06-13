@@ -2,49 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produk;
 use App\Models\DetailProduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use App\Http\Controllers\Controller;
 
 class DetailProdukController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //  $product = Product::with(['reviews.user'])->findOrFail($id);
+public function detailproduk($nama_produk)
+{
+    $kode_produk = request()->query('kode');
 
-    // Tambahkan spesifikasi manual atau dari kolom json
-    $product = (object)[
-        'store' => 'Toko',
-        'name' => 'Kaos Distro Pria Keren',
-        'price' => 85000,
-        'stock' => 50,
-        'image' => 'products/kaos-distro.jpg',
-        'description' => 'Kaos distro pria dengan bahan katun premium, cocok untuk gaya santai dan casual sehari-hari.',
-        'specs' => collect([
-            ['key' => 'Bahan', 'value' => 'Katun Combed 30s'],
-            ['key' => 'Ukuran', 'value' => 'M, L, XL'],
-            ['key' => 'Warna', 'value' => 'Hitam, Putih, Merah'],
-            ['key' => 'Tipe', 'value' => 'Unisex'],
-        ]),
-        'reviews' => collect([
-            (object)[
-                'user' => (object)['name' => 'Andi'],
-                'rating' => 5,
-                'comment' => 'Kualitas bagus banget! Bahan adem dan nyaman dipakai.'
-            ],
-            (object)[
-                'user' => (object)['name' => 'Sari'],
-                'rating' => 4,
-                'comment' => 'Barang sesuai deskripsi, pengiriman cepat.'
-            ]
-        ]),
-    ];
-
-    return view('frontend.detail', compact('product'));
-    }
+    // Cari produk berdasarkan kode_produk
+    $produk = Produk::where('kode_produk', $kode_produk)->firstOrFail();
+    return view('frontend.detail_produk', compact('produk'));
+}
 
     /**
      * Show the form for creating a new resource.
