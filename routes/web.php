@@ -67,7 +67,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('checkout', [CartController::class, 'checkout'])->name('frontend.checkout');
         Route::post('cartupdate', [CartController::class, 'cartupdate'])->name('frontend.cartupdate');
         Route::delete('keranjang/destroy/{id}', [CartController::class, 'destroy'])->name('frontend.cartdestroy');
-
+        Route::get('/profile', function () {
+            return view('frontend.profile');
+        });
 
     });
 
