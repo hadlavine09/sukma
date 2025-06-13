@@ -335,12 +335,12 @@
                                             const tags = item.tags && item.tags.length ?
                                                 `<div class="mt-1 small text-muted">Tags: ${item.tags.join(', ')}</div>` :
                                                 '';
-                                                const linkDetailProduk = `/detail/${encodeURIComponent(item.nama_produk)}?kode=${encodeURIComponent(item.kode_produk)}`;
+                                                const linkDetailProduk = `detail/${encodeURIComponent(item.nama_produk)}?kode=${encodeURIComponent(item.kode_produk)}`;
 
                                             const html = `
                                                 <div class="col">
                                                     <div class="product-item text-decoration-none text-dark" style="cursor:pointer;">
-                                                        <a href="${linkDetailProduk}" style="text-decoration: none;">
+                                                        <a href="{{ asset('${linkDetailProduk}') }}" style="text-decoration: none;">
                                                             ${diskonBadge}
                                                             <span class="btn-wishlist">
                                                                 <svg width="24" height="24"><use xlink:href="#heart"></use></svg>
