@@ -55,10 +55,9 @@
     </style>
     <section class="split-hero">
         <div class="left-side">
-            <h1>Eusc Frendily <br> Preccincercy</h1>
-            <p>Loereth bssumrutiohen amametr, erers, crasmctcoeciensticsiplär cerealbaiub di nudjioptent ershufadt...
-            </p>
-            <a href="#" class="cta-btn">LEERES UMAR-UP CLICK</a>
+            <h1>SUKMA<br>(Sukamukti Market)</h1>
+            <p>SUKMA adalah marketplace berbasis website yang menghadirkan kemudahan bagi masyarakat Sukamukti untuk menjual dan membeli produk lokal secara online. Temukan berbagai produk unggulan dari pelaku UMKM, dukung ekonomi desa, dan rasakan pengalaman belanja yang aman, mudah, dan terpercaya di Sukamukti Market.</p>
+            <a href="#produk" class="cta-btn">Jelajahi Marketplace</a>
         </div>
         <div class="right-side">
             <img src="{{ asset('assets_frontend/images/hero-img-1.png') }}" alt="Eco Products">

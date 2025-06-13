@@ -206,83 +206,291 @@
         <div class="card-info-penilaian-produk">
             <div class="p-4 border rounded shadow-sm bg-white mt-4">
                 <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-                <h4 class="fw-bold" style="color: #2d5727;">Penilaian Produk</h4>
+                    <h4 class="fw-bold" style="color: #2d5727;">Penilaian Produk</h4>
                 </div>
 
                 <!-- Ringkasan Rating -->
                 <div style="display: flex; align-items: center; margin-top: 16px;">
-                <div style="font-size: 24px; color: #2d5727; font-weight: bold; margin-right: 8px;">4.9</div>
-                <div style="font-size: 14px; color: #888;">dari 5</div>
-                <div style="margin-left: 8px; color: #2d5727; font-size: 18px;">★★★★★</div>
+                    <div style="font-size: 24px; color: #2d5727; font-weight: bold; margin-right: 8px;">4.9</div>
+                    <div style="font-size: 14px; color: #888;">dari 5</div>
+                    <div style="margin-left: 8px; color: #2d5727; font-size: 18px;">★★★★★</div>
                 </div>
 
                 <!-- Filter Tabs -->
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0;">
-                <button style="border: 1px solid #2d5727; background-color: #f0f5f1; color: #2d5727; padding: 6px 12px; border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#e1ede3'" onmouseout="this.style.backgroundColor='#f0f5f1'">Semua</button>
-                <button class="btn" style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f7f7f7'" onmouseout="this.style.backgroundColor='white'">5 Bintang (467)</button>
-                <button class="btn" style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f7f7f7'" onmouseout="this.style.backgroundColor='white'">4 Bintang (16)</button>
-                <button class="btn" style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f7f7f7'" onmouseout="this.style.backgroundColor='white'">3 Bintang (2)</button>
-                <button class="btn" style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f7f7f7'" onmouseout="this.style.backgroundColor='white'">2 Bintang (1)</button>
-                <button class="btn" style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f7f7f7'" onmouseout="this.style.backgroundColor='white'">1 Bintang (1)</button>
-                <button class="btn" style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f7f7f7'" onmouseout="this.style.backgroundColor='white'">Dengan Komentar (398)</button>
-                <button class="btn" style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#f7f7f7'" onmouseout="this.style.backgroundColor='white'">Dengan Media (81)</button>
+                <div id="reviewTabs" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0;">
+                    <button type="button" class="btn-review-tab"
+                        data-tab="all"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        Semua
+                    </button>
+                    <button type="button" class="btn-review-tab"
+                        data-tab="5"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        5 Bintang (467)
+                    </button>
+                    <button type="button" class="btn-review-tab"
+                        data-tab="4"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        4 Bintang (16)
+                    </button>
+                    <button type="button" class="btn-review-tab"
+                        data-tab="3"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        3 Bintang (2)
+                    </button>
+                    <button type="button" class="btn-review-tab"
+                        data-tab="2"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        2 Bintang (1)
+                    </button>
+                    <button type="button" class="btn-review-tab"
+                        data-tab="1"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        1 Bintang (1)
+                    </button>
+                    <button type="button" class="btn-review-tab"
+                        data-tab="comment"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        Dengan Komentar (398)
+                    </button>
+                    <button type="button" class="btn-review-tab"
+                        data-tab="media"
+                        style="padding: 6px 12px; border-radius: 2px; border: 1px solid #ccc; background-color: white; cursor: pointer;">
+                        Dengan Media (81)
+                    </button>
                 </div>
 
-                <!-- Ulasan 1 -->
-                <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
-                    <strong>maya_kirana56</strong>
-                </div>
-                <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
-                <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2023-12-27 14:03 | Variasi: 43</div>
-                <div style="font-size: 14px; margin-bottom: 10px;">
-                    sepatunya bagus bangettt sumpahh sesuai sama digambar sii ini asli sukak bangettt bahannya juga bagusss, tebel gitu dan warnanya juga ga terlalu norak banget thanks seller
-                </div>
-                <div style="display: flex; gap: 4px;">
-                    <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                    <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                    <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                </div>
-                <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 94</div>
-                </div>
-
-                <!-- Ulasan 2 -->
-                <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
-                <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                    <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
-                    <strong>susantisusan11</strong>
-                </div>
-                <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
-                <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2024-01-09 13:15 | Variasi: 38</div>
-                <div style="font-size: 14px; margin-bottom: 10px;">
-                    Sepatunya nyaman dipake, designnya juga kece, materialnya oke, sepatu bagian bawahnya dari karet jadi nggk licin kena keramik. Dijamin nggk nyesel beli ini sepatu kak
-                </div>
-                <div style="display: flex; gap: 4px;">
-                    <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                    <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                    <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                    <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
-                    onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                </div>
-                <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 41</div>
+                <!-- Ulasan -->
+                <div id="reviewTabContent">
+                    <!-- Semua -->
+                    <div class="review-tab-pane" data-content="all" style="display: block;">
+                        <!-- Ulasan 1 -->
+                        <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
+                                <strong>maya_kirana56</strong>
+                            </div>
+                            <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2023-12-27 14:03 | Variasi: 43</div>
+                            <div style="font-size: 14px; margin-bottom: 10px;">
+                                sepatunya bagus bangettt sumpahh sesuai sama digambar sii ini asli sukak bangettt bahannya juga bagusss, tebel gitu dan warnanya juga ga terlalu norak banget thanks seller
+                            </div>
+                            <div style="display: flex; gap: 4px;">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                            </div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 94</div>
+                        </div>
+                        <!-- Ulasan 2 -->
+                        <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
+                                <strong>susantisusan11</strong>
+                            </div>
+                            <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2024-01-09 13:15 | Variasi: 38</div>
+                            <div style="font-size: 14px; margin-bottom: 10px;">
+                                Sepatunya nyaman dipake, designnya juga kece, materialnya oke, sepatu bagian bawahnya dari karet jadi nggk licin kena keramik. Dijamin nggk nyesel beli ini sepatu kak
+                            </div>
+                            <div style="display: flex; gap: 4px;">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                            </div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 41</div>
+                        </div>
+                    </div>
+                    <!-- 5 Bintang -->
+                    <div class="review-tab-pane" data-content="5" style="display: none;">
+                        <!-- Ulasan 1 -->
+                        <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
+                                <strong>maya_kirana56</strong>
+                            </div>
+                            <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2023-12-27 14:03 | Variasi: 43</div>
+                            <div style="font-size: 14px; margin-bottom: 10px;">
+                                sepatunya bagus bangettt sumpahh sesuai sama digambar sii ini asli sukak bangettt bahannya juga bagusss, tebel gitu dan warnanya juga ga terlalu norak banget thanks seller
+                            </div>
+                            <div style="display: flex; gap: 4px;">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                            </div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 94</div>
+                        </div>
+                        <!-- Ulasan 2 -->
+                        <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
+                                <strong>susantisusan11</strong>
+                            </div>
+                            <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2024-01-09 13:15 | Variasi: 38</div>
+                            <div style="font-size: 14px; margin-bottom: 10px;">
+                                Sepatunya nyaman dipake, designnya juga kece, materialnya oke, sepatu bagian bawahnya dari karet jadi nggk licin kena keramik. Dijamin nggk nyesel beli ini sepatu kak
+                            </div>
+                            <div style="display: flex; gap: 4px;">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                            </div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 41</div>
+                        </div>
+                    </div>
+                    <!-- 4 Bintang -->
+                    <div class="review-tab-pane" data-content="4" style="display: none;">
+                        <div style="padding: 16px; color: #888;">Belum ada ulasan 4 bintang.</div>
+                    </div>
+                    <!-- 3 Bintang -->
+                    <div class="review-tab-pane" data-content="3" style="display: none;">
+                        <div style="padding: 16px; color: #888;">Belum ada ulasan 3 bintang.</div>
+                    </div>
+                    <!-- 2 Bintang -->
+                    <div class="review-tab-pane" data-content="2" style="display: none;">
+                        <div style="padding: 16px; color: #888;">Belum ada ulasan 2 bintang.</div>
+                    </div>
+                    <!-- 1 Bintang -->
+                    <div class="review-tab-pane" data-content="1" style="display: none;">
+                        <div style="padding: 16px; color: #888;">Belum ada ulasan 1 bintang.</div>
+                    </div>
+                    <!-- Dengan Komentar -->
+                    <div class="review-tab-pane" data-content="comment" style="display: none;">
+                        <!-- Ulasan 1 -->
+                        <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
+                                <strong>maya_kirana56</strong>
+                            </div>
+                            <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2023-12-27 14:03 | Variasi: 43</div>
+                            <div style="font-size: 14px; margin-bottom: 10px;">
+                                sepatunya bagus bangettt sumpahh sesuai sama digambar sii ini asli sukak bangettt bahannya juga bagusss, tebel gitu dan warnanya juga ga terlalu norak banget thanks seller
+                            </div>
+                            <div style="display: flex; gap: 4px;">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                            </div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 94</div>
+                        </div>
+                    </div>
+                    <!-- Dengan Media -->
+                    <div class="review-tab-pane" data-content="media" style="display: none;">
+                        <!-- Ulasan 2 -->
+                        <div style="border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <img src="https://via.placeholder.com/30" style="border-radius: 50%; margin-right: 10px;">
+                                <strong>susantisusan11</strong>
+                            </div>
+                            <div style="color: #faca51; font-size: 16px; margin-bottom: 4px;">★★★★★</div>
+                            <div style="font-size: 12px; color: #999; margin-bottom: 8px;">2024-01-09 13:15 | Variasi: 38</div>
+                            <div style="font-size: 14px; margin-bottom: 10px;">
+                                Sepatunya nyaman dipake, designnya juga kece, materialnya oke, sepatu bagian bawahnya dari karet jadi nggk licin kena keramik. Dijamin nggk nyesel beli ini sepatu kak
+                            </div>
+                            <div style="display: flex; gap: 4px;">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                <img src="https://via.placeholder.com/60x60" style="border-radius: 2px; cursor: pointer;"
+                                onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                            </div>
+                            <div style="font-size: 12px; color: #888; margin-top: 4px;">👍 41</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab review
+            const tabButtons = document.querySelectorAll('.btn-review-tab');
+            const tabPanes = document.querySelectorAll('.review-tab-pane');
+
+            // Set default active tab (Semua)
+            tabButtons.forEach(b => {
+                if (b.dataset.tab === 'all') {
+                    b.classList.add('active');
+                    b.style.backgroundColor = '#e1ede3';
+                    b.style.color = '#2d5727';
+                    b.style.border = '1px solid #2d5727';
+                } else {
+                    b.classList.remove('active');
+                    b.style.backgroundColor = 'white';
+                    b.style.color = '';
+                    b.style.border = '1px solid #ccc';
+                }
+            });
+            tabPanes.forEach(pane => {
+                if (pane.dataset.content === 'all') {
+                    pane.style.display = 'block';
+                } else {
+                    pane.style.display = 'none';
+                }
+            });
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    // Remove active from all
+                    tabButtons.forEach(b => {
+                        b.classList.remove('active');
+                        if (b.dataset.tab === 'all') {
+                            b.style.backgroundColor = '#f0f5f1';
+                            b.style.color = '#2d5727';
+                            b.style.border = '1px solid #2d5727';
+                        } else {
+                            b.style.backgroundColor = 'white';
+                            b.style.color = '';
+                            b.style.border = '1px solid #ccc';
+                        }
+                    });
+                    // Set active
+                    this.classList.add('active');
+                    if (this.dataset.tab === 'all') {
+                        this.style.backgroundColor = '#e1ede3';
+                        this.style.color = '#2d5727';
+                        this.style.border = '1px solid #2d5727';
+                    } else {
+                        this.style.backgroundColor = '#f7f7f7';
+                        this.style.color = '#2d5727';
+                        this.style.border = '1px solid #2d5727';
+                    }
+                    // Show/hide panes
+                    tabPanes.forEach(pane => {
+                        if (pane.dataset.content === this.dataset.tab) {
+                            pane.style.display = 'block';
+                        } else {
+                            pane.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+        </script>
 
 
 
