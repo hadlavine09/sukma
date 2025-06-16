@@ -1311,7 +1311,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-2 col-sm-6">
+                {{-- <div class="col-md-2 col-sm-6">
                     <div class="footer-menu">
                         <h5 class="widget-title">Ultras</h5>
                         <ul class="menu-list list-unstyled">
@@ -1396,7 +1396,7 @@
                             <button class="btn btn-dark rounded-end rounded-0" type="submit">Subscribe</button>
                         </form>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
         </div>
