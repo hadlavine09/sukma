@@ -6,14 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Toko extends Model
+
+class sub_kategori_toko extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
-    protected $table = 'tokos';
-    protected $primaryKey = 'id';
-
-
-    protected $guarded = ['id'];
+    
 
 }

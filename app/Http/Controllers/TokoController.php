@@ -1,7 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Toko;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class TokoController extends Controller
 {
@@ -12,13 +19,9 @@ class TokoController extends Controller
     {
         if ($request->ajax()) {
             // Ambil data toko
-            $toko = Toko::getSemuaToko();
-
+            $toko = Toko::all();
             return DataTables::of($toko)
                 ->addIndexColumn()
-                ->editColumn('created_at', function ($data) {
-                    return \Carbon\Carbon::parse($data->created_at)->format('d M Y, H:i'); // Format waktu
-                })
                 ->addColumn('action', function ($data) {
                     // Tombol untuk Show, Edit dan Hapus
                     return '

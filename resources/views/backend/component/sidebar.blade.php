@@ -17,6 +17,13 @@
         <li><a class="treeview-item" href="{{ route('hakakses.index')}}"><i class="icon bi bi-circle-fill"></i> Hakakses</a></li>
       </ul>
     </li>
+    <li class="treeview"><a class="app-menu__item" href="{{ asset('assets_backend/#')}}" data-toggle="treeview"><i class="app-menu__icon bi bi-laptop"></i><span class="app-menu__label">Manajemen Toko</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
+      <ul class="treeview-menu">
+        <li><a class="treeview-item" href="{{ route('kategori_toko.index')}}"><i class="icon bi bi-circle-fill"></i> Kategori Toko</a></li>
+        <li><a class="treeview-item" href="{{ route('izin_toko.index')}}"><i class="icon bi bi-circle-fill"></i> Pendaftaran Toko</a></li>
+        <li><a class="treeview-item" href="{{ route('toko.index')}}"><i class="icon bi bi-circle-fill"></i> Toko</a></li>
+      </ul>
+    </li>
     <li class="treeview"><a class="app-menu__item" href="{{ asset('assets_backend/#')}}" data-toggle="treeview"><i class="app-menu__icon bi bi-ui-checks"></i><span class="app-menu__label">Manajemen Produk</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
       <ul class="treeview-menu">
         <li><a class="treeview-item" href="{{ route('tag.index')}}"><i class="icon bi bi-circle-fill"></i> Tag</a></li>
