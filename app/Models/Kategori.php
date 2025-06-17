@@ -29,9 +29,9 @@ class Kategori extends Model
         return self::all(); // Ambil semua data dari tabel kategoris
     }
     public function produks()
-{
-    return $this->hasMany(Produk::class, 'kode_kategori', 'kode_kategori');
-}
+    {
+        return $this->hasMany(Produk::class, 'kode_kategori', 'kode_kategori');
+    }
 
 
 }

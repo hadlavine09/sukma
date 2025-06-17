@@ -5,8 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TokoController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\TransaksiMaterial;
+use App\Http\Controllers\IzinTokoController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\RegisterController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DetailProdukController;
+use App\Http\Controllers\KategoriTokoController;
 use App\Http\Controllers\UserManagement\RoleController;
 use App\Http\Controllers\UserManagement\UserController;
 use App\Http\Controllers\UserManagement\HakAksesController;
@@ -122,6 +125,38 @@ Route::prefix('UserManagement')->group(function () {
         Route::get('edit/{id}', [HakAksesController::class, 'edit'])->name('hakakses.edit');
         Route::get('show/{id}', [HakAksesController::class, 'show'])->name('hakakses.show');
     });
+});
+
+Route::prefix('Manajemen-Toko')->group(function () {
+    Route::prefix('Kategori')->group(function () {
+        Route::get('/', [KategoriTokoController::class, 'index'])->name('kategori_toko.index');
+        Route::get('create', [KategoriTokoController::class, 'create'])->name('kategori_toko.create');
+        Route::post('store', [KategoriTokoController::class, 'store'])->name('kategori_toko.store');
+        Route::get('edit/{id}', [KategoriTokoController::class, 'edit'])->name('kategori_toko.edit');
+        Route::get('show', [KategoriTokoController::class, 'show'])->name('kategori_toko.show');
+        Route::put('update/{id}', [KategoriTokoController::class, 'update'])->name('kategori_toko.update');
+        Route::post('destroy', [KategoriTokoController::class, 'destroy'])->name('kategori_toko.destroy');
+    });
+    Route::prefix('Daftar-Toko')->group(function () {
+        Route::get('/', [IzinTokoController::class, 'index'])->name('izin_toko.index');
+        Route::get('create', [IzinTokoController::class, 'create'])->name('izin_toko.create');
+        Route::post('store', [IzinTokoController::class, 'store'])->name('izin_toko.store');
+        Route::get('edit/{id}', [IzinTokoController::class, 'edit'])->name('izin_toko.edit');
+        Route::get('show', [IzinTokoController::class, 'show'])->name('izin_toko.show');
+        Route::put('update/{id}', [IzinTokoController::class, 'update'])->name('izin_toko.update');
+        Route::post('destroy', [IzinTokoController::class, 'destroy'])->name('izin_toko.destroy');
+        Route::post('destroy', [IzinTokoController::class, 'destroy'])->name('izin_toko.verifikasi');
+    });
+    Route::prefix('Toko')->group(function () {
+        Route::get('/', [TokoController::class, 'index'])->name('toko.index');
+        Route::get('create', [TokoController::class, 'create'])->name('toko.create');
+        Route::post('store', [TokoController::class, 'store'])->name('toko.store');
+        Route::get('edit/{id}', [TokoController::class, 'edit'])->name('toko.edit');
+        Route::get('show', [TokoController::class, 'show'])->name('toko.show');
+        Route::put('update/{id}', [TokoController::class, 'update'])->name('toko.update');
+        Route::post('destroy', [TokoController::class, 'destroy'])->name('toko.destroy');
+    });
+
 });
 
 Route::prefix('Manajemen-Produk')->group(function () {
