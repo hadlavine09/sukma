@@ -60,6 +60,67 @@
             <a href="#produk" class="cta-btn">Jelajahi Marketplace</a>
         </div>
         <div class="right-side">
-            <img src="{{ asset('assets_frontend/images/hero-img-1.png') }}" alt="Eco Products">
+            <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{{ asset('assets_frontend/images/hero-img-1.png') }}" class="d-block w-100 smooth-img" alt="Eco Products 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{ asset('logo/umkm1.jpeg') }}" class="d-block w-100 smooth-img" alt="Eco Products 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{ asset('logo/umkm2.jpeg') }}" class="d-block w-100 smooth-img" alt="Eco Products 3">
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- Tambahkan Bootstrap CSS & JS jika belum ada -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <style>
+            /* Custom smooth fade for carousel images with elegant in/out animation */
+            .carousel .carousel-item {
+                opacity: 0;
+                transform: scale(0.98) translateY(20px);
+                transition:
+                    opacity 1s cubic-bezier(0.4,0,0.2,1),
+                    transform 1s cubic-bezier(0.4,0,0.2,1);
+                position: absolute;
+                width: 100%;
+                left: 0;
+                top: 0;
+                z-index: 1;
+            }
+            .carousel .carousel-item.active,
+            .carousel .carousel-item-next.carousel-item-left,
+            .carousel .carousel-item-prev.carousel-item-right {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                position: relative;
+                z-index: 2;
+            }
+            .carousel-inner {
+                position: relative;
+                width: 100%;
+                overflow: hidden;
+                min-height: 350px;
+            }
+        </style>
+        <script>
+            // Optional: force reflow for smooth fade on slide
+            document.addEventListener('DOMContentLoaded', function () {
+                var carousel = document.getElementById('heroCarousel');
+                if (carousel) {
+                    carousel.addEventListener('slide.bs.carousel', function (e) {
+                        var items = carousel.querySelectorAll('.carousel-item');
+                        items.forEach(function(item) {
+                            item.style.transition = 'none';
+                            void item.offsetWidth; // force reflow
+                            item.style.transition = '';
+                        });
+                    });
+                }
+            });
+        </script>
     </section>

@@ -29,6 +29,15 @@ use App\Http\Controllers\UserManagement\PermissionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('lang/{lang}', function ($lang) {
+    if (in_array($lang, ['en', 'id'])) {
+        session(['locale' => $lang]);
+        app()->setLocale($lang);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 Auth::routes(['verify'=>true]);
 Route::get('/', function () {
     return view('frontend.produk');
@@ -64,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/detail/{nama_produk}', [DetailProdukController::class, 'detailproduk'])->name('frontend.detailproduk');
         Route::post('tambahkeranjang', [CartController::class, 'tambahkeranjang'])->name('frontend.tambahkeranjang');
         Route::get('keranjang', [CartController::class, 'keranjang'])->name('frontend.keranjang');
+        Route::get('keranjang_down', [CartController::class, 'keranjang_dropdown'])->name('frontend.keranjang_down');
         Route::get('checkout', [CartController::class, 'checkout'])->name('frontend.checkout');
         Route::post('cartupdate', [CartController::class, 'cartupdate'])->name('frontend.cartupdate');
         Route::delete('keranjang/destroy/{id}', [CartController::class, 'destroy'])->name('frontend.cartdestroy');
