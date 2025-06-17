@@ -108,7 +108,13 @@
         style="background: #fff; padding: 8px 0; color: #000000; font-size: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; top: -8px; margin-top: 0; border-radius: 0;">
         <div
             style="width: 100%; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 0 16px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 18px;">
+                <!-- Logo di ujung kiri -->
+                <a href="{{ url('/') }}" style="display: flex; align-items: center; text-decoration: none;">
+                    <img src="{{ asset('logo/download.png') }}" alt="Logo"
+                        style="height: 50px; margin-right: 20px;">
+                </a>
+                <span style="border-left: 1px solid #eee; height: 24px; margin: 0 12px;"></span>
                 <span>Ikuti kami di</span>
                 <a href="#" style="color: #000000; margin-left: 4px;"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" style="color: #000000;"><i class="fab fa-instagram"></i></a>
@@ -117,8 +123,22 @@
             <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
                 <span><i class="far fa-bell"></i> Notifikasi</span>
                 <span><i class="far fa-question-circle"></i> Bantuan</span>
-                <span><i class="fas fa-globe"></i> Bahasa Indonesia <i class="fas fa-chevron-down"
-                        style="font-size: 10px;"></i></span>
+                <!-- Language Switcher -->
+                <div class="profile-dropdown-wrapper" style="position: relative;">
+                    <span style="cursor:pointer;" onclick="toggleLangDropdown(event)">
+                        <i class="fas fa-globe"></i>
+                        {{ app()->getLocale() === 'en' ? 'English' : 'Bahasa Indonesia' }}
+                        <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+                    </span>
+                    <div id="lang-dropdown" class="profile-dropdown" style="right: auto; left: 0;">
+                        <a href="{{ route('lang.switch', 'id') }}" @if(app()->getLocale() === 'id') style="font-weight:bold;" @endif>
+                            Bahasa Indonesia
+                        </a>
+                        <a href="{{ route('lang.switch', 'en') }}" @if(app()->getLocale() === 'en') style="font-weight:bold;" @endif>
+                            English
+                        </a>
+                    </div>
+                </div>
                 <style>
                     .profile-btn {
                         background-color: #e5e7eb;
@@ -205,32 +225,38 @@
                     }
 
                     @media (max-width: 900px) {
-                        nav > div {
+                        nav>div {
                             flex-direction: column;
                             align-items: flex-start !important;
                             gap: 10px;
                         }
-                        nav > div > div {
+
+                        nav>div>div {
                             width: 100%;
                             justify-content: flex-start !important;
                             gap: 10px;
                         }
+
                         .profile-email {
                             margin-left: 0;
                             margin-top: 4px;
                         }
                     }
+
                     @media (max-width: 600px) {
-                        nav > div {
+                        nav>div {
                             padding: 0 6px !important;
                         }
+
                         .profile-name {
                             display: none;
                         }
+
                         .profile-email {
                             display: none;
                         }
-                        nav > div > div {
+
+                        nav>div>div {
                             font-size: 13px;
                             gap: 6px;
                         }
@@ -285,10 +311,22 @@
                     document.addEventListener('click', function(event) {
                         var profileBtn = document.querySelector('.profile-btn');
                         var dropdown = document.getElementById('dropdown');
-                        if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+                        if (profileBtn && dropdown && !profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
                             dropdown.classList.remove('show');
                         }
+                        // Untuk language dropdown
+                        var langBtn = document.querySelector('[onclick="toggleLangDropdown(event)"]');
+                        var langDropdown = document.getElementById('lang-dropdown');
+                        if (langBtn && langDropdown && !langBtn.contains(event.target) && !langDropdown.contains(event.target)) {
+                            langDropdown.classList.remove('show');
+                        }
                     });
+
+                    function toggleLangDropdown(event) {
+                        event.stopPropagation();
+                        var langDropdown = document.getElementById("lang-dropdown");
+                        langDropdown.classList.toggle("show");
+                    }
                 </script>
             </div>
         </div>

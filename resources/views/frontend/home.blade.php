@@ -216,46 +216,67 @@
                             <a href="" class="btn btn-primary w-100" id="lihatKeranjangBtn">Lihat
                                 Keranjang</a>
                         </div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                // Optional: If you want to check if cart is empty before redirect
-                                const lihatBtn = document.getElementById('lihatKeranjangBtn');
-                                const cartList = document.querySelector('#cartDropdownCard ul.list-group');
-                                lihatBtn.addEventListener('click', function(e) {
-                                    const items = cartList.querySelectorAll('li:not(.empty-cart-message):not(:last-child)');
-                                    if (items.length === 0) {
-                                        e.preventDefault();
-                                        cartList.querySelector('.empty-cart-message').style.display = '';
-                                    }
-                                    // else: will go to cart page
-                                });
-                            });
-                        </script>
                     </div>
                     <script>
-                        // Sync cart dropdown with cart array
                         document.addEventListener('DOMContentLoaded', function() {
-                            function updateEmptyCartMessage() {
-                                const cartList = document.querySelector('#cartDropdownCard ul.list-group');
-                                const emptyMsg = cartList.querySelector('.empty-cart-message');
-                                const items = cartList.querySelectorAll('li:not(.empty-cart-message):not(:last-child)');
-                                if (items.length === 0) {
-                                    emptyMsg.style.display = '';
-                                } else {
-                                    emptyMsg.style.display = 'none';
-                                }
+                            const cartList = document.querySelector('#cartDropdownCard ul.list-group');
+                            const totalDisplay = cartList.querySelector('li:last-child strong');
+                            const emptyMsg = cartList.querySelector('.empty-cart-message');
+
+                            function formatRupiah(angka) {
+                                return 'Rp' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                             }
-                            // Patch updateCartDropdown to call updateEmptyCartMessage
-                            if (typeof updateCartDropdown === 'function') {
-                                const origUpdateCartDropdown = updateCartDropdown;
-                                window.updateCartDropdown = function() {
-                                    origUpdateCartDropdown();
-                                    updateEmptyCartMessage();
-                                };
+
+                            function loadCartData() {
+                                fetch('{{ route('keranjang.json') }}')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        let total = 0;
+                                        // Hapus item yang sudah ada (kecuali 2: pesan kosong & total)
+                                        const items = cartList.querySelectorAll('li:not(.empty-cart-message):not(:last-child)');
+                                        items.forEach(item => item.remove());
+
+                                        if (data.length === 0) {
+                                            emptyMsg.style.display = '';
+                                        } else {
+                                            emptyMsg.style.display = 'none';
+
+                                            data.forEach(item => {
+                                                const li = document.createElement('li');
+                                                li.className =
+                                                    'list-group-item d-flex justify-content-between align-items-center';
+
+                                                li.innerHTML = `
+                                <div>
+                                    <div class="fw-bold">${item.nama_produk}</div>
+                                    <div class="text-muted small">${item.nama_kategori}</div>
+                                    <div class="small">Qty: ${item.qty}</div>
+                                </div>
+                                <div class="text-end">
+                                    <div>${formatRupiah(item.harga)}</div>
+                                </div>
+                            `;
+
+                                                cartList.insertBefore(li, cartList.querySelector('li:last-child'));
+                                                total += item.harga * item.qty;
+                                            });
+                                        }
+
+                                        totalDisplay.textContent = formatRupiah(total);
+                                    })
+                                    .catch(error => {
+                                        console.error('Gagal memuat data keranjang:', error);
+                                    });
                             }
-                            updateEmptyCartMessage();
+
+                            // Panggil fungsi saat halaman selesai dimuat
+                            loadCartData();
+
+                            // Optional: refresh otomatis saat dropdown dibuka
+                            document.getElementById('cartDropdownCard').addEventListener('mouseenter', loadCartData);
                         });
                     </script>
+
                 </div>
                 <style>
                     .cart-dropdown-card.show {
@@ -329,10 +350,12 @@
                         position: relative;
                         z-index: 101;
                     }
+
                     .profile-dropdown-wrapper {
                         position: relative;
                         display: inline-block;
                     }
+
                     .profile-dropdown {
                         position: absolute;
                         top: 110%;
@@ -345,9 +368,11 @@
                         display: none;
                         z-index: 100;
                     }
+
                     .profile-dropdown.show {
                         display: block;
                     }
+
                     .profile-dropdown a,
                     .profile-dropdown button {
                         display: block;
@@ -360,6 +385,7 @@
                         cursor: pointer;
                         font-size: 0.9rem;
                     }
+
                     .profile-dropdown a:hover,
                     .profile-dropdown button:hover {
                         background-color: #f3f4f6;
@@ -1098,7 +1124,8 @@
                                                 if (addToCartBtn) {
                                                     addToCartBtn.addEventListener('click', function(e) {
                                                         e.preventDefault();
-                                                        const baseUrl = document.querySelector('meta[name="base-url"]').content;
+                                                        const baseUrl = document.querySelector('meta[name="base-url"]')
+                                                            .content;
                                                         const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
                                                         if (!isAuthenticated) {
                                                             const returnUrl = encodeURIComponent(window.location.href);
@@ -1106,7 +1133,8 @@
                                                             return;
                                                         }
                                                         const name = product.querySelector('h3').textContent.trim();
-                                                        const price = parseInt(product.querySelector('.price').textContent.replace(/[^0-9]/g, ''));
+                                                        const price = parseInt(product.querySelector('.price').textContent
+                                                            .replace(/[^0-9]/g, ''));
                                                         const desc = product.querySelector('.qty')?.textContent || '';
                                                         const img = product.querySelector('img');
                                                         const qtyInput = product.querySelector('input[name="quantity"]');
