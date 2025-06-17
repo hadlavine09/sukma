@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('no_hp_toko');
             $table->string('alamat_toko');
             $table->text('deskripsi_toko')->nullable();
+            $table->enum('status_toko', ['izinkan', 'tidak_diizinkan', 'proses'])->default('proses');
             $table->boolean('status_aktif_toko')->default(true);
-            // $table->timestamp('terakhir_login')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

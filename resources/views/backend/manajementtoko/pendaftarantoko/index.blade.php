@@ -109,16 +109,8 @@
                         }
                     },
                     { data: 'alamat_toko', name: 'alamat_toko' },
-                    {
-                        data: 'status', name: 'status',
-                        render: function(data) {
-                            let badge = '';
-                            if (data === 'menunggu') badge = '<span class="badge bg-warning text-dark">Menunggu</span>';
-                            else if (data === 'disetujui') badge = '<span class="badge bg-success">Disetujui</span>';
-                            else badge = '<span class="badge bg-danger">Ditolak</span>';
-                            return badge;
-                        }
-                    },
+                    { data: 'status_toko', name: 'status_toko' },
+
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
                 ]
             });
