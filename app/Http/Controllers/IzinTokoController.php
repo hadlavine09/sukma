@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Toko;
 use App\Models\IzinToko;
 use App\Models\DetailToko;
@@ -60,7 +61,83 @@ public function index(Request $request)
         return view('backend.manajementtoko.pendaftarantoko.create',compact('kategoriTokos'));
 
     }
+   public function izinkan(Request $request)
+{
+    $kode_toko = $request->input('kode_toko');
 
+    DB::beginTransaction();
+    try {
+        // Ambil data toko dengan status 'proses'
+        $toko = DB::table('tokos')
+            ->where('status_toko', 'proses')
+            ->where('kode_toko', $kode_toko)
+            ->first();
+
+        if (!$toko) {
+            return redirect()->back()->with('error', 'Toko tidak ditemukan atau status tidak sesuai.');
+        }
+
+        // Update status toko menjadi 'izinkan'
+        DB::table('tokos')
+            ->where('id', $toko->id)
+            ->update(['status_toko' => 'izinkan']);
+
+        // Generate nomor izin otomatis
+        $last = IzinToko::orderBy('nomor_izin', 'desc')->first();
+        $lastNumber = 0;
+
+        if ($last && preg_match('/IZT(\d+)/', $last->nomor_izin, $matches)) {
+            $lastNumber = (int)$matches[1];
+        }
+
+        $nomor_izin = 'IZT' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+
+        // Simpan data ke tabel izin_tokos
+        IzinToko::create([
+            'toko_id' => $toko->id,
+            'nomor_izin' => $nomor_izin,
+            'nama_dokumen' => 'Dokumen Izin Toko #' . $toko->id,
+            'file_dokumen' => 'default.pdf', // Ubah jika menggunakan upload file
+            'tanggal_terbit' => Carbon::now()->toDateString(),
+            'created_at' => Carbon::now(),
+        ]);
+
+        DB::commit();
+        return redirect()->back()->with('success', 'Toko berhasil diizinkan dan data izin disimpan.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->with('error', 'Gagal memproses izin: ' . $e->getMessage());
+    }
+}
+   public function tidak_izinkan(Request $request)
+{
+    $kode_toko = $request->input('kode_toko');
+
+    DB::beginTransaction();
+    try {
+        // Ambil data toko dengan status 'proses'
+        $toko = DB::table('tokos')
+            ->where('status_toko', 'proses')
+            ->where('kode_toko', $kode_toko)
+            ->first();
+
+        if (!$toko) {
+            return redirect()->back()->with('error', 'Toko tidak ditemukan atau status tidak sesuai.');
+        }
+
+        // Update status toko menjadi 'tidak_diizinkan'
+        DB::table('tokos')
+            ->where('id', $toko->id)
+            ->update(['status_toko' => 'tidak_diizinkan']);
+
+
+        DB::commit();
+        return redirect()->back()->with('success', 'Toko berhasil tidak diizinkan dan data izin disimpan.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->with('error', 'Gagal memproses izin: ' . $e->getMessage());
+    }
+}
     /**
      * Store a newly created resource in storage.
      */
