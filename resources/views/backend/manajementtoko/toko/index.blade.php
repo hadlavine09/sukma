@@ -43,9 +43,8 @@
                             <th class="text-center">No</th>
                             <th>Nama Toko</th>
                             <th>Pemilik</th>
-                            <th>Logo</th>
-                            <th>Alamat</th>
-                            <th>Deskripsi</th>
+                            <th>Kategori</th>
+                            <th>Staus</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -104,15 +103,8 @@
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', className: "text-center" },
                     { data: 'nama_toko', name: 'nama_toko' },
                     { data: 'nama_pemilik', name: 'nama_pemilik' },
-                    {
-                        data: 'logo_toko', name: 'logo_toko', className: "text-center",
-                        render: function(data) {
-                            let imageUrl = "{{ asset('storage') }}/" + data;
-                            return data ? `<img src="${imageUrl}" alt="logo" height="50">` : '<span class="text-muted">Tidak ada</span>';
-                        }
-                    },
-                    { data: 'alamat_toko', name: 'alamat_toko' },
-                    { data: 'deskripsi_toko', name: 'deskripsi_toko' },
+                    { data: 'nama_kategori_toko', name: 'nama_kategori_toko' },
+                    { data: 'status_aktif_toko', name: 'status_aktif_toko' },
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
                 ]
             });

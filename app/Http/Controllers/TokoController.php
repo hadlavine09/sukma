@@ -19,8 +19,15 @@ class TokoController extends Controller
     {
         if ($request->ajax()) {
             // Ambil data toko
-            $toko = Toko::all();
-            return DataTables::of($toko)
+                $toko = DB::table('tokos')
+                    ->join('users', 'tokos.pemilik_toko_id', '=', 'users.id')
+                    ->leftJoin('kategori_tokos', 'tokos.kategori_toko_id', '=', 'kategori_tokos.id')
+                    ->join('izin_tokos', 'tokos.id', '=', 'izin_tokos.toko_id')
+                    ->whereNull('tokos.deleted_at')
+                    ->whereNull('kategori_tokos.deleted_at')
+                    ->select('tokos.*', 'users.username as nama_pemilik', 'kategori_tokos.nama_kategori_toko')
+                    ->get();
+                return DataTables::of($toko)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     // Tombol untuk Show, Edit dan Hapus

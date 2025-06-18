@@ -146,7 +146,7 @@ Route::prefix('Manajemen-Toko')->group(function () {
         Route::get('create', [IzinTokoController::class, 'create'])->name('izin_toko.create');
         Route::post('store', [IzinTokoController::class, 'store'])->name('izin_toko.store');
         Route::get('edit/{id}', [IzinTokoController::class, 'edit'])->name('izin_toko.edit');
-        Route::get('show', [IzinTokoController::class, 'show'])->name('izin_toko.show');
+        Route::get('show/{id}', [IzinTokoController::class, 'show'])->name('izin_toko.show');
         Route::put('update/{id}', [IzinTokoController::class, 'update'])->name('izin_toko.update');
         Route::post('destroy', [IzinTokoController::class, 'destroy'])->name('izin_toko.destroy');
         Route::post('destroy', [IzinTokoController::class, 'destroy'])->name('izin_toko.verifikasi');

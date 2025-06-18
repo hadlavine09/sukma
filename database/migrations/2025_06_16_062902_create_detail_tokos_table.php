@@ -11,33 +11,37 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detail_tokos', function (Blueprint $table) {
+          Schema::create('detail_tokos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('toko_id')->unique(); // satu toko hanya punya satu detail
+
+            // Foreign key ke toko
+            $table->unsignedBigInteger('toko_id')->unique();
+            $table->foreign('toko_id')->references('id')->on('tokos')->onDelete('cascade');
+
+            // Dokumen kepemilikan
+            $table->string('nama_ktp');
+            $table->string('nomor_ktp');
+            $table->string('nomor_kk');
+            $table->string('foto_ktp'); // path gambar disimpan
+            $table->string('foto_kk');
 
             // Informasi rekening
             $table->string('nama_bank')->nullable();
             $table->string('nomor_rekening')->nullable();
             $table->string('nama_pemilik_rekening')->nullable();
 
-            // Kontak & sosial media
+            // Kontak dan sosial media
             $table->string('email_cs')->nullable();
             $table->string('whatsapp_cs')->nullable();
             $table->string('link_instagram')->nullable();
             $table->string('link_facebook')->nullable();
             $table->string('link_tiktok')->nullable();
 
-            // Lokasi & operasional
+            // Lokasi & Jam Operasional
             $table->string('link_google_maps')->nullable();
-            $table->string('jam_operasional')->nullable();
-
-            // Informasi tambahan
-            $table->text('catatan_tambahan')->nullable();
-
+            // Waktu dan penghapusan lunak
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('toko_id')->references('id')->on('tokos')->onDelete('cascade');
         });
 
     }

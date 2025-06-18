@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Toko;
 use App\Models\IzinToko;
 use App\Models\DetailToko;
@@ -15,32 +16,37 @@ use Yajra\DataTables\Facades\DataTables;
 
 class IzinTokoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
 public function index(Request $request)
     {
         if ($request->ajax()) {
             // Ambil data toko
-            $toko = IzinToko::all();
+            $toko = DB::table('tokos')
+                ->join('users', 'tokos.pemilik_toko_id', '=', 'users.id')
+                ->join('kategori_tokos', 'tokos.kategori_toko_id', '=', 'kategori_tokos.id')
+                ->where('tokos.status_toko','proses')
+                ->whereNull('tokos.deleted_at')
+                ->whereNull('kategori_tokos.deleted_at')
+                ->select('tokos.*', 'users.username as nama_pemilik', 'kategori_tokos.nama_kategori_toko')
+                ->get();
             return DataTables::of($toko)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
-                    // Tombol untuk Show, Edit dan Hapus
                     return '
-                        <a href="' . route('toko.show', $data->kode_toko) . '" class="btn btn-info btn-sm">
+                        <a href="' . route('izin_toko.show', $data->kode_toko) . '" class="btn btn-sm btn-info">
                             <i class="bi bi-eye"></i> Show
                         </a>
-                        <a href="' . route('toko.edit', $data->kode_toko) . '" class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-                        <a href="javascript:void(0);" class="btn btn-danger btn-sm delete-btn" data-id="' . $data->kode_toko . '" data-nm="' . $data->nama_toko . '">
-                            <i class="bi bi-trash"></i> Hapus
-                        </a>
+                        <button onclick="izinToko(\'' . $data->id . '\')" class="btn btn-sm btn-success">
+                            <i class="bi bi-check-circle"></i> Izinkan
+                        </button>
+                        <button onclick="tolakToko(\'' . $data->id . '\')" class="btn btn-sm btn-danger">
+                            <i class="bi bi-x-circle"></i> Tolak
+                        </button>
                     ';
                 })
-                ->rawColumns(['action']) // Menandai kolom 'action' sebagai raw HTML untuk menghindari escaping
-                ->make(true);            // DataTables JSON response
+                ->rawColumns(['action'])
+                ->make(true);
+
         }
 
         // Mengirim data toko untuk tampilan normal jika tidak menggunakan AJAX
@@ -55,7 +61,83 @@ public function index(Request $request)
         return view('backend.manajementtoko.pendaftarantoko.create',compact('kategoriTokos'));
 
     }
+   public function izinkan(Request $request)
+{
+    $kode_toko = $request->input('kode_toko');
 
+    DB::beginTransaction();
+    try {
+        // Ambil data toko dengan status 'proses'
+        $toko = DB::table('tokos')
+            ->where('status_toko', 'proses')
+            ->where('kode_toko', $kode_toko)
+            ->first();
+
+        if (!$toko) {
+            return redirect()->back()->with('error', 'Toko tidak ditemukan atau status tidak sesuai.');
+        }
+
+        // Update status toko menjadi 'izinkan'
+        DB::table('tokos')
+            ->where('id', $toko->id)
+            ->update(['status_toko' => 'izinkan']);
+
+        // Generate nomor izin otomatis
+        $last = IzinToko::orderBy('nomor_izin', 'desc')->first();
+        $lastNumber = 0;
+
+        if ($last && preg_match('/IZT(\d+)/', $last->nomor_izin, $matches)) {
+            $lastNumber = (int)$matches[1];
+        }
+
+        $nomor_izin = 'IZT' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+
+        // Simpan data ke tabel izin_tokos
+        IzinToko::create([
+            'toko_id' => $toko->id,
+            'nomor_izin' => $nomor_izin,
+            'nama_dokumen' => 'Dokumen Izin Toko #' . $toko->id,
+            'file_dokumen' => 'default.pdf', // Ubah jika menggunakan upload file
+            'tanggal_terbit' => Carbon::now()->toDateString(),
+            'created_at' => Carbon::now(),
+        ]);
+
+        DB::commit();
+        return redirect()->back()->with('success', 'Toko berhasil diizinkan dan data izin disimpan.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->with('error', 'Gagal memproses izin: ' . $e->getMessage());
+    }
+}
+   public function tidak_izinkan(Request $request)
+{
+    $kode_toko = $request->input('kode_toko');
+
+    DB::beginTransaction();
+    try {
+        // Ambil data toko dengan status 'proses'
+        $toko = DB::table('tokos')
+            ->where('status_toko', 'proses')
+            ->where('kode_toko', $kode_toko)
+            ->first();
+
+        if (!$toko) {
+            return redirect()->back()->with('error', 'Toko tidak ditemukan atau status tidak sesuai.');
+        }
+
+        // Update status toko menjadi 'tidak_diizinkan'
+        DB::table('tokos')
+            ->where('id', $toko->id)
+            ->update(['status_toko' => 'tidak_diizinkan']);
+
+
+        DB::commit();
+        return redirect()->back()->with('success', 'Toko berhasil tidak diizinkan dan data izin disimpan.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->with('error', 'Gagal memproses izin: ' . $e->getMessage());
+    }
+}
     /**
      * Store a newly created resource in storage.
      */
@@ -150,7 +232,7 @@ public function index(Request $request)
         }
 
         DB::commit();
-        return redirect()->route('toko.index')->with('success', 'Toko berhasil didaftarkan.');
+        return redirect()->route('izin_toko.index')->with('success', 'Toko berhasil didaftarkan.');
     } catch (\Exception $e) {
         DB::rollBack();
         return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
@@ -162,10 +244,61 @@ public function index(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(IzinToko $izinToko)
-    {
-        //
+
+    public function show($kode_toko)
+{
+    // Ambil detail utama toko (1 baris)
+    $tokoshow = DB::table('tokos')
+        ->join('users', 'tokos.pemilik_toko_id', '=', 'users.id')
+        ->join('kategori_tokos', 'tokos.kategori_toko_id', '=', 'kategori_tokos.id')
+        ->join('detail_tokos', 'tokos.id', '=', 'detail_tokos.toko_id')
+        ->where('tokos.kode_toko', $kode_toko)
+        ->whereNull('tokos.deleted_at')
+        ->whereNull('kategori_tokos.deleted_at')
+        ->select(
+            'tokos.*',
+            'users.username as nama_pemilik',
+            'kategori_tokos.nama_kategori_toko',
+            'detail_tokos.nama_ktp',
+            'detail_tokos.nomor_ktp',
+            'detail_tokos.nomor_kk',
+            'detail_tokos.foto_ktp',
+            'detail_tokos.foto_kk',
+            'detail_tokos.nama_bank',
+            'detail_tokos.nomor_rekening',
+            'detail_tokos.nama_pemilik_rekening',
+            'detail_tokos.email_cs',
+            'detail_tokos.whatsapp_cs',
+            'detail_tokos.link_instagram',
+            'detail_tokos.link_facebook',
+            'detail_tokos.link_tiktok',
+            'detail_tokos.link_google_maps',
+            'tokos.logo_toko'
+
+        )
+        ->first();
+
+    if (!$tokoshow) {
+        return redirect()->back()->with('error', 'Toko tidak ditemukan.');
     }
+
+    // Ambil jam operasional per hari (banyak baris)
+    $jadwalOperasional = DB::table('jam_operasionals')
+    ->where('toko_id', $tokoshow->id)
+    ->orderByRaw("CASE
+        WHEN hari = 'Senin' THEN 1
+        WHEN hari = 'Selasa' THEN 2
+        WHEN hari = 'Rabu' THEN 3
+        WHEN hari = 'Kamis' THEN 4
+        WHEN hari = 'Jumat' THEN 5
+        WHEN hari = 'Sabtu' THEN 6
+        WHEN hari = 'Minggu' THEN 7
+        ELSE 8 END")
+    ->get();
+
+
+    return view('backend.manajementtoko.pendaftarantoko.show', compact('tokoshow', 'jadwalOperasional'));
+}
 
     /**
      * Show the form for editing the specified resource.
