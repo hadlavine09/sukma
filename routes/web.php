@@ -13,6 +13,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UmkmAuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DetailProdukController;
@@ -40,6 +41,9 @@ Route::get('lang/{lang}', function ($lang) {
     }
     return redirect()->back();
 })->name('lang.switch');
+
+Route::get('/daftar-umkm', [UmkmAuthController::class, 'index'])->name('umkm.register');
+Route::get('/alur-umkm', [UmkmAuthController::class, 'alur'])->name('umkm.alur');
 
 Auth::routes(['verify'=>true]);
 Route::get('/', function () {
