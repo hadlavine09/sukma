@@ -445,7 +445,7 @@
                 @else
                     <a href="{{ route('register2') }}" class="nav-login" tabindex="0">Register</a>
                     <span class="mx-1 text-black">|</span>
-                    <a href="{{ route('umkm.alur') }}" class="nav-login" tabindex="0">Daftar sebagai UMKM</a>
+                    <a href="{{ route('LoginToko') }}" class="nav-login" tabindex="0">Daftar sebagai UMKM</a>
                     <span class="mx-1 text-black">|</span>
                     <a href="{{ route('login') }}" class="nav-login" tabindex="0">Login</a>
                 @endauth

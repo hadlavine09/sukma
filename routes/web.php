@@ -1,27 +1,26 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TagController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\TokoController;
-use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\TransaksiMaterial;
+use App\Http\Controllers\DetailProdukController;
 use App\Http\Controllers\IzinTokoController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\KategoriTokoController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\TokoController;
+use App\Http\Controllers\TransaksiMaterial;
 use App\Http\Controllers\UmkmAuthController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\DetailProdukController;
-use App\Http\Controllers\KategoriTokoController;
-use App\Http\Controllers\UserManagement\RoleController;
-use App\Http\Controllers\UserManagement\UserController;
 use App\Http\Controllers\UserManagement\HakAksesController;
 use App\Http\Controllers\UserManagement\PermissionController;
+use App\Http\Controllers\UserManagement\RoleController;
+use App\Http\Controllers\UserManagement\UserController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,17 +37,18 @@ Route::get('/', function () {
     return view('frontend.produk');
 });
 Route::middleware('guest')->group(function () {
-    Route::prefix('Toko')->group(function () {
-        Route::get('RegisterToko', [RegisterController::class, 'showRegisterToko'])->name('RegisterToko');
+    Route::prefix('toko')->group(function () {
+        Route::get('eegisterToko', [RegisterController::class, 'showRegisterToko'])->name('RegisterToko');
+        Route::get('loginToko', [LoginController::class, 'showLoginToko'])->name('LoginToko');
     });
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::get('register', [RegisterController::class, 'showRegisterForm'])->name('register2');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
     Route::post('/register-action', [RegisterController::class, 'register'])->name('register.post');
+    Route::post('/login-toko', [LoginController::class, 'logintoko'])->name('logintoko.post');
     Route::post('/register-toko', [RegisterController::class, 'registertoko'])->name('register.toko');
 
 });
-
 
 Route::get('lang/{lang}', function ($lang) {
     if (in_array($lang, ['en', 'id'])) {
@@ -65,13 +65,17 @@ Route::get('/', function () {
     return view('frontend.produk');
 });
 
-
 // Routes yang hanya bisa diakses oleh user yang sudah login
 Route::middleware(['auth'])->group(function () {
     // Routes untuk admin dan superadmin
     Route::middleware('role:admin|superadmin')->group(function () {
-        Route::get('/Dashboard-Admin', function () {
+        Route::get('/dashboard-admin', function () {
             return view('backend.dashboard');
+        });
+    });
+    Route::middleware('role:toko')->group(function () {
+        Route::get('/dashboard-toko', function () {
+            return view('toko.dashboard');
         });
     });
 
@@ -206,7 +210,6 @@ Route::prefix('Manajemen-Produk')->group(function () {
         Route::get('show/{id}', [SupplierController::class, 'show'])->name('supplier.show');
     });
 
-
 });
 
 Route::prefix('Manajemen-Material')->group(function () {
@@ -281,21 +284,19 @@ Route::prefix('FrontEnd')->group(function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-Route::prefix('Toko')->group(function () {
-    Route::get('/LoginToko', function () {
-        return view('toko.auth.login');
-    });
-    // Route::get('/RegisterToko', function () {
-    //     return view('toko.auth.register');
-    // });
-    Route::get('/Dashboard-Toko', function () {
-        return view('toko.dashboard');
-    })->name('dashboard.toko');
-    // Route::get('/Verifikasi-Toko', function () {
-    //     return view('toko.verifikasi');
-    // })->name('verifikasi.toko');
-    Route::get('Verifikasi-Toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
-});
+// Route::prefix('toko')->group(function () {
+
+//     // Route::get('/RegisterToko', function () {
+//     //     return view('toko.auth.register');
+//     // });
+//     Route::get('/dashboard-doko', function () {
+//         return view('toko.dashboard');
+//     })->name('dashboard.toko');
+//     // Route::get('/Verifikasi-Toko', function () {
+//     //     return view('toko.verifikasi');
+//     // })->name('verifikasi.toko');
+//     Route::get('verifikasi-toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
+// });
 // Route::middleware(['auth'])->group(function () {
 // });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
