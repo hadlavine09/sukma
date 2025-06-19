@@ -284,19 +284,21 @@ Route::prefix('FrontEnd')->group(function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-// Route::prefix('toko')->group(function () {
-
-//     // Route::get('/RegisterToko', function () {
-//     //     return view('toko.auth.register');
-//     // });
-//     Route::get('/dashboard-doko', function () {
-//         return view('toko.dashboard');
-//     })->name('dashboard.toko');
-//     // Route::get('/Verifikasi-Toko', function () {
-//     //     return view('toko.verifikasi');
-//     // })->name('verifikasi.toko');
-//     Route::get('verifikasi-toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
-// });
+Route::prefix('Toko')->group(function () {
+    Route::get('/LoginToko', function () {
+        return view('toko.auth.login');
+    });
+    // Route::get('/RegisterToko', function () {
+    //     return view('toko.auth.register');
+    // });
+    Route::get('/Dashboard-Toko', function () {
+        return view('toko.dashboard');
+    })->name('dashboard.toko');
+    // Route::get('/Verifikasi-Toko', function () {
+    //     return view('toko.verifikasi');
+    // })->name('verifikasi.toko');
+    Route::get('Verifikasi-Toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
+});
 // Route::middleware(['auth'])->group(function () {
 // });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');

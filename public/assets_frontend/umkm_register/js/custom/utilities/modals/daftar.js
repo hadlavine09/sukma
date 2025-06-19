@@ -31,18 +31,29 @@ var KTCreateAccount = (function () {
                         // console.log("index", idx);
                         console.log(n);
                         if (idx === 1) {
-                            // validasi form 1
+                            // Validasi form 1 (UMKM)
                             form1 = [];
-                            form1.push($("#nik").val(), $("#nama").val(), $("#status").val(), $("#email").val(), $("#no_hp").val());
-                            var nik = document.getElementById("nik").value;
-                            var nama = document.getElementById("nama").value;
-                            var status = document.getElementById("status").value;
-                            var email = document.getElementById("email").value;
-                            var no_hp = document.getElementById("no_hp").value;
+                            var nama_toko = document.getElementById("nama_toko").value.trim();
+                            var no_hp = document.getElementById("no_hp").value.trim();
+                            var kategori_toko = document.getElementById("kategori_toko").value.trim();
+                            var alamat_toko = document.getElementById("alamat_toko").value.trim();
+                            var logo_toko = document.getElementById("logo_toko").files.length > 0 ? document.getElementById("logo_toko").files[0] : null;
+                            var deskripsi_toko = document.getElementById("deskripsi_toko").value.trim();
 
-                            if (nik == "" && nama == "" && status == "" && email == "" && no_hp == "") {
+                            // Push ke array form1
+                            form1.push(nama_toko, no_hp, kategori_toko, alamat_toko, logo_toko, deskripsi_toko);
+
+                            // Validasi field kosong
+                            if (
+                                nama_toko === "" ||
+                                no_hp === "" ||
+                                kategori_toko === "" ||
+                                alamat_toko === "" ||
+                                !logo_toko ||
+                                deskripsi_toko === ""
+                            ) {
                                 Swal.fire({
-                                    text: "Isi Terlebih Dahulu Sebelum Melanjutkan",
+                                    text: "Semua field harus diisi sebelum melanjutkan",
                                     icon: "error",
                                     buttonsStyling: !1,
                                     confirmButtonText: "cek",
@@ -54,20 +65,64 @@ var KTCreateAccount = (function () {
                                 });
                                 return false;
                             }
+
+                            // Validasi nomor HP (hanya angka dan panjang 9-13)
+                            var hpRegex = /^[0-9]{9,13}$/;
+                            if (!hpRegex.test(no_hp)) {
+                                Swal.fire({
+                                    text: "No. HP harus berupa angka dan 9-13 digit",
+                                    icon: "error",
+                                    buttonsStyling: !1,
+                                    confirmButtonText: "cek",
+                                    customClass: {
+                                        confirmButton: "btn btn-light",
+                                    },
+                                }).then(function () {
+                                    KTUtil.scrollTop();
+                                });
+                                return false;
+                            }
+
+                            // Validasi logo file (opsional: hanya gambar)
+                            if (logo_toko && !logo_toko.type.startsWith("image/")) {
+                                Swal.fire({
+                                    text: "Logo toko harus berupa file gambar",
+                                    icon: "error",
+                                    buttonsStyling: !1,
+                                    confirmButtonText: "cek",
+                                    customClass: {
+                                        confirmButton: "btn btn-light",
+                                    },
+                                }).then(function () {
+                                    KTUtil.scrollTop();
+                                });
+                                return false;
+                            }
+
                             console.log("validasi form 1");
                             console.log(form1);
                         } else if (idx === 2) {
-                            // validasi form 2
-                            var persetujuan = document.getElementsByName("persetujuan");
-                            var setujuValue = false;
-                            var radios = document.getElementsByName("pertanyaan0");
-                            var radios1 = document.getElementsByName("pertanyaan1");
-                            var radios2 = document.getElementsByName("pertanyaan2");
-                            var valid = false;
+                            // Validasi form 2 (Dokumen Kepemilikan)
+                            form2 = [];
+                            var nama_ktp = document.getElementById("nama_ktp").value.trim();
+                            var nomor_ktp = document.getElementById("nomor_ktp").value.trim();
+                            var nomor_kk = document.getElementById("nomor_kk").value.trim();
+                            var foto_ktp = document.getElementById("foto_ktp").files.length > 0 ? document.getElementById("foto_ktp").files[0] : null;
+                            var foto_kk = document.getElementById("foto_kk").files.length > 0 ? document.getElementById("foto_kk").files[0] : null;
 
-                            if (radios == "" && radios1 == "" && radios2 == "") {
+                            // Push ke array form2
+                            form2.push(nama_ktp, nomor_ktp, nomor_kk, foto_ktp, foto_kk);
+
+                            // Validasi field kosong
+                            if (
+                                nama_ktp === "" ||
+                                nomor_ktp === "" ||
+                                nomor_kk === "" ||
+                                !foto_ktp ||
+                                !foto_kk
+                            ) {
                                 Swal.fire({
-                                    text: "Isi Terlebih Dahulu Sebelum Melanjutkan",
+                                    text: "Semua field dokumen harus diisi sebelum melanjutkan",
                                     icon: "error",
                                     buttonsStyling: !1,
                                     confirmButtonText: "cek",
@@ -80,14 +135,25 @@ var KTCreateAccount = (function () {
                                 return false;
                             }
 
-                            for (var i = 0; i < radios2.length; i++) {
-                                if (radios2[i].checked == true) {
-                                    valid = true;
-                                }
-                            }
-                            if (!valid) {
+                            // Validasi nomor KTP & KK (hanya angka dan 16 digit)
+                            var nomorRegex = /^[0-9]{16}$/;
+                            if (!nomorRegex.test(nomor_ktp)) {
                                 Swal.fire({
-                                    text: "Anda harus menjawab dan pilih salah satu ya/tidak",
+                                    text: "Nomor KTP harus 16 digit angka",
+                                    icon: "error",
+                                    buttonsStyling: !1,
+                                    confirmButtonText: "cek",
+                                    customClass: {
+                                        confirmButton: "btn btn-light",
+                                    },
+                                }).then(function () {
+                                    KTUtil.scrollTop();
+                                });
+                                return false;
+                            }
+                            if (!nomorRegex.test(nomor_kk)) {
+                                Swal.fire({
+                                    text: "Nomor KK harus 16 digit angka",
                                     icon: "error",
                                     buttonsStyling: !1,
                                     confirmButtonText: "cek",
@@ -100,14 +166,24 @@ var KTCreateAccount = (function () {
                                 return false;
                             }
 
-                            for (var i = 0; i < radios1.length; i++) {
-                                if (radios1[i].checked == true) {
-                                    valid = true;
-                                }
-                            }
-                            if (!valid) {
+                            // Validasi file gambar
+                            if (foto_ktp && !foto_ktp.type.startsWith("image/")) {
                                 Swal.fire({
-                                    text: "Anda harus menjawab dan pilih salah satu ya/tidak",
+                                    text: "Foto KTP harus berupa file gambar",
+                                    icon: "error",
+                                    buttonsStyling: !1,
+                                    confirmButtonText: "cek",
+                                    customClass: {
+                                        confirmButton: "btn btn-light",
+                                    },
+                                }).then(function () {
+                                    KTUtil.scrollTop();
+                                });
+                                return false;
+                            }
+                            if (foto_kk && !foto_kk.type.startsWith("image/")) {
+                                Swal.fire({
+                                    text: "Foto KK harus berupa file gambar",
                                     icon: "error",
                                     buttonsStyling: !1,
                                     confirmButtonText: "cek",
@@ -120,45 +196,6 @@ var KTCreateAccount = (function () {
                                 return false;
                             }
 
-                            for (var i = 0; i < radios.length; i++) {
-                                if (radios[i].checked == true) {
-                                    valid = true;
-                                }
-                            }
-                            if (!valid) {
-                                Swal.fire({
-                                    text: "Anda harus menjawab dan pilih salah satu ya/tidak",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
-
-                            for (var i = 0; i < persetujuan.length; i++) {
-                                if (persetujuan[i].checked == true) {
-                                    setujuValue = true;
-                                }
-                            }
-                            if (!setujuValue) {
-                                Swal.fire({
-                                    text: "Anda harus menyetujui pernyataan tersebut",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
                             console.log("validasi form 2");
                             console.log(form2);
                         } else if (idx === 3) {
@@ -329,7 +366,7 @@ var KTCreateAccount = (function () {
 
                             //  var n = new Date();
                             //  document.getElementById("no_tiket").value = "-"+ (("0"+dt.getDate()).slice(-2)) + (("0"+(dt.getMonth()+1)).slice(-2)) + (dt.getFullYear()) +"-"+ (("0"+dt.getHours()).slice(-2)) + (("0"+dt.getMinutes()).slice(-2));
-                            
+
                             // $("no_tiket").val((("0"+dt.getDate()).slice(-2)) + (("0"+(dt.getMonth()+1)).slice(-2)) + (dt.getFullYear()) +"-"+ (("0"+dt.getHours()).slice(-2)) + (("0"+dt.getMinutes()).slice(-2)));
                             $("#conf-kantor-tujuan").val(form3[0]);
                             $("#conf-layanan").val(form3[3]);
@@ -590,7 +627,7 @@ var KTCreateAccount = (function () {
                                     n =  new Date();
                                     $("#no_antrian").val(dataResult.data.no_antrian);
                                     $("#no_tiket").val(dataResult.data.no_tiket + "-" + (("0"+n.getDate()).slice(-2)) + (("0"+(n.getMonth()+1)).slice(-2)) + (n.getFullYear()) +"-"+ (("0"+n.getHours()).slice(-2)) + (("0"+n.getMinutes()).slice(-2)));
-                                            
+
                                             console.log("validated!"),
                                                 "Valid" == t
                                                     ? (e.preventDefault(),
