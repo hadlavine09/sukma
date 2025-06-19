@@ -295,6 +295,9 @@ Route::prefix('Toko')->group(function () {
     //     return view('toko.verifikasi');
     // })->name('verifikasi.toko');
     Route::get('Verifikasi-Toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
+    Route::get('/Verifikasi', function () {
+        return view('toko.auth.umkm_register');
+    })->name('toko.umkm_register');
 });
 // Route::middleware(['auth'])->group(function () {
 // });
