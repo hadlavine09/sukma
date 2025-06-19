@@ -323,4 +323,8 @@ public function index(Request $request)
     {
         //
     }
+
+    public function verifikasi_toko(){
+        return view('toko.verifikasi');
+    }
 }

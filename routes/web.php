@@ -33,6 +33,22 @@ use App\Http\Controllers\UserManagement\PermissionController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Auth::routes();
+Route::get('/', function () {
+    return view('frontend.produk');
+});
+Route::middleware('guest')->group(function () {
+    Route::prefix('Toko')->group(function () {
+        Route::get('RegisterToko', [RegisterController::class, 'showRegisterToko'])->name('RegisterToko');
+    });
+    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::get('register', [RegisterController::class, 'showRegisterForm'])->name('register2');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+    Route::post('/register-action', [RegisterController::class, 'register'])->name('register.post');
+    Route::post('/register-toko', [RegisterController::class, 'registertoko'])->name('register.toko');
+
+});
+
 
 Route::get('lang/{lang}', function ($lang) {
     if (in_array($lang, ['en', 'id'])) {
@@ -45,22 +61,10 @@ Route::get('lang/{lang}', function ($lang) {
 Route::get('/daftar-umkm', [UmkmAuthController::class, 'index'])->name('umkm.register');
 Route::get('/alur-umkm', [UmkmAuthController::class, 'alur'])->name('umkm.alur');
 
-Auth::routes(['verify'=>true]);
 Route::get('/', function () {
     return view('frontend.produk');
 });
-// Routes untuk guest (belum login)
-Route::middleware('guest')->group(function () {
-    // Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register2');
-});
 
-// Proses login
-Route::post('/login', [LoginController::class, 'login'])->name('login.post');
-
-// Proses registrasi
-Route::post('/register-action', [RegisterController::class, 'register'])->name('register.post');
 
 // Routes yang hanya bisa diakses oleh user yang sudah login
 Route::middleware(['auth'])->group(function () {
@@ -277,10 +281,22 @@ Route::prefix('FrontEnd')->group(function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+Route::prefix('Toko')->group(function () {
+    Route::get('/LoginToko', function () {
+        return view('toko.auth.login');
+    });
+    // Route::get('/RegisterToko', function () {
+    //     return view('toko.auth.register');
+    // });
+    Route::get('/Dashboard-Toko', function () {
+        return view('toko.dashboard');
+    })->name('dashboard.toko');
+    // Route::get('/Verifikasi-Toko', function () {
+    //     return view('toko.verifikasi');
+    // })->name('verifikasi.toko');
+    Route::get('Verifikasi-Toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
+});
 // Route::middleware(['auth'])->group(function () {
-//     Route::get('/home', function () {
-//         return view('frontend.home');
-//     });
 // });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
