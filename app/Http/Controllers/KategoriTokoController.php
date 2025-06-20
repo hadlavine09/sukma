@@ -50,23 +50,27 @@ class KategoriTokoController extends Controller
     DB::beginTransaction();
 
     try {
+        // Validasi input
         $request->validate([
             'nama_kategori_toko' => 'required|string',
             'deskripsi_kategori_toko' => 'required|string|min:10',
             'gambar_kategori_toko' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        // Pastikan folder 'kategori_toko' sudah ada di storage/app/public
         if (!Storage::disk('public')->exists('kategori_toko')) {
-            Storage::disk('public')->makeDirectory('kategori_toko');
+            Storage::disk('public')->makeDirectory('kategori_toko', 0755, true);
         }
 
+        // Simpan gambar
         $gambarPath = $request->file('gambar_kategori_toko')->store('kategori_toko', 'public');
 
-        // Ambil kode terakhir TANPA termasuk yang di-soft-delete
+        // Buat kode otomatis
         $last = kategori_toko::withoutTrashed()->orderBy('kode_kategori_toko', 'desc')->first();
         $lastNumber = $last ? (int)substr($last->kode_kategori_toko, 4) : 0;
         $newKode = 'KTGT' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
 
+        // Simpan ke database
         kategori_toko::create([
             'kode_kategori_toko' => $newKode,
             'nama_kategori_toko' => $request->nama_kategori_toko,
@@ -82,6 +86,7 @@ class KategoriTokoController extends Controller
         return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
     }
 }
+
 
 
     public function show($kode_kategori_toko)

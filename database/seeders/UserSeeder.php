@@ -52,7 +52,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'User Biasa',
-                'email' => 'user@example.com',
+                'email' => '    ',
                 'username' => 'user',
                 'no_hp' => '0813333333',
                 'no_ktp' => '3456789012345678',
