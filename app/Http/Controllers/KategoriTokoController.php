@@ -45,28 +45,31 @@ class KategoriTokoController extends Controller
         return view('backend.manajementtoko.kategori_toko.create');
     }
 
-   public function store(Request $request)
+public function store(Request $request)
 {
     DB::beginTransaction();
 
     try {
         // Validasi input
         $request->validate([
-            'nama_kategori_toko' => 'required|string',
+            'nama_kategori_toko' => 'required|string|max:255',
             'deskripsi_kategori_toko' => 'required|string|min:10',
             'gambar_kategori_toko' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Pastikan folder 'kategori_toko' sudah ada di storage/app/public
-        if (!Storage::disk('public')->exists('kategori_toko')) {
-            Storage::disk('public')->makeDirectory('kategori_toko', 0755, true);
+        // Cek dan buat folder jika belum ada
+        $folderPath = 'kategori_toko';
+        if (!Storage::disk('public')->exists($folderPath)) {
+            Storage::disk('public')->makeDirectory($folderPath, 0755, true);
         }
 
         // Simpan gambar
-        $gambarPath = $request->file('gambar_kategori_toko')->store('kategori_toko', 'public');
+        $file = $request->file('gambar_kategori_toko');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $gambarPath = $file->storeAs($folderPath, $filename, 'public');
 
         // Buat kode otomatis
-        $last = kategori_toko::withoutTrashed()->orderBy('kode_kategori_toko', 'desc')->first();
+        $last = kategori_toko::withTrashed()->orderBy('kode_kategori_toko', 'desc')->first();
         $lastNumber = $last ? (int)substr($last->kode_kategori_toko, 4) : 0;
         $newKode = 'KTGT' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
 
@@ -86,6 +89,7 @@ class KategoriTokoController extends Controller
         return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
     }
 }
+
 
 
 
