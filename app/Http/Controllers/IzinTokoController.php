@@ -14,37 +14,34 @@ use Yajra\DataTables\Facades\DataTables;
 
 class IzinTokoController extends Controller
 {
-
     public function index(Request $request)
     {
         if ($request->ajax()) {
             // Ambil data toko
-            $toko = DB::table('tokos')
-                ->join('users', 'tokos.pemilik_toko_id', '=', 'users.id')
-                ->join('kategori_tokos', 'tokos.kategori_toko_id', '=', 'kategori_tokos.id')
-                ->where('tokos.status_toko', 'proses')
-                ->whereNull('tokos.deleted_at')
-                ->whereNull('kategori_tokos.deleted_at')
-                ->select('tokos.*', 'users.username as nama_pemilik', 'kategori_tokos.nama_kategori_toko')
-                ->get();
+            $toko = DB::table('tokos')->join('users', 'tokos.pemilik_toko_id', '=', 'users.id')->join('kategori_tokos', 'tokos.kategori_toko_id', '=', 'kategori_tokos.id')->where('tokos.status_toko', 'proses')->whereNull('tokos.deleted_at')->whereNull('kategori_tokos.deleted_at')->select('tokos.*', 'users.username as nama_pemilik', 'kategori_tokos.nama_kategori_toko')->get();
             return DataTables::of($toko)
                 ->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     return '
-                        <a href="' . route('izin_toko.show', $data->kode_toko) . '" class="btn btn-sm btn-info">
+                        <a href="' .
+                        route('izin_toko.show', $data->kode_toko) .
+                        '" class="btn btn-sm btn-info">
                             <i class="bi bi-eye"></i> Show
                         </a>
-                       <button onclick="verifikasiToko(\'' . $data->kode_toko . '\', true)" class="btn btn-sm btn-success me-1">
+                       <button onclick="verifikasiToko(\'' .
+                        $data->kode_toko .
+                        '\', true)" class="btn btn-sm btn-success me-1">
             <i class="bi bi-check-circle"></i> Izinkan
         </button>
-        <button onclick="verifikasiToko(\'' . $data->kode_toko . '\', false)" class="btn btn-sm btn-danger">
+        <button onclick="verifikasiToko(\'' .
+                        $data->kode_toko .
+                        '\', false)" class="btn btn-sm btn-danger">
             <i class="bi bi-x-circle"></i> Tolak
         </button>
                     ';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
-
         }
 
         // Mengirim data toko untuk tampilan normal jika tidak menggunakan AJAX
@@ -57,7 +54,6 @@ class IzinTokoController extends Controller
     {
         $kategoriTokos = kategori_toko::all();
         return view('backend.manajementtoko.pendaftarantoko.create', compact('kategoriTokos'));
-
     }
     public function izinkan(Request $request)
     {
@@ -66,12 +62,9 @@ class IzinTokoController extends Controller
         DB::beginTransaction();
         try {
             // Ambil data toko dengan status 'proses'
-            $toko = DB::table('tokos')
-                ->where('status_toko', 'proses')
-                ->where('kode_toko', $kode_toko)
-                ->first();
+            $toko = DB::table('tokos')->where('status_toko', 'proses')->where('kode_toko', $kode_toko)->first();
 
-            if (! $toko) {
+            if (!$toko) {
                 return redirect()->back()->with('error', 'Toko tidak ditemukan atau status tidak sesuai.');
             }
 
@@ -81,7 +74,7 @@ class IzinTokoController extends Controller
                 ->update(['status_toko' => 'izinkan']);
 
             // Generate nomor izin otomatis
-            $last       = IzinToko::orderBy('nomor_izin', 'desc')->first();
+            $last = IzinToko::orderBy('nomor_izin', 'desc')->first();
             $lastNumber = 0;
 
             if ($last && preg_match('/IZT(\d+)/', $last->nomor_izin, $matches)) {
@@ -92,19 +85,21 @@ class IzinTokoController extends Controller
 
             // Simpan data ke tabel izin_tokos
             IzinToko::create([
-                'toko_id'        => $toko->id,
-                'nomor_izin'     => $nomor_izin,
-                'nama_dokumen'   => 'Dokumen Izin Toko #' . $toko->id,
-                'file_dokumen'   => 'default.pdf', // Ubah jika menggunakan upload file
+                'toko_id' => $toko->id,
+                'nomor_izin' => $nomor_izin,
+                'nama_dokumen' => 'Dokumen Izin Toko #' . $toko->id,
+                'file_dokumen' => 'default.pdf', // Ubah jika menggunakan upload file
                 'tanggal_terbit' => Carbon::now()->toDateString(),
-                'created_at'     => Carbon::now(),
+                'created_at' => Carbon::now(),
             ]);
 
             DB::commit();
             return redirect()->back()->with('success', 'Toko berhasil diizinkan dan data izin disimpan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal memproses izin: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal memproses izin: ' . $e->getMessage());
         }
     }
     public function tidak_izinkan(Request $request)
@@ -114,12 +109,9 @@ class IzinTokoController extends Controller
         DB::beginTransaction();
         try {
             // Ambil data toko dengan status 'proses'
-            $toko = DB::table('tokos')
-                ->where('status_toko', 'proses')
-                ->where('kode_toko', $kode_toko)
-                ->first();
+            $toko = DB::table('tokos')->where('status_toko', 'proses')->where('kode_toko', $kode_toko)->first();
 
-            if (! $toko) {
+            if (!$toko) {
                 return redirect()->back()->with('error', 'Toko tidak ditemukan atau status tidak sesuai.');
             }
 
@@ -132,7 +124,9 @@ class IzinTokoController extends Controller
             return redirect()->back()->with('success', 'Toko berhasil tidak diizinkan dan data izin disimpan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal memproses izin: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal memproses izin: ' . $e->getMessage());
         }
     }
     /**
@@ -146,88 +140,86 @@ class IzinTokoController extends Controller
         try {
             $request->validate([
                 //form tahap1
-                'nama_toko'             => 'required|string|max:255',
-                'kategori_toko_id'      => 'required|exists:kategori_tokos,id',
-                'no_hp_toko'            => 'required|string|max:20',
-                'alamat_toko'           => 'required|string',
-                'deskripsi_toko'        => 'nullable|string',
-                'logo_toko'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'nama_toko' => 'required|string|max:255',
+                'kategori_toko_id' => 'required|exists:kategori_tokos,id',
+                'no_hp_toko' => 'required|string|max:20',
+                'alamat_toko' => 'required|string',
+                'deskripsi_toko' => 'nullable|string',
+                'logo_toko' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
 
                 //form tahap2
-                'nama_ktp'              => 'required|string|max:255',
-                'nomor_ktp'             => 'required|string|max:50',
-                'nomor_kk'              => 'required|string|max:50',
-                'foto_ktp'              => 'required|image|mimes:jpg,jpeg,png|max:2048',
-                'foto_kk'               => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                'nama_ktp' => 'required|string|max:255',
+                'nomor_ktp' => 'required|string|max:50',
+                'nomor_kk' => 'required|string|max:50',
+                'foto_ktp' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                'foto_kk' => 'required|image|mimes:jpg,jpeg,png|max:2048',
 
                 //form tahap3
-                'nama_bank'             => 'nullable|string|max:255',
-                'nomor_rekening'        => 'nullable|string|max:100',
+                'nama_bank' => 'nullable|string|max:255',
+                'nomor_rekening' => 'nullable|string|max:100',
                 'nama_pemilik_rekening' => 'nullable|string|max:255',
 
                 //form tahap4
-                'email_cs'              => 'nullable|email|max:255',
-                'whatsapp_cs'           => 'nullable|string|max:20',
-                'link_instagram'        => 'nullable|string|max:255',
-                'link_facebook'         => 'nullable|string|max:255',
-                'link_tiktok'           => 'nullable|string|max:255',
-                'link_google_maps'      => 'nullable|string|max:255',
+                'email_cs' => 'nullable|email|max:255',
+                'whatsapp_cs' => 'nullable|string|max:20',
+                'link_instagram' => 'nullable|string|max:255',
+                'link_facebook' => 'nullable|string|max:255',
+                'link_tiktok' => 'nullable|string|max:255',
+                'link_google_maps' => 'nullable|string|max:255',
 
                 //form tahap5
-                'jadwal'                => 'required|array',
+                'jadwal' => 'required|array',
             ]);
 
             // Upload logo toko
-            $logoPath = $request->hasFile('logo_toko')
-            ? $request->file('logo_toko')->store('logo_toko', 'public')
-            : null;
+            $logoPath = $request->hasFile('logo_toko') ? $request->file('logo_toko')->store('logo_toko', 'public') : null;
 
             // Upload KTP dan KK
             $ktpPath = $request->file('foto_ktp')->store('dokumen_ktp', 'public');
-            $kkPath  = $request->file('foto_kk')->store('dokumen_kk', 'public');
+            $kkPath = $request->file('foto_kk')->store('dokumen_kk', 'public');
 
-            $last       = Toko::withoutTrashed()->orderBy('kode_toko', 'desc')->first();
+            $last = Toko::withoutTrashed()->orderBy('kode_toko', 'desc')->first();
             $lastNumber = $last ? (int) substr($last->kode_toko, 4) : 0;
-            $newKode    = 'TK' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+            $newKode = 'TK' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
 
             $toko = Toko::create([
-                'kode_toko'         => $newKode,
-                'pemilik_toko_id'   => auth()->id(),
-                'kategori_toko_id'  => $request->kategori_toko_id,
-                'nama_toko'         => $request->nama_toko,
-                'logo_toko'         => $logoPath,
-                'no_hp_toko'        => $request->no_hp_toko,
-                'alamat_toko'       => $request->alamat_toko,
-                'deskripsi_toko'    => $request->deskripsi_toko,
+                'kode_toko' => $newKode,
+                'pemilik_toko_id' => auth()->id(),
+                'kategori_toko_id' => $request->kategori_toko_id,
+                'nama_toko' => $request->nama_toko,
+                'logo_toko' => $logoPath,
+                'no_hp_toko' => $request->no_hp_toko,
+                'alamat_toko' => $request->alamat_toko,
+                'deskripsi_toko' => $request->deskripsi_toko,
                 'status_aktif_toko' => 1,
             ]);
 
             DetailToko::create([
-                'toko_id'               => $toko->id,
-                'nama_bank'             => $request->nama_bank,
-                'nomor_rekening'        => $request->nomor_rekening,
+                'toko_id' => $toko->id,
+                'nama_bank' => $request->nama_bank,
+                'nomor_rekening' => $request->nomor_rekening,
                 'nama_pemilik_rekening' => $request->nama_pemilik_rekening,
-                'email_cs'              => $request->email_cs,
-                'whatsapp_cs'           => $request->whatsapp_cs,
-                'link_instagram'        => $request->link_instagram,
-                'link_facebook'         => $request->link_facebook,
-                'link_tiktok'           => $request->link_tiktok,
-                'link_google_maps'      => $request->link_google_maps,
-                'catatan_tambahan'      => null,
-                'nomor_ktp'             => $request->nomor_ktp,
-                'nomor_kk'              => $request->nomor_kk,
-                'nama_ktp'              => $request->nama_ktp,
-                'foto_ktp'              => $ktpPath,
-                'foto_kk'               => $kkPath,
+                'email_cs' => $request->email_cs,
+                'whatsapp_cs' => $request->whatsapp_cs,
+                'link_instagram' => $request->link_instagram,
+                'link_facebook' => $request->link_facebook,
+                'link_tiktok' => $request->link_tiktok,
+                'link_google_maps' => $request->link_google_maps,
+                'catatan_tambahan' => null,
+                'nomor_ktp' => $request->nomor_ktp,
+                'nomor_kk' => $request->nomor_kk,
+                'nama_ktp' => $request->nama_ktp,
+                'foto_ktp' => $ktpPath,
+                'foto_kk' => $kkPath,
             ]);
 
             foreach ($request->jadwal as $hari => $data) {
                 DB::table('jam_operasionals')->insert([
-                    'toko_id'    => $toko->id,
-                    'hari'       => $hari,
-                    'buka'       => isset($data['buka']) && $data['buka'] == '1',
-                    'jam_buka'   => $data['jam_buka'] ?? null,
-                    'jam_tutup'  => $data['jam_tutup'] ?? null,
+                    'toko_id' => $toko->id,
+                    'hari' => $hari,
+                    'buka' => isset($data['buka']) && $data['buka'] == '1',
+                    'jam_buka' => $data['jam_buka'] ?? null,
+                    'jam_tutup' => $data['jam_tutup'] ?? null,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -237,7 +229,10 @@ class IzinTokoController extends Controller
             return redirect()->route('izin_toko.index')->with('success', 'Toko berhasil didaftarkan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage())
+                ->withInput();
         }
     }
 
@@ -248,44 +243,17 @@ class IzinTokoController extends Controller
     public function show($kode_toko)
     {
         // Ambil detail utama toko (1 baris)
-        $tokoshow = DB::table('tokos')
-            ->join('users', 'tokos.pemilik_toko_id', '=', 'users.id')
-            ->join('kategori_tokos', 'tokos.kategori_toko_id', '=', 'kategori_tokos.id')
-            ->join('detail_tokos', 'tokos.id', '=', 'detail_tokos.toko_id')
-            ->where('tokos.kode_toko', $kode_toko)
-            ->whereNull('tokos.deleted_at')
-            ->whereNull('kategori_tokos.deleted_at')
-            ->select(
-                'tokos.*',
-                'users.username as nama_pemilik',
-                'kategori_tokos.nama_kategori_toko',
-                'detail_tokos.nama_ktp',
-                'detail_tokos.nomor_ktp',
-                'detail_tokos.nomor_kk',
-                'detail_tokos.foto_ktp',
-                'detail_tokos.foto_kk',
-                'detail_tokos.nama_bank',
-                'detail_tokos.nomor_rekening',
-                'detail_tokos.nama_pemilik_rekening',
-                'detail_tokos.email_cs',
-                'detail_tokos.whatsapp_cs',
-                'detail_tokos.link_instagram',
-                'detail_tokos.link_facebook',
-                'detail_tokos.link_tiktok',
-                'detail_tokos.link_google_maps',
-                'tokos.logo_toko'
+        $tokoshow = DB::table('tokos')->join('users', 'tokos.pemilik_toko_id', '=', 'users.id')->join('kategori_tokos', 'tokos.kategori_toko_id', '=', 'kategori_tokos.id')->join('detail_tokos', 'tokos.id', '=', 'detail_tokos.toko_id')->where('tokos.kode_toko', $kode_toko)->whereNull('tokos.deleted_at')->whereNull('kategori_tokos.deleted_at')->select('tokos.*', 'users.username as nama_pemilik', 'kategori_tokos.nama_kategori_toko', 'detail_tokos.nama_ktp', 'detail_tokos.nomor_ktp', 'detail_tokos.nomor_kk', 'detail_tokos.foto_ktp', 'detail_tokos.foto_kk', 'detail_tokos.nama_bank', 'detail_tokos.nomor_rekening', 'detail_tokos.nama_pemilik_rekening', 'detail_tokos.email_cs', 'detail_tokos.whatsapp_cs', 'detail_tokos.link_instagram', 'detail_tokos.link_facebook', 'detail_tokos.link_tiktok', 'detail_tokos.link_google_maps', 'tokos.logo_toko')->first();
 
-            )
-            ->first();
-
-        if (! $tokoshow) {
+        if (!$tokoshow) {
             return redirect()->back()->with('error', 'Toko tidak ditemukan.');
         }
 
         // Ambil jam operasional per hari (banyak baris)
         $jadwalOperasional = DB::table('jam_operasionals')
             ->where('toko_id', $tokoshow->id)
-            ->orderByRaw("CASE
+            ->orderByRaw(
+                "CASE
         WHEN hari = 'Senin' THEN 1
         WHEN hari = 'Selasa' THEN 2
         WHEN hari = 'Rabu' THEN 3
@@ -293,7 +261,8 @@ class IzinTokoController extends Controller
         WHEN hari = 'Jumat' THEN 5
         WHEN hari = 'Sabtu' THEN 6
         WHEN hari = 'Minggu' THEN 7
-        ELSE 8 END")
+        ELSE 8 END",
+            )
             ->get();
 
         return view('backend.manajementtoko.pendaftarantoko.show', compact('tokoshow', 'jadwalOperasional'));
@@ -329,7 +298,7 @@ class IzinTokoController extends Controller
 
         // Cek apakah step sebelumnya sudah diisi
         for ($i = 1; $i < $step; $i++) {
-            if (! session()->has("toko_step{$i}")) {
+            if (!session()->has("toko_step{$i}")) {
                 return redirect()->route('toko.create', ['step' => $i]);
             }
         }
@@ -345,12 +314,12 @@ class IzinTokoController extends Controller
         switch ($step) {
             case 1:
                 $validated = $request->validate([
-                    'nama_toko'        => 'required|string|max:255',
+                    'nama_toko' => 'required|string|max:255',
                     'kategori_toko_id' => 'required|exists:kategori_tokos,id',
-                    'no_hp_toko'       => 'required|string|max:20',
-                    'alamat_toko'      => 'required|string',
-                    'deskripsi_toko'   => 'nullable|string',
-                    'logo_toko'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                    'no_hp_toko' => 'required|string|max:20',
+                    'alamat_toko' => 'required|string',
+                    'deskripsi_toko' => 'nullable|string',
+                    'logo_toko' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 ]);
 
                 if ($request->hasFile('logo_toko')) {
@@ -362,23 +331,23 @@ class IzinTokoController extends Controller
 
             case 2:
                 $validated = $request->validate([
-                    'nama_ktp'  => 'required|string|max:255',
+                    'nama_ktp' => 'required|string|max:255',
                     'nomor_ktp' => 'required|string|max:50',
-                    'nomor_kk'  => 'required|string|max:50',
-                    'foto_ktp'  => 'required|image|mimes:jpg,jpeg,png|max:2048',
-                    'foto_kk'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                    'nomor_kk' => 'required|string|max:50',
+                    'foto_ktp' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                    'foto_kk' => 'required|image|mimes:jpg,jpeg,png|max:2048',
                 ]);
 
                 $validated['foto_ktp'] = $request->file('foto_ktp')->store('foto_ktp_tmp', 'public');
-                $validated['foto_kk']  = $request->file('foto_kk')->store('foto_kk_tmp', 'public');
+                $validated['foto_kk'] = $request->file('foto_kk')->store('foto_kk_tmp', 'public');
 
                 session(['toko_step2' => $validated]);
                 break;
 
             case 3:
                 $validated = $request->validate([
-                    'nama_bank'             => 'nullable|string|max:255',
-                    'nomor_rekening'        => 'nullable|string|max:100',
+                    'nama_bank' => 'nullable|string|max:255',
+                    'nomor_rekening' => 'nullable|string|max:100',
                     'nama_pemilik_rekening' => 'nullable|string|max:255',
                 ]);
                 session(['toko_step3' => $validated]);
@@ -386,12 +355,12 @@ class IzinTokoController extends Controller
 
             case 4:
                 $validated = $request->validate([
-                    'email_cs'       => 'nullable|email|max:255',
-                    'whatsapp_cs'    => 'nullable|string|max:20',
+                    'email_cs' => 'nullable|email|max:255',
+                    'whatsapp_cs' => 'nullable|string|max:20',
                     'link_instagram' => 'nullable|string|max:255',
-                    'link_facebook'  => 'nullable|string|max:255',
-                    'link_tiktok'    => 'nullable|string|max:255',
-                    'link_website'   => 'nullable|string|max:255',
+                    'link_facebook' => 'nullable|string|max:255',
+                    'link_tiktok' => 'nullable|string|max:255',
+                    'link_website' => 'nullable|string|max:255',
                 ]);
                 session(['toko_step4' => $validated]);
                 break;
@@ -407,6 +376,140 @@ class IzinTokoController extends Controller
 
         return redirect()->route('verifikasitoko', ['step' => $step + 1]);
     }
+    public function push_toko(Request $request, $step)
+    {
+        try {
+            // Ambil data toko terbaru (atau buat baru jika belum ada)
+            $toko = Toko::latest()->first() ?? new Toko();
+
+            if ($step == 1) {
+                $logoPath = null;
+                if ($request->hasFile('logo_toko')) {
+                    $logoPath = $request->file('logo_toko')->store('uploads/logo_toko', 'public');
+                }
+
+                $toko->nama_toko = $request->nama_toko;
+                $toko->no_hp = $request->no_hp;
+                $toko->kategori_toko = $request->kategori_toko;
+                $toko->alamat_toko = $request->alamat_toko;
+                $toko->logo_toko = $logoPath;
+                $toko->deskripsi_toko = $request->deskripsi_toko;
+            }
+
+            if ($step == 2) {
+                $ktpPath = $request->hasFile('foto_ktp') ? $request->file('foto_ktp')->store('uploads/foto_ktp', 'public') : null;
+                $kkPath = $request->hasFile('foto_kk') ? $request->file('foto_kk')->store('uploads/foto_kk', 'public') : null;
+
+                $toko->nama_ktp = $request->nama_ktp;
+                $toko->nomor_ktp = $request->nomor_ktp;
+                $toko->nomor_kk = $request->nomor_kk;
+                $toko->foto_ktp = $ktpPath;
+                $toko->foto_kk = $kkPath;
+            }
+
+            if ($step == 3) {
+                $toko->nama_bank = $request->nama_bank;
+                $toko->nomor_rekening = $request->nomor_rekening;
+                $toko->nama_pemilik = $request->nama_pemilik;
+            }
+
+            if ($step == 4) {
+                $toko->email_cs = $request->email_cs;
+                $toko->wa_cs = $request->wa_cs;
+                $toko->instagram = $request->instagram;
+                $toko->facebook = $request->facebook;
+                $toko->tiktok = $request->tiktok;
+                $toko->google_maps = $request->google_maps;
+            }
+
+            if ($step == 5) {
+                $hari = json_decode($request->hari_operasional, true);
+
+                $toko->hari_operasional = $hari;
+                $toko->jam_buka = $request->jam_buka;
+                $toko->jam_tutup = $request->jam_tutup;
+            }
+
+            $toko->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => "Data step {$step} berhasil disimpan",
+                'data' => $toko,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Gagal menyimpan: ' . $e->getMessage(),
+                ],
+                500,
+            );
+        }
+    }
+
+    public function checkDuplicate(Request $request, $step)
+{
+// dd($request->all());
+$step = (int) $step;
+// dd($step);
+    try {
+        if ($step == 1) {
+            // dd("1");
+            // Cek nama_toko dan no_hp unik
+            // $exists = Toko::where('nama_toko', $request->input('nama_toko'))
+            //     ->orWhere('no_hp', $request->input('no_hp'))
+            //     ->exists();
+
+            // if ($exists) {
+            //     return response()->json([
+            //         'status' => 'duplicate',
+            //         'message' => 'Nama toko atau No. HP sudah terdaftar.'
+            //     ]);
+            // }
+             $validated = $request->validate([
+                    'nama_toko' => 'required|string|max:255',
+                    'no_hp' => 'required|string|max:20',
+                ]);
+            // dd($request->all());
+
+        } elseif ($step == 2) {
+            // Cek nomor_ktp atau nomor_kk sudah ada
+            $exists = Toko::where('nomor_ktp', $request->input('nomor_ktp'))
+                ->orWhere('nomor_kk', $request->input('nomor_kk'))
+                ->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'status' => 'duplicate',
+                    'message' => 'Nomor KTP atau KK sudah digunakan.'
+                ]);
+            }
+        } elseif ($step == 4) {
+            // Cek email_cs atau wa_cs unik
+            $exists = Toko::where('email_cs', $request->input('email_cs'))
+                ->orWhere('wa_cs', $request->input('wa_cs'))
+                ->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'status' => 'duplicate',
+                    'message' => 'Email CS atau WA CS sudah digunakan.'
+                ]);
+            }
+        }
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Data tidak duplikat'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Terjadi kesalahan pada server.'
+        ], 500);
+    }
+}
 
     public function saveToko()
     {
@@ -418,48 +521,48 @@ class IzinTokoController extends Controller
             $step4 = session('toko_step4');
             $step5 = session('toko_step5');
 
-            $last       = Toko::withoutTrashed()->orderBy('kode_toko', 'desc')->first();
+            $last = Toko::withoutTrashed()->orderBy('kode_toko', 'desc')->first();
             $lastNumber = $last ? (int) substr($last->kode_toko, 2) : 0;
-            $newKode    = 'TK' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+            $newKode = 'TK' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
 
             $toko = Toko::create([
-                'kode_toko'         => $newKode,
-                'pemilik_toko_id'   => auth()->id(),
-                'kategori_toko_id'  => $step1['kategori_toko_id'],
-                'nama_toko'         => $step1['nama_toko'],
-                'logo_toko'         => $step1['logo_toko'] ?? null,
-                'no_hp_toko'        => $step1['no_hp_toko'],
-                'alamat_toko'       => $step1['alamat_toko'],
-                'deskripsi_toko'    => $step1['deskripsi_toko'],
+                'kode_toko' => $newKode,
+                'pemilik_toko_id' => auth()->id(),
+                'kategori_toko_id' => $step1['kategori_toko_id'],
+                'nama_toko' => $step1['nama_toko'],
+                'logo_toko' => $step1['logo_toko'] ?? null,
+                'no_hp_toko' => $step1['no_hp_toko'],
+                'alamat_toko' => $step1['alamat_toko'],
+                'deskripsi_toko' => $step1['deskripsi_toko'],
                 'status_aktif_toko' => 1,
             ]);
 
             DetailToko::create([
-                'toko_id'               => $toko->id,
-                'nama_bank'             => $step3['nama_bank'] ?? null,
-                'nomor_rekening'        => $step3['nomor_rekening'] ?? null,
+                'toko_id' => $toko->id,
+                'nama_bank' => $step3['nama_bank'] ?? null,
+                'nomor_rekening' => $step3['nomor_rekening'] ?? null,
                 'nama_pemilik_rekening' => $step3['nama_pemilik_rekening'] ?? null,
-                'email_cs'              => $step4['email_cs'] ?? null,
-                'whatsapp_cs'           => $step4['whatsapp_cs'] ?? null,
-                'link_instagram'        => $step4['link_instagram'] ?? null,
-                'link_facebook'         => $step4['link_facebook'] ?? null,
-                'link_tiktok'           => $step4['link_tiktok'] ?? null,
-                'link_google_maps'      => $step4['link_website'] ?? null,
-                'catatan_tambahan'      => null,
-                'nomor_ktp'             => $step2['nomor_ktp'],
-                'nomor_kk'              => $step2['nomor_kk'],
-                'nama_ktp'              => $step2['nama_ktp'],
-                'foto_ktp'              => $step2['foto_ktp'],
-                'foto_kk'               => $step2['foto_kk'],
+                'email_cs' => $step4['email_cs'] ?? null,
+                'whatsapp_cs' => $step4['whatsapp_cs'] ?? null,
+                'link_instagram' => $step4['link_instagram'] ?? null,
+                'link_facebook' => $step4['link_facebook'] ?? null,
+                'link_tiktok' => $step4['link_tiktok'] ?? null,
+                'link_google_maps' => $step4['link_website'] ?? null,
+                'catatan_tambahan' => null,
+                'nomor_ktp' => $step2['nomor_ktp'],
+                'nomor_kk' => $step2['nomor_kk'],
+                'nama_ktp' => $step2['nama_ktp'],
+                'foto_ktp' => $step2['foto_ktp'],
+                'foto_kk' => $step2['foto_kk'],
             ]);
 
             foreach ($step5['jadwal'] as $hari => $data) {
                 DB::table('jam_operasionals')->insert([
-                    'toko_id'    => $toko->id,
-                    'hari'       => $hari,
-                    'buka'       => true,
-                    'jam_buka'   => $data['buka'] ?? null,
-                    'jam_tutup'  => $data['tutup'] ?? null,
+                    'toko_id' => $toko->id,
+                    'hari' => $hari,
+                    'buka' => true,
+                    'jam_buka' => $data['buka'] ?? null,
+                    'jam_tutup' => $data['tutup'] ?? null,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -472,7 +575,8 @@ class IzinTokoController extends Controller
             return redirect()->route('verifikasi_toko.wait')->with('success', 'Toko berhasil didaftarkan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('toko.create', ['step' => 5])
+            return redirect()
+                ->route('toko.create', ['step' => 5])
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
@@ -481,7 +585,7 @@ class IzinTokoController extends Controller
         $user = auth()->user();
         $toko = Toko::where('pemilik_toko_id', $user->id)->latest()->first();
 
-        if (! $toko) {
+        if (!$toko) {
             return view('toko.wrapper');
             // return redirect()->route('verifikasitoko')->with('error', 'Data toko tidak ditemukan.');
         }
@@ -501,5 +605,4 @@ class IzinTokoController extends Controller
     {
         return view('toko.dashboard');
     }
-
 }

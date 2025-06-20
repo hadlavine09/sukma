@@ -1,721 +1,796 @@
 "use strict";
+
+// Array untuk menyimpan data tiap form step
 var form1 = [];
 var form2 = [];
 var form3 = [];
+var form4 = [];
+var form5 = [];
+
 var KTCreateAccount = (function () {
-    var e,
-        t,
-        i,
-        o,
-        r,
-        s,
-        n = [];
+    var modalEl,
+        stepperEl,
+        formEl,
+        submitBtn,
+        nextBtn,
+        stepper,
+        validations = [];
+
+        async function checkDuplicate(step, data) {
+            // Gunakan route{} jika tersedia di window.route_umkm_check_duplicate
+            let baseRoute = (typeof window.route_umkm_check_duplicate !== "undefined")
+            ? window.route_umkm_check_duplicate
+            : "/sukma/Toko/check-duplicate";
+
+            // Hilangkan trailing slash jika ada
+            if (baseRoute.endsWith("/")) baseRoute = baseRoute.slice(0, -1);
+
+            const csrf = document.querySelector('meta[name="csrf-token"]');
+            let url = `${baseRoute}/${step}`;
+            let fd = new FormData();
+            if (data && typeof data === "object") {
+            Object.keys(data).forEach(key => {
+                fd.append(key, data[key]);
+            });
+            }
+            fd.append("step", step); // kirim juga stepnya
+            if (csrf) {
+            fd.append("_token", csrf.getAttribute("content"));
+            }
+            // AJAX jQuery
+            return new Promise((resolve) => {
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: fd,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                resolve(res);
+                },
+                error: function (xhr) {
+                let msg = "Terjadi kesalahan pada server.";
+                if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                resolve({
+                    status: "error",
+                    message: msg
+                });
+                }
+            });
+            });
+        }
+
     return {
         init: function () {
-            (e = document.querySelector("#kt_modal_create_account")) && new bootstrap.Modal(e),
-                (t = document.querySelector("#kt_create_account_stepper")) &&
-                    ((i = t.querySelector("#kt_create_account_form")),
-                    (o = t.querySelector('[data-kt-stepper-action="submit"]')),
-                    (r = t.querySelector('[data-kt-stepper-action="next"]')),
-                    (s = new KTStepper(t)).on("kt.stepper.changed", function (e) {
-                        4 === s.getCurrentStepIndex()
-                            ? (o.classList.remove("d-none"), o.classList.add("d-inline-block"), r.classList.add("d-none"))
-                            : 5 === s.getCurrentStepIndex()
-                            ? (o.classList.add("d-none"), r.classList.add("d-none"))
-                            : (o.classList.remove("d-inline-block"), o.classList.remove("d-none"), r.classList.remove("d-none"));
-                    }),
-                    s.on("kt.stepper.next", function (e) {
-                        console.log("stepper.next2");
-                        var idx = e.getCurrentStepIndex();
-                        var t = n[e.getCurrentStepIndex() - 1];
-                        // console.log("index", idx);
-                        console.log(n);
-                        if (idx === 1) {
-                            // Validasi form 1 (UMKM)
-                            form1 = [];
-                            var nama_toko = document.getElementById("nama_toko").value.trim();
-                            var no_hp = document.getElementById("no_hp").value.trim();
-                            var kategori_toko = document.getElementById("kategori_toko").value.trim();
-                            var alamat_toko = document.getElementById("alamat_toko").value.trim();
-                            var logo_toko = document.getElementById("logo_toko").files.length > 0 ? document.getElementById("logo_toko").files[0] : null;
-                            var deskripsi_toko = document.getElementById("deskripsi_toko").value.trim();
+            // Modal
+            modalEl = document.querySelector("#kt_modal_create_account");
+            if (modalEl) new bootstrap.Modal(modalEl);
 
-                            // Push ke array form1
-                            form1.push(nama_toko, no_hp, kategori_toko, alamat_toko, logo_toko, deskripsi_toko);
+            // Stepper
+            stepperEl = document.querySelector("#kt_create_account_stepper");
+            if (!stepperEl) return;
 
-                            // Validasi field kosong
-                            if (
-                                nama_toko === "" ||
-                                no_hp === "" ||
-                                kategori_toko === "" ||
-                                alamat_toko === "" ||
-                                !logo_toko ||
-                                deskripsi_toko === ""
-                            ) {
-                                Swal.fire({
-                                    text: "Semua field harus diisi sebelum melanjutkan",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
+            formEl = stepperEl.querySelector("#kt_create_account_form");
+            submitBtn = stepperEl.querySelector('[data-kt-stepper-action="submit"]');
+            nextBtn = stepperEl.querySelector('[data-kt-stepper-action="next"]');
+            stepper = new KTStepper(stepperEl);
 
-                            // Validasi nomor HP (hanya angka dan panjang 9-13)
-                            var hpRegex = /^[0-9]{9,13}$/;
-                            if (!hpRegex.test(no_hp)) {
-                                Swal.fire({
-                                    text: "No. HP harus berupa angka dan 9-13 digit",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
+            // Stepper changed event
+            stepper.on("kt.stepper.changed", function () {
+                var idx = stepper.getCurrentStepIndex();
+                if (idx === 4) {
+                    submitBtn.classList.remove("d-none");
+                    submitBtn.classList.add("d-inline-block");
+                    nextBtn.classList.add("d-none");
+                } else if (idx === 5) {
+                    submitBtn.classList.add("d-none");
+                    nextBtn.classList.add("d-none");
+                } else {
+                    submitBtn.classList.remove("d-inline-block", "d-none");
+                    nextBtn.classList.remove("d-none");
+                }
+            });
 
-                            // Validasi logo file (opsional: hanya gambar)
-                            if (logo_toko && !logo_toko.type.startsWith("image/")) {
-                                Swal.fire({
-                                    text: "Logo toko harus berupa file gambar",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
+            // Stepper next event
+            stepper.on("kt.stepper.next", async function (e) {
+                var idx = stepper.getCurrentStepIndex();
+                // Validasi step per step
+                if (idx === 1) {
+                    // Form 1: Data UMKM
+                    form1 = [];
+                    var nama_toko = document.getElementById("nama_toko").value.trim();
+                    var no_hp = document.getElementById("no_hp").value.trim();
+                    var kategori_toko = document.getElementById("kategori_toko").value.trim();
+                    var alamat_toko = document.getElementById("alamat_toko").value.trim();
+                    var logo_toko = document.getElementById("logo_toko").files.length > 0
+                        ? document.getElementById("logo_toko").files[0]
+                        : null;
+                    var deskripsi_toko = document.getElementById("deskripsi_toko").value.trim();
+                    form1.push(nama_toko, no_hp, kategori_toko, alamat_toko, logo_toko, deskripsi_toko);
 
-                            console.log("validasi form 1");
-                            console.log(form1);
-                        } else if (idx === 2) {
-                            // Validasi form 2 (Dokumen Kepemilikan)
-                            form2 = [];
-                            var nama_ktp = document.getElementById("nama_ktp").value.trim();
-                            var nomor_ktp = document.getElementById("nomor_ktp").value.trim();
-                            var nomor_kk = document.getElementById("nomor_kk").value.trim();
-                            var foto_ktp = document.getElementById("foto_ktp").files.length > 0 ? document.getElementById("foto_ktp").files[0] : null;
-                            var foto_kk = document.getElementById("foto_kk").files.length > 0 ? document.getElementById("foto_kk").files[0] : null;
+                    if (
+                        nama_toko === "" ||
+                        no_hp === "" ||
+                        kategori_toko === "" ||
+                        alamat_toko === "" ||
+                        !logo_toko ||
+                        deskripsi_toko === ""
+                    ) {
+                        Swal.fire({
+                            text: "Semua field harus diisi sebelum melanjutkan",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    var hpRegex = /^[0-9]{9,13}$/;
+                    if (!hpRegex.test(no_hp)) {
+                        Swal.fire({
+                            text: "No. HP harus berupa angka dan 9-13 digit",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (logo_toko && !logo_toko.type.startsWith("image/")) {
+                        Swal.fire({
+                            text: "Logo toko harus berupa file gambar",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    // Cek ke server apakah nama_toko atau no_hp sudah ada
+                    let check = await checkDuplicate(1, { nama_toko, no_hp });
+                    if (check.status === "error") {
+                        Swal.fire({
+                            text: check.message || "Nama toko atau No. HP sudah terdaftar.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                } else if (idx === 2) {
+                    // Form 2: Dokumen Kepemilikan
+                    form2 = [];
+                    var nama_ktp = document.getElementById("nama_ktp").value.trim();
+                    var nomor_ktp = document.getElementById("nomor_ktp").value.trim();
+                    var nomor_kk = document.getElementById("nomor_kk").value.trim();
+                    var foto_ktp = document.getElementById("foto_ktp").files.length > 0
+                        ? document.getElementById("foto_ktp").files[0]
+                        : null;
+                    var foto_kk = document.getElementById("foto_kk").files.length > 0
+                        ? document.getElementById("foto_kk").files[0]
+                        : null;
+                    form2.push(nama_ktp, nomor_ktp, nomor_kk, foto_ktp, foto_kk);
 
-                            // Push ke array form2
-                            form2.push(nama_ktp, nomor_ktp, nomor_kk, foto_ktp, foto_kk);
+                    if (
+                        nama_ktp === "" ||
+                        nomor_ktp === "" ||
+                        nomor_kk === "" ||
+                        !foto_ktp ||
+                        !foto_kk
+                    ) {
+                        Swal.fire({
+                            text: "Semua field dokumen harus diisi sebelum melanjutkan",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    var nomorRegex = /^[0-9]{16}$/;
+                    if (!nomorRegex.test(nomor_ktp)) {
+                        Swal.fire({
+                            text: "Nomor KTP harus 16 digit angka",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (!nomorRegex.test(nomor_kk)) {
+                        Swal.fire({
+                            text: "Nomor KK harus 16 digit angka",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (foto_ktp && !foto_ktp.type.startsWith("image/")) {
+                        Swal.fire({
+                            text: "Foto KTP harus berupa file gambar",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (foto_kk && !foto_kk.type.startsWith("image/")) {
+                        Swal.fire({
+                            text: "Foto KK harus berupa file gambar",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    // Cek ke server apakah nomor_ktp atau nomor_kk sudah ada
+                    let check = await checkDuplicate(2, { nomor_ktp, nomor_kk });
+                    if (check.status === "error") {
+                        Swal.fire({
+                            text: check.message || "NIK atau Nomor KK sudah terdaftar.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                } else if (idx === 3) {
+                    // Form 3: Informasi Rekening
+                    form3 = [];
+                    var nama_bank = document.getElementById("nama_bank").value.trim();
+                    var nomor_rekening = document.getElementById("nomor_rekening").value.trim();
+                    var nama_pemilik = document.getElementById("nama_pemilik").value.trim();
+                    form3.push(nama_bank, nomor_rekening, nama_pemilik);
 
-                            // Validasi field kosong
-                            if (
-                                nama_ktp === "" ||
-                                nomor_ktp === "" ||
-                                nomor_kk === "" ||
-                                !foto_ktp ||
-                                !foto_kk
-                            ) {
-                                Swal.fire({
-                                    text: "Semua field dokumen harus diisi sebelum melanjutkan",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
+                    if (nama_bank === "" || nomor_rekening === "" || nama_pemilik === "") {
+                        Swal.fire({
+                            text: "Semua field informasi rekening harus diisi sebelum melanjutkan",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    var rekeningRegex = /^[0-9]{1,30}$/;
+                    if (!rekeningRegex.test(nomor_rekening)) {
+                        Swal.fire({
+                            text: "Nomor rekening harus berupa angka dan maksimal 30 digit",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (nama_pemilik.length > 100) {
+                        Swal.fire({
+                            text: "Nama pemilik rekening maksimal 100 karakter",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    // Cek ke server apakah nomor_rekening sudah ada
+                    let check = await checkDuplicate(3, { nomor_rekening });
+                    if (check.status === "error") {
+                        Swal.fire({
+                            text: check.message || "Nomor rekening sudah terdaftar.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    // Set ke field konfirmasi jika diperlukan
+                    $("#conf-nama-bank").val(form3[0]);
+                    $("#conf-nomor-rekening").val(form3[1]);
+                    $("#conf-nama-pemilik").val(form3[2]);
+                } else if (idx === 4) {
+                    // Form 4: Kontak & Sosial Media
+                    form4 = [];
+                    var email_cs = document.getElementById("email_cs").value.trim();
+                    var wa_cs = document.getElementById("wa_cs").value.trim();
+                    var instagram = document.getElementById("instagram").value.trim();
+                    var facebook = document.getElementById("facebook").value.trim();
+                    var tiktok = document.getElementById("tiktok").value.trim();
+                    var google_maps = document.getElementById("google_maps").value.trim();
+                    form4.push(email_cs, wa_cs, instagram, facebook, tiktok, google_maps);
 
-                            // Validasi nomor KTP & KK (hanya angka dan 16 digit)
-                            var nomorRegex = /^[0-9]{16}$/;
-                            if (!nomorRegex.test(nomor_ktp)) {
-                                Swal.fire({
-                                    text: "Nomor KTP harus 16 digit angka",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
-                            if (!nomorRegex.test(nomor_kk)) {
-                                Swal.fire({
-                                    text: "Nomor KK harus 16 digit angka",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
-
-                            // Validasi file gambar
-                            if (foto_ktp && !foto_ktp.type.startsWith("image/")) {
-                                Swal.fire({
-                                    text: "Foto KTP harus berupa file gambar",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
-                            if (foto_kk && !foto_kk.type.startsWith("image/")) {
-                                Swal.fire({
-                                    text: "Foto KK harus berupa file gambar",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
-
-                            console.log("validasi form 2");
-                            console.log(form2);
-                        } else if (idx === 3) {
-                            // validasi form 3
-                            form3 = [];
-                            form3.push($("#tujuan").val(), $("#tanggal").val(), $("#waktu").val(), $("#layanan").val());
-                            var tujuan = document.getElementById("tujuan").value;
-                            var tanggal = document.getElementById("tanggal").value;
-                            var waktu = document.getElementById("waktu").value;
-                            var layanan = document.getElementById("layanan").value;
-                            if (layanan == "" && tujuan == "" && tanggal == "" && waktu == "") {
-                                Swal.fire({
-                                    text: "Isi Terlebih Dahulu Sebelum Melanjutkan",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            } else if (tanggal == "") {
-                                Swal.fire({
-                                    text: "Pastikan Form Tanggal Terisi ",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            } else if (waktu == "") {
-                                Swal.fire({
-                                    text: "Pastikan Form Waktu Kunjungan Anda Terisi ",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            } else if (layanan == "") {
-                                Swal.fire({
-                                    text: "Pastikan Form Layanan Anda Terisi ",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            } else if (tujuan == "") {
-                                Swal.fire({
-                                    text: "Pastikan Form Kantor Tujuan Anda Terisi ",
-                                    icon: "error",
-                                    buttonsStyling: !1,
-                                    confirmButtonText: "cek",
-                                    customClass: {
-                                        confirmButton: "btn btn-light",
-                                    },
-                                }).then(function () {
-                                    KTUtil.scrollTop();
-                                });
-                                return false;
-                            }
-                            $(document).ready(function () {
-                                // Department Change
-                                $("#tujuan").change(function () {
-                                    // Department id
-                                    var id = $(this).val();
-
-                                    // Empty the dropdown
-                                    $("#sel_emp").find("option").not(":first").remove();
-
-                                    // AJAX request
-                                    $.ajax({
-                                        url: "getEmployees/" + id,
-                                        type: "get",
-                                        dataType: "json",
-                                        success: function (response) {
-                                            var len = 0;
-                                            if (response["data"] != null) {
-                                                len = response["data"].length;
-                                            }
-
-                                            if (len > 0) {
-                                                // Read data and create <option >
-                                                for (var i = 0; i < len; i++) {
-                                                    var id = response["data"][i].id;
-                                                    var name = response["data"][i].name;
-
-                                                    var option = "<option value='" + id + "'>" + name + "</option>";
-
-                                                    $("#sel_emp").append(option);
-                                                }
-                                            }
-                                        },
-                                    });
-                                });
-                            });
-
-                            if (tujuan == "Bappenda Kabupaten Bogor") {
-                                $("#conf-alamat-kantor").val("Jl. Tegar Beriman No.1, Pakansari, Kec. Cibinong, Kabupaten Bogor, Jawa Barat 16914");
-                            } else if (tujuan == "Bappenda Kabupaten Bandung") {
-                                $("#conf-alamat-kantor").val("Jl. Raya Soreang No.Km. 17, Pamekaran, Kec. Soreang, Kabupaten Bandung, Jawa Barat 40912");
-                            } else if (tujuan == "Bappenda Kota Bandung") {
-                                $("#conf-alamat-kantor").val("Jl. Sukabumi, Kacapiring, Kec. Batununggal, Kota Bandung, Jawa Barat 40271");
-                            } else if (tujuan == "Bappenda Kota Bogor") {
-                                $("#conf-alamat-kantor").val("Jl. Pemuda No.31, RT.01/RW.06, Tanah Sareal, Kec. Tanah Sereal, Kota Bogor, Jawa Barat 16162");
-                            } else if (tujuan == "Bappenda Kabupaten Bandung Barat") {
-                                $("#conf-alamat-kantor").val("Mekarsari, Kec. Ngamprah, Kabupaten Bandung Barat, Jawa Barat 40552");
-                            } else if (tujuan == "Bappenda Kota Bekasi") {
-                                $("#conf-alamat-kantor").val("Jl. Ir. H. Juanda No.100, RT.001/RW.005, Margahayu, Kec. Bekasi Tim., Kota Bks, Jawa Barat 17113");
-                            } else if (tujuan == "Bappenda Kabupaten Bekasi") {
-                                $("#conf-alamat-kantor").val("Sukamahi, Kec. Cikarang Pusat, Kabupaten Bekasi, Jawa Barat 17530");
-                            } else if (tujuan == "Bappenda Kabupaten Ciamis") {
-                                $("#conf-alamat-kantor").val("Jl. Stasiun No.18, Ciamis, Kec. Ciamis, Kabupaten Ciamis, Jawa Barat 46211");
-                            } else if (tujuan == "Bappenda Kabupaten Cianjur") {
-                                $("#conf-alamat-kantor").val("Jl. Raya Bandung No.65, Bojong, Kec. Karangtengah, Kabupaten Cianjur, Jawa Barat 43281");
-                            } else if (tujuan == "Bappenda Kota Cirebon") {
-                                $("#conf-alamat-kantor").val("Jl. Monumen No.1, Sunyaragi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45132");
-                            } else if (tujuan == "Bappenda Kabupaten Cirebon") {
-                                $("#conf-alamat-kantor").val("Jl. Sunan Ampel No.1, Sumber, Kec. Sumber, Kabupaten Cirebon, Jawa Barat 45611");
-                            } else if (tujuan == "Bappenda Kabupaten Garut") {
-                                $("#conf-alamat-kantor").val("Sukagalih, Kec. Tarogong Kidul, Kabupaten Garut, Jawa Barat 44151");
-                            } else if (tujuan == "Bappenda Kabupaten Indramayu") {
-                                $("#conf-alamat-kantor").val("Jl. Gatot Subroto, Kepandean, Kec. Indramayu, Kabupaten Indramayu, Jawa Barat 45214");
-                            } else if (tujuan == "Bappenda Kabupaten Karawang") {
-                                $("#conf-alamat-kantor").val("Jl. Siliwangi No.2, Nagasari, Kec. Karawang Barat, Karawang, Jawa Barat 41312");
-                            } else if (tujuan == "Bappenda Kabupaten Kuningan") {
-                                $("#conf-alamat-kantor").val("Kuningan, Kec. Kuningan, Kabupaten Kuningan, Jawa Barat 45511");
-                            } else if (tujuan == "Bappenda Kabupaten Majalengka") {
-                                $("#conf-alamat-kantor").val("Jl. Kyai H. Abdul Halim, Cigasong, Kec. Cigasong, Kabupaten Majalengka, Jawa Barat 45476");
-                            } else if (tujuan == "Bappenda Kabupaten Pangandaran") {
-                                $("#conf-alamat-kantor").val("Jl.Jl. Raya Cijulang No.159, Parigi, Parigi, Kec. Parigi, Kabupaten  Pangandaran, Jawa Barat 46393");
-                            } else if (tujuan == "Bappenda Kabupaten Purwakarta") {
-                                $("#conf-alamat-kantor").val("Jl. Surawinata No.30A, Nagri Tengah, Kec. Purwakarta, Kabupaten Purwakarta, Jawa Barat 41114");
-                            } else if (tujuan == "Bappenda Kabupaten Subang") {
-                                $("#conf-alamat-kantor").val("Jl. Letnan Jenderal S. Parman No.3, Soklat, Kec. Subang, Kabupaten Subang, Jawa Barat 41211");
-                            } else if (tujuan == "Bappenda Kota Sukabumi") {
-                                $("#conf-alamat-kantor").val("Jl. Sarasa No.9, Babakan, Kec. Cibeureum, Kota Sukabumi, Jawa Barat 43142");
-                            } else if (tujuan == "Bappenda Kabupaten Sukabumi") {
-                                $("#conf-alamat-kantor").val("Citepus, Kec. Pelabuhanratu, Kabupaten Sukabumi, Jawa Barat 43364");
-                            } else if (tujuan == "Bappenda Kabupaten Sumedang") {
-                                $("#conf-alamat-kantor").val("Sumedang, Situ, Kec. Sumedang Utara, Kabupaten Sumedang, Jawa Barat 45621");
-                            } else if (tujuan == "Bappenda Kota Tasikmalaya") {
-                                $("#conf-alamat-kantor").val("Jl. Siliwangi No.31, Kahuripan, Kec. Tawang, Kabupaten  Tasikmalaya, Jawa Barat 46115");
-                            } else if (tujuan == "Bappenda Kabupaten Tasikmalaya") {
-                                $("#conf-alamat-kantor").val("Jl. Raya Pemda, Singasari, Kec. Singaparna, Kabupaten Tasikmalaya, Jawa Barat 46415");
-                            } else if (tujuan == "Bappenda Kota Cimahi") {
-                                $("#conf-alamat-kantor").val("Jl. Raden Demang Harja Kusumah No.1, Cibabat, Cimahi Utara, Kota Cimahi , Jawa Barat 40132");
-                            } else if (tujuan == "Bappenda Kota Banjar") {
-                                $("#conf-alamat-kantor").val("Jl. Brigjenm. Isa, SH, Purwaharja, Kec. Purwaharja, Kota Banjar, Jawa Barat 46331");
-                            }
-                            console.log("validasi form 3");
-                            console.log(form3);
-
-                            //  var n = new Date();
-                            //  document.getElementById("no_tiket").value = "-"+ (("0"+dt.getDate()).slice(-2)) + (("0"+(dt.getMonth()+1)).slice(-2)) + (dt.getFullYear()) +"-"+ (("0"+dt.getHours()).slice(-2)) + (("0"+dt.getMinutes()).slice(-2));
-
-                            // $("no_tiket").val((("0"+dt.getDate()).slice(-2)) + (("0"+(dt.getMonth()+1)).slice(-2)) + (dt.getFullYear()) +"-"+ (("0"+dt.getHours()).slice(-2)) + (("0"+dt.getMinutes()).slice(-2)));
-                            $("#conf-kantor-tujuan").val(form3[0]);
-                            $("#conf-layanan").val(form3[3]);
-                            $("#conf-tanggal-kunjungan").val(form3[1]);
-                            $("#conf-sesi-pelayanan").val(form3[2]);
-                            $("#tujuan_akhir").val(form3[0]);
-                            $("#tanggal_akhir").val(form3[1]);
-                            $("#waktu_akhir").val(form3[2]);
-                            $("#layanan_akhir").val(form3[3]);
-                            $("#nik_akhir").val(form1[0]);
-                            $("#nama_tiket").val(form1[1]);
-                            $("#kantor").val(form3[0]);
-                            // $("#kantor").val(form3[0])
+                    if (email_cs === "" || wa_cs === "") {
+                        Swal.fire({
+                            text: "Email CS dan Whatsapp CS wajib diisi.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email_cs)) {
+                        Swal.fire({
+                            text: "Format Email CS tidak valid.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    var waRegex = /^[0-9]{9,15}$/;
+                    if (!waRegex.test(wa_cs)) {
+                        Swal.fire({
+                            text: "Nomor Whatsapp CS harus berupa angka dan 9-15 digit.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (google_maps !== "") {
+                        try {
+                            new URL(google_maps);
+                        } catch (e) {
+                            Swal.fire({
+                                text: "Link Google Maps tidak valid.",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "cek",
+                                customClass: { confirmButton: "btn btn-light" },
+                            }).then(KTUtil.scrollTop);
+                            return false;
                         }
+                    }
+                    // Cek ke server apakah email_cs atau wa_cs sudah ada
+                    let check = await checkDuplicate(4, { email_cs, wa_cs });
+                    if (check.status === "error") {
+                        Swal.fire({
+                            text: check.message || "Email CS atau Whatsapp CS sudah terdaftar.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                } else if (idx === 5) {
+                    // Form 5: Jam Operasional Toko
+                    form5 = [];
+                    var hariChecked = [];
+                    var hariList = ["senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu"];
+                    hariList.forEach(function (hari) {
+                        var el = document.getElementById(hari);
+                        if (el && el.checked) hariChecked.push(el.value);
+                    });
+                    var jam_buka = document.getElementById("jam_buka").value;
+                    var jam_tutup = document.getElementById("jam_tutup").value;
+                    form5.push(hariChecked, jam_buka, jam_tutup);
 
-                        t
-                            ? t.validate().then(function (t) {
-                                  console.log("validated!"),
-                                      "Valid" == t
-                                          ? (e.goNext(), KTUtil.scrollTop())
-                                          : Swal.fire({
-                                                text: "Jangan ada data yang terlewat, mohon periksa kembali",
-                                                icon: "error",
-                                                buttonsStyling: !1,
-                                                confirmButtonText: "cek",
-                                                customClass: {
-                                                    confirmButton: "btn btn-light",
-                                                },
-                                            }).then(function () {
-                                                KTUtil.scrollTop();
-                                            });
-                              })
-                            : (e.goNext(), KTUtil.scrollTop());
-                    }),
-                    s.on("kt.stepper.previous", function (e) {
-                        console.log("stepper.previous"), e.goPrevious(), KTUtil.scrollTop();
-                    }),
-                    n.push(
-                        FormValidation.formValidation(i, {
-                            fields: {
-                                nik: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Isi data NIK anda",
-                                        },
-                                    },
-                                },
-                                nama: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Isi data NAMA anda",
-                                        },
-                                    },
-                                },
-                                email: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Isi data EMAIL anda",
-                                        },
-                                    },
-                                },
-                                no_hp: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Isi data KONTAK anda",
-                                        },
-                                    },
-                                },
-                                tanya: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "pilih salah satu",
-                                        },
-                                    },
-                                },
-                            },
-                            plugins: {
-                                trigger: new FormValidation.plugins.Trigger(),
-                                bootstrap: new FormValidation.plugins.Bootstrap5({
-                                    rowSelector: ".fv-row",
-                                    eleInvalidClass: "",
-                                    eleValidClass: "",
-                                }),
-                            },
-                        })
-                    ),
-                    n.push(
-                        FormValidation.formValidation(i, {
-                            fields: {
-                                tanya: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Time size is required",
-                                        },
-                                    },
-                                },
-                            },
-                            plugins: {
-                                trigger: new FormValidation.plugins.Trigger(),
-                                bootstrap: new FormValidation.plugins.Bootstrap5({
-                                    rowSelector: ".fv-row",
-                                    eleInvalidClass: "",
-                                    eleValidClass: "",
-                                }),
-                            },
-                        })
-                    ),
-                    n.push(
-                        FormValidation.formValidation(i, {
-                            fields: {
-                                business_name: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Busines name is required",
-                                        },
-                                    },
-                                },
-                                business_descriptor: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Busines descriptor is required",
-                                        },
-                                    },
-                                },
-                                business_type: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Busines type is required",
-                                        },
-                                    },
-                                },
-                                business_description: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Busines description is required",
-                                        },
-                                    },
-                                },
-                                business_email: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Busines email is required",
-                                        },
-                                        emailAddress: {
-                                            message: "The value is not a valid email address",
-                                        },
-                                    },
-                                },
-                            },
-                            plugins: {
-                                trigger: new FormValidation.plugins.Trigger(),
-                                bootstrap: new FormValidation.plugins.Bootstrap5({
-                                    rowSelector: ".fv-row",
-                                    eleInvalidClass: "",
-                                    eleValidClass: "",
-                                }),
-                            },
-                        })
-                    ),
-                    n.push(
-                        FormValidation.formValidation(i, {
-                            fields: {
-                                card_name: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Name on card is required",
-                                        },
-                                    },
-                                },
-                                card_number: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Card member is required",
-                                        },
-                                        creditCard: {
-                                            message: "Card number is not valid",
-                                        },
-                                    },
-                                },
-                                card_expiry_month: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Month is required",
-                                        },
-                                    },
-                                },
-                                card_expiry_year: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "Year is required",
-                                        },
-                                    },
-                                },
-                                card_cvv: {
-                                    validators: {
-                                        notEmpty: {
-                                            message: "CVV is required",
-                                        },
-                                        digits: {
-                                            message: "CVV must contain only digits",
-                                        },
-                                        stringLength: {
-                                            min: 3,
-                                            max: 4,
-                                            message: "CVV must contain 3 to 4 digits only",
-                                        },
-                                    },
-                                },
-                            },
-                            plugins: {
-                                trigger: new FormValidation.plugins.Trigger(),
-                                bootstrap: new FormValidation.plugins.Bootstrap5({
-                                    rowSelector: ".fv-row",
-                                    eleInvalidClass: "",
-                                    eleValidClass: "",
-                                }),
-                            },
-                        })
-                    ),
-                    o.addEventListener("click", function (e) {
-                        n[3].validate().then(function (t) {
-                            var nik = $("#nik").val();
-                            var name = $("#nama").val();
-                            var status = $("#status").val();
-                            var email = $("#email").val();
-                            var no_hp = $("#no_hp").val();
-                            var tujuan = $("#tujuan").val();
-                            var tanggal = $("#tanggal").val();
-                            var layanan = $("#layanan").val();
-                            var waktu = $("#waktu").val();
-                            // var waktu = $("#no_tiket").val();
-                            // var waktu = $("#no_antrian").val();
-                            if (nik != "" && name != "" && email != "" && no_hp != "" && tujuan != "" && tanggal != "" && layanan != "" && waktu != "") {
-                                /*  $ja("#butsave").attr("disabled", "disabled"); */
-                                $.ajax({
-                                    url: "/visitorCreate",
-                                    type: "POST",
-                                    data: {
-                                        _token: $("#csrf").val(),
-                                        type: 1,
-                                        nik: nik,
-                                        nama: name,
-                                        status: status,
-                                        email: email,
-                                        no_hp: no_hp,
-                                        tujuan: tujuan,
-                                        tanggal: tanggal,
-                                        layanan: layanan,
-                                        waktu: waktu,
-                                        // no_tiket: no_tiket,
-                                        // no_antrian: no_antrian,
-                                    },
-                                    cache: false,
-                                    success: function (dataResult) {
-                                        console.log(dataResult);
-                                        var dataResult = JSON.parse(dataResult);
-                                        if (dataResult.statusCode == 200) {
-                                    n =  new Date();
-                                    $("#no_antrian").val(dataResult.data.no_antrian);
-                                    $("#no_tiket").val(dataResult.data.no_tiket + "-" + (("0"+n.getDate()).slice(-2)) + (("0"+(n.getMonth()+1)).slice(-2)) + (n.getFullYear()) +"-"+ (("0"+n.getHours()).slice(-2)) + (("0"+n.getMinutes()).slice(-2)));
+                    if (hariChecked.length === 0) {
+                        Swal.fire({
+                            text: "Pilih minimal satu hari operasional.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (jam_buka === "" || jam_tutup === "") {
+                        Swal.fire({
+                            text: "Jam buka dan jam tutup wajib diisi.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                    if (jam_buka >= jam_tutup) {
+                        Swal.fire({
+                            text: "Jam buka harus lebih awal dari jam tutup.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "cek",
+                            customClass: { confirmButton: "btn btn-light" },
+                        }).then(KTUtil.scrollTop);
+                        return false;
+                    }
+                }
 
-                                            console.log("validated!"),
-                                                "Valid" == t
-                                                    ? (e.preventDefault(),
-                                                      (o.disabled = !0),
-                                                      o.setAttribute("data-kt-indicator", "on"),
-                                                      setTimeout(function () {
-                                                          o.removeAttribute("data-kt-indicator"),
-                                                              (o.disabled = !1),
-                                                              i.hasAttribute("data-kt-redirect-url")
-                                                                  ? Swal.fire({
-                                                                        text: "Your account has been successfully created.",
-                                                                        icon: "success",
-                                                                        buttonsStyling: !1,
-                                                                        confirmButtonText: "Ok, got it!",
-                                                                        customClass: {
-                                                                            confirmButton: "btn btn-primary",
-                                                                        },
-                                                                    }).then(function (e) {
-                                                                        e.isConfirmed && (location.href = i.getAttribute("data-kt-redirect-url"));
-                                                                    })
-                                                                  : s.goNext();
-                                                      }, 2e3))
-                                                    : Swal.fire({
-                                                          text: "Sorry, looks like there are some errors detected, please try again.",
-                                                          icon: "error",
-                                                          buttonsStyling: !1,
-                                                          confirmButtonText: "Ok, got it!",
-                                                          customClass: {
-                                                              confirmButton: "btn btn-light",
-                                                          },
-                                                      }).then(function () {
-                                                          KTUtil.scrollTop();
-                                                      });
-                                        } else if (dataResult.statusCode == 201) {
-                                            alert("Error occured !");
-                                        }
-                                    },
-                                    error: function (e) {
-                                        Swal.fire({
-                                            text: e,
-                                            icon: "error",
-                                            buttonsStyling: !1,
-                                            confirmButtonText: "Ok, got it!",
-                                            customClass: {
-                                                confirmButton: "btn btn-light",
-                                            },
-                                        }).then(function () {
-                                            KTUtil.scrollTop();
-                                        });
-                                    },
-                                });
-                            } else {
-                                alert("Please fill all the field !");
+                // Validasi FormValidation.js
+                var validator = validations[idx - 1];
+                if (validator) {
+                    validator.validate().then(function (status) {
+                        if (status === "Valid") {
+                            stepper.goNext();
+                            KTUtil.scrollTop();
+                        } else {
+                            Swal.fire({
+                                text: "Jangan ada data yang terlewat, mohon periksa kembali",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "cek",
+                                customClass: { confirmButton: "btn btn-light" },
+                            }).then(KTUtil.scrollTop);
+                        }
+                    });
+                } else {
+                    stepper.goNext();
+                    KTUtil.scrollTop();
+                }
+            });
+
+            // Stepper previous event
+            stepper.on("kt.stepper.previous", function (e) {
+                e.goPrevious();
+                KTUtil.scrollTop();
+            });
+
+            // Validasi FormValidation.js per step
+            validations.push(
+                // Step 1
+                FormValidation.formValidation(formEl, {
+                    fields: {
+                        nama_toko: {
+                            validators: {
+                                notEmpty: { message: "Nama toko wajib diisi" }
                             }
-                        });
-                    }),
-                    $(i.querySelector('[name="card_expiry_month"]')).on("change", function () {
-                        n[3].revalidateField("card_expiry_month");
-                    }),
-                    $(i.querySelector('[name="card_expiry_year"]')).on("change", function () {
-                        n[3].revalidateField("card_expiry_year");
-                    }),
-                    $(i.querySelector('[name="business_type"]')).on("change", function () {
-                        n[2].revalidateField("business_type");
-                    }));
+                        },
+                        no_hp: {
+                            validators: {
+                                notEmpty: { message: "No. HP wajib diisi" },
+                                regexp: {
+                                    regexp: /^[0-9]{9,13}$/,
+                                    message: "No. HP harus berupa angka dan 9-13 digit"
+                                },
+                            },
+                        },
+                        kategori_toko: {
+                            validators: {
+                                notEmpty: { message: "Kategori toko wajib diisi" }
+                            }
+                        },
+                        alamat_toko: {
+                            validators: {
+                                notEmpty: { message: "Alamat toko wajib diisi" }
+                            }
+                        },
+                        logo_toko: {
+                            validators: {
+                                notEmpty: { message: "Logo toko wajib diisi" },
+                                file: {
+                                    extension: 'jpg,jpeg,png,gif,webp',
+                                    type: 'image/jpeg,image/png,image/gif,image/webp',
+                                    message: "Logo toko harus berupa file gambar",
+                                },
+                            },
+                        },
+                        deskripsi_toko: {
+                            validators: {
+                                notEmpty: { message: "Deskripsi toko wajib diisi" }
+                            }
+                        },
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: ".fv-row",
+                            eleInvalidClass: "",
+                            eleValidClass: "",
+                        }),
+                    },
+                }),
+                // Step 2
+                FormValidation.formValidation(formEl, {
+                    fields: {
+                        nama_ktp: {
+                            validators: {
+                                notEmpty: { message: "Nama sesuai KTP wajib diisi" }
+                            }
+                        },
+                        nomor_ktp: {
+                            validators: {
+                                notEmpty: { message: "Nomor KTP wajib diisi" },
+                                regexp: {
+                                    regexp: /^[0-9]{16}$/,
+                                    message: "Nomor KTP harus 16 digit angka"
+                                },
+                            },
+                        },
+                        nomor_kk: {
+                            validators: {
+                                notEmpty: { message: "Nomor KK wajib diisi" },
+                                regexp: {
+                                    regexp: /^[0-9]{16}$/,
+                                    message: "Nomor KK harus 16 digit angka"
+                                },
+                            },
+                        },
+                        foto_ktp: {
+                            validators: {
+                                notEmpty: { message: "Foto KTP wajib diupload" },
+                                file: {
+                                    extension: 'jpg,jpeg,png,gif,webp',
+                                    type: 'image/jpeg,image/png,image/gif,image/webp',
+                                    message: "Foto KTP harus berupa file gambar",
+                                },
+                            },
+                        },
+                        foto_kk: {
+                            validators: {
+                                notEmpty: { message: "Foto KK wajib diupload" },
+                                file: {
+                                    extension: 'jpg,jpeg,png,gif,webp',
+                                    type: 'image/jpeg,image/png,image/gif,image/webp',
+                                    message: "Foto KK harus berupa file gambar",
+                                },
+                            },
+                        },
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: ".fv-row",
+                            eleInvalidClass: "",
+                            eleValidClass: "",
+                        }),
+                    },
+                }),
+                // Step 3
+                FormValidation.formValidation(formEl, {
+                    fields: {
+                        nama_bank: {
+                            validators: {
+                                notEmpty: { message: "Nama bank wajib diisi" }
+                            }
+                        },
+                        nomor_rekening: {
+                            validators: {
+                                notEmpty: { message: "Nomor rekening wajib diisi" },
+                                regexp: {
+                                    regexp: /^[0-9]{1,30}$/,
+                                    message: "Nomor rekening harus berupa angka dan maksimal 30 digit"
+                                },
+                            },
+                        },
+                        nama_pemilik: {
+                            validators: {
+                                notEmpty: { message: "Nama pemilik rekening wajib diisi" },
+                                stringLength: {
+                                    max: 100,
+                                    message: "Nama pemilik rekening maksimal 100 karakter"
+                                },
+                            },
+                        },
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: ".fv-row",
+                            eleInvalidClass: "",
+                            eleValidClass: "",
+                        }),
+                    },
+                }),
+                // Step 4
+                FormValidation.formValidation(formEl, {
+                    fields: {
+                        email_cs: {
+                            validators: {
+                                notEmpty: { message: "Email CS wajib diisi" },
+                                emailAddress: { message: "Format Email CS tidak valid" },
+                            },
+                        },
+                        wa_cs: {
+                            validators: {
+                                notEmpty: { message: "Whatsapp CS wajib diisi" },
+                                regexp: {
+                                    regexp: /^[0-9]{9,15}$/,
+                                    message: "Nomor Whatsapp CS harus berupa angka dan 9-15 digit"
+                                },
+                            },
+                        },
+                        instagram: { validators: {} },
+                        facebook: { validators: {} },
+                        tiktok: { validators: {} },
+                        google_maps: {
+                            validators: {
+                                uri: { message: "Link Google Maps tidak valid" },
+                            },
+                        },
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: ".fv-row",
+                            eleInvalidClass: "",
+                            eleValidClass: "",
+                        }),
+                    },
+                }),
+                // Step 5
+                FormValidation.formValidation(formEl, {
+                    fields: {
+                        jam_buka: {
+                            validators: {
+                                notEmpty: { message: "Jam buka wajib diisi" }
+                            }
+                        },
+                        jam_tutup: {
+                            validators: {
+                                notEmpty: { message: "Jam tutup wajib diisi" }
+                            }
+                        },
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: ".fv-row",
+                            eleInvalidClass: "",
+                            eleValidClass: "",
+                        }),
+                    },
+                })
+            );
+
+            // Submit handler
+            if (submitBtn) {
+                submitBtn.addEventListener("click", function () {
+                    validations[4].validate().then(function (status) {
+                        if (status === "Valid") {
+                            // Inisialisasi FormData
+                            var formData = new FormData();
+
+                            // Step-by-step FormData builder
+                            var steps = [1, 2, 3, 4, 5];
+
+                            const csrf = document.querySelector('meta[name="csrf-token"]');
+                            const baseRoute = (typeof window.route_umkm_register !== "undefined")
+                                ? window.route_umkm_register
+                                : "/Toko/umkm/register";
+
+                            // Loop tiap step kirim satu-satu
+                            const processStep = async (step) => {
+                                const fd = new FormData();
+
+                                if (step === 1) {
+                                    fd.append("nama_toko", document.getElementById("nama_toko").value.trim());
+                                    fd.append("no_hp", document.getElementById("no_hp").value.trim());
+                                    fd.append("kategori_toko", document.getElementById("kategori_toko").value.trim());
+                                    fd.append("alamat_toko", document.getElementById("alamat_toko").value.trim());
+                                    const logo = document.getElementById("logo_toko").files[0];
+                                    if (logo) fd.append("logo_toko", logo);
+                                    fd.append("deskripsi_toko", document.getElementById("deskripsi_toko").value.trim());
+                                }
+
+                                if (step === 2) {
+                                    fd.append("nama_ktp", document.getElementById("nama_ktp").value.trim());
+                                    fd.append("nomor_ktp", document.getElementById("nomor_ktp").value.trim());
+                                    fd.append("nomor_kk", document.getElementById("nomor_kk").value.trim());
+                                    const ktp = document.getElementById("foto_ktp").files[0];
+                                    const kk = document.getElementById("foto_kk").files[0];
+                                    if (ktp) fd.append("foto_ktp", ktp);
+                                    if (kk) fd.append("foto_kk", kk);
+                                }
+
+                                if (step === 3) {
+                                    fd.append("nama_bank", document.getElementById("nama_bank").value.trim());
+                                    fd.append("nomor_rekening", document.getElementById("nomor_rekening").value.trim());
+                                    fd.append("nama_pemilik", document.getElementById("nama_pemilik").value.trim());
+                                }
+
+                                if (step === 4) {
+                                    fd.append("email_cs", document.getElementById("email_cs").value.trim());
+                                    fd.append("wa_cs", document.getElementById("wa_cs").value.trim());
+                                    fd.append("instagram", document.getElementById("instagram").value.trim());
+                                    fd.append("facebook", document.getElementById("facebook").value.trim());
+                                    fd.append("tiktok", document.getElementById("tiktok").value.trim());
+                                    fd.append("google_maps", document.getElementById("google_maps").value.trim());
+                                }
+
+                                if (step === 5) {
+                                    const hariList = ["senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu"];
+                                    const hariChecked = [];
+                                    hariList.forEach(hari => {
+                                        const el = document.getElementById(hari);
+                                        if (el && el.checked) hariChecked.push(el.value);
+                                    });
+                                    fd.append("hari_operasional", JSON.stringify(hariChecked));
+                                    fd.append("jam_buka", document.getElementById("jam_buka").value);
+                                    fd.append("jam_tutup", document.getElementById("jam_tutup").value);
+                                }
+
+                                // Tambahkan token CSRF
+                                if (csrf) {
+                                    fd.append("_token", csrf.getAttribute("content"));
+                                }
+
+                                // Fetch per step
+                                const response = await fetch(`${baseRoute}/${step}`, {
+                                    method: 'POST',
+                                    body: fd
+                                });
+
+                                return await response.json();
+                            };
+
+                            // Jalankan semua step satu per satu
+                            const submitAll = async () => {
+                                try {
+                                    submitBtn.disabled = true;
+                                    submitBtn.setAttribute("data-kt-indicator", "on");
+
+                                    for (let i = 0; i < steps.length; i++) {
+                                        const step = steps[i];
+                                        const result = await processStep(step);
+
+                                        if (result.status !== "success") {
+                                            throw new Error(result.message || `Step ${step} gagal`);
+                                        }
+                                    }
+
+                                    submitBtn.removeAttribute("data-kt-indicator");
+                                    submitBtn.disabled = false;
+
+                                    Swal.fire({
+                                        text: "Pendaftaran UMKM berhasil!",
+                                        icon: "success",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok",
+                                        customClass: { confirmButton: "btn btn-primary" },
+                                    }).then(function () {
+                                        if (formEl.hasAttribute("data-kt-redirect-url")) {
+                                            location.href = formEl.getAttribute("data-kt-redirect-url");
+                                        } else {
+                                            location.reload();
+                                        }
+                                    });
+                                } catch (error) {
+                                    submitBtn.removeAttribute("data-kt-indicator");
+                                    submitBtn.disabled = false;
+
+                                    Swal.fire({
+                                        text: error.message || "Gagal mengirim data. Silakan coba lagi.",
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok",
+                                        customClass: { confirmButton: "btn btn-light" },
+                                    });
+                                }
+                            };
+
+                            submitAll(); // Panggil fungsi utama
+                        } else {
+                            Swal.fire({
+                                text: "Jangan ada data yang terlewat, mohon periksa kembali",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "cek",
+                                customClass: { confirmButton: "btn btn-light" },
+                            }).then(KTUtil.scrollTop);
+                        }
+                    });
+                });
+            }
         },
     };
 })();
+
 KTUtil.onDOMContentLoaded(function () {
     KTCreateAccount.init();
 });
-
-// function validateForm() {
-//   let x = document.forms["myForm"]["fname"].value;
-//   if (x == "") {
-//     alert("Name must be filled out");
-//     return false;
-//   }
-// }
-
-//  n.push(
-//             FormValidation.formValidation(i, {
-//               fields: {
-//                 nik: { validators: { notEmpty: { message: "Isi data NIK anda" } } },
-//                 nama: { validators: { notEmpty: { message: "Isi data NAMA anda" } } },
-//                 email: { validators: { notEmpty: { message: "Isi data EMAIL anda" } } },
-//                 no_hp: { validators: { notEmpty: { message: "Isi data KONTAK anda" } } },
-//               },
-//               plugins: { trigger: new FormValidation.plugins.Trigger(), bootstrap: new FormValidation.plugins.Bootstrap5({ rowSelector: ".fv-row", eleInvalidClass: "", eleValidClass: "" }) },
-//             })
-//           ),

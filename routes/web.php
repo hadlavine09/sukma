@@ -293,21 +293,25 @@ Route::prefix('FrontEnd')->group(function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-// Route::prefix('Toko')->group(function () {
-//     Route::get('/LoginToko', function () {
-//         return view('toko.auth.login');
-//     });
-//     // Route::get('/RegisterToko', function () {
-//     //     return view('toko.auth.register');
-//     // });
-//     Route::get('/Dashboard-Toko', function () {
-//         return view('toko.dashboard');
-//     })->name('dashboard.toko');
-//     // Route::get('/Verifikasi-Toko', function () {
-//     //     return view('toko.verifikasi');
-//     // })->name('verifikasi.toko');
-//     Route::get('Verifikasi-Toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
-// });
+Route::prefix('Toko')->group(function () {
+    Route::get('/LoginToko', function () {
+        return view('toko.auth.login');
+    });
+    // Route::get('/RegisterToko', function () {
+    //     return view('toko.auth.register');
+    // });
+    Route::get('/Dashboard-Toko', function () {
+        return view('toko.dashboard');
+    })->name('dashboard.toko');
+    // Route::get('/Verifikasi-Toko', function () {
+    //     return view('toko.verifikasi');
+    // })->name('verifikasi.toko');
+    Route::post('/umkm/register/{step}', [IzinTokoController::class, 'push_toko'])->name('umkm.register');
+    Route::post('/check-duplicate/{step}', [IzinTokoController::class, 'checkDuplicate'])->name('check');
+    Route::get('/Verifikasi', function () {
+        return view('toko.auth.umkm_register');
+    })->name('toko.umkm_register');
+});
 // Route::middleware(['auth'])->group(function () {
 // });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');

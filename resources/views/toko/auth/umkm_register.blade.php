@@ -510,7 +510,6 @@
                             <form class="mx-auto mw-800px w-300 pt-15 pb-10 fv-plugins-bootstrap5 fv-plugins-framework"
                                 novalidate="novalidate" id="kt_create_account_form">
                                 <!--begin::Step 1-->
-
                                 <div class="current" data-kt-stepper-element="content">
                                     <!--begin::Wrapper-->
                                     <div class="w-100">
@@ -526,7 +525,8 @@
                                                 <div class="form-group row">
                                                     <div class="row mb-3">
                                                         <label for="nama_toko"
-                                                            class="col-sm-4 col-form-label form-label">Nama Toko :</label>
+                                                            class="col-sm-4 col-form-label form-label">Nama Toko
+                                                            :</label>
                                                         <div class="col-sm-8">
                                                             <input class="form-control" type="text" name="nama_toko"
                                                                 placeholder="Masukan Nama Toko" id="nama_toko"
@@ -542,13 +542,16 @@
                                                                         class="h-20px w-20px rounded-sm"
                                                                         src="{{ asset('assets_frontend/umkm_register/img/indo.png') }}"
                                                                         alt="">+62</span>
-                                                                <input class="form-control" type="text" name="no_hp"
-                                                                    placeholder="Masukan kontak yang aktif" id="no_hp"
-                                                                    required="" value="" maxlength="13"
+                                                                <input class="form-control" type="text"
+                                                                    name="no_hp"
+                                                                    placeholder="Masukan kontak yang aktif"
+                                                                    id="no_hp" required="" value=""
+                                                                    maxlength="13"
                                                                     onkeypress="return hanyaAngka(event)">
                                                             </div>
                                                         </div>
-                                                        <div class="fv-plugins-message-container invalid-feedback"></div>
+                                                        <div class="fv-plugins-message-container invalid-feedback">
+                                                        </div>
                                                     </div>
                                                     <div class="row mb-3">
                                                         <label for="kategori_toko"
@@ -557,7 +560,8 @@
                                                         <div class="col-sm-8">
                                                             <select class="form-control custom-select"
                                                                 name="kategori_toko" id="kategori_toko" required>
-                                                                <option value="">-- Pilih Kategori Toko --</option>
+                                                                <option value="">-- Pilih Kategori Toko --
+                                                                </option>
                                                                 <option value="Makanan & Minuman">Makanan & Minuman
                                                                 </option>
                                                                 <option value="Fashion">Fashion</option>
@@ -578,10 +582,12 @@
                                                     </div>
                                                     <div class="row mb-3">
                                                         <label for="logo_toko"
-                                                            class="col-sm-4 col-form-label form-label">Logo Toko :</label>
+                                                            class="col-sm-4 col-form-label form-label">Logo Toko
+                                                            :</label>
                                                         <div class="col-sm-8">
-                                                            <input class="form-control" type="file" name="logo_toko"
-                                                                id="logo_toko" accept="image/*" required>
+                                                            <input class="form-control" type="file"
+                                                                name="logo_toko" id="logo_toko" accept="image/*"
+                                                                required>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
@@ -601,7 +607,6 @@
                                     </div>
                                     <!--end::Wrapper-->
                                 </div>
-
                                 <!--end::Step 1-->
                                 <!--begin::Step 2-->
                                 <div data-kt-stepper-element="content">
@@ -616,196 +621,113 @@
                                                 <div class="form-group row">
                                                     <!-- Upload Foto KTP paling atas -->
                                                     <div class="row mb-3">
-                                                        <label for="foto_ktp" class="col-sm-4 col-form-label form-label">Foto KTP</label>
+                                                        <label for="foto_ktp"
+                                                            class="col-sm-4 col-form-label form-label">Foto KTP</label>
                                                         <div class="col-sm-8">
-                                                            <input type="file" class="form-control mb-2" id="foto_ktp" name="foto_ktp" accept="image/*" required>
+                                                            <input type="file" class="form-control mb-2"
+                                                                id="foto_ktp" name="foto_ktp" accept="image/*"
+                                                                required>
                                                             <div id="preview_ktp" style="max-width:220px;">
-                                                                <img id="img_preview_ktp" src="" alt="Preview KTP" style="display:none;max-width:200px;max-height:200px;border:1px solid #eee;border-radius:6px;">
+                                                                <img id="img_preview_ktp" src=""
+                                                                    alt="Preview KTP"
+                                                                    style="display:none;max-width:200px;max-height:200px;border:1px solid #eee;border-radius:6px;">
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <!-- Hasil OCR: NIK dan Nama -->
                                                     <div class="row mb-3">
-                                                        <label for="nomor_ktp" class="col-sm-4 col-form-label form-label">NIK</label>
+                                                        <label for="nomor_ktp"
+                                                            class="col-sm-4 col-form-label form-label">NIK</label>
                                                         <div class="col-sm-8 d-flex align-items-center">
-                                                            <span style="font-weight:bold; margin-right:8px;">:</span>
-                                                            <input type="text" class="form-control" id="nomor_ktp" name="nomor_ktp" placeholder="16 digit Nomor KTP" maxlength="16" required onkeypress="return hanyaAngka(event)" style="font-weight:bold;">
-                                                            <small id="ocr_nik_hint" class="text-success ms-2" style="display:none;">NIK berhasil diambil dari foto KTP</small>
+                                                            <input type="text" class="form-control" id="nomor_ktp"
+                                                                name="nomor_ktp" placeholder="16 digit Nomor KTP"
+                                                                maxlength="16" required
+                                                                onkeypress="return hanyaAngka(event)"
+                                                                style="font-weight:bold;">
+                                                            <small id="ocr_nik_hint" class="text-success ms-2"
+                                                                style="display:none;">NIK berhasil diambil dari foto
+                                                                KTP</small>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
-                                                        <label for="nama_ktp" class="col-sm-4 col-form-label form-label">Nama</label>
+                                                        <label for="nama_ktp"
+                                                            class="col-sm-4 col-form-label form-label">Nama</label>
                                                         <div class="col-sm-8 d-flex align-items-center">
-                                                            <span style="font-weight:bold; margin-right:8px;">:</span>
-                                                            <input type="text" class="form-control" id="nama_ktp" name="nama_ktp" placeholder="Nama sesuai KTP" maxlength="100" required style="font-weight:bold;">
-                                                            <small id="ocr_nama_hint" class="text-success ms-2" style="display:none;">Nama berhasil diambil dari foto KTP</small>
+                                                            <input type="text" class="form-control" id="nama_ktp"
+                                                                name="nama_ktp" placeholder="Nama sesuai KTP"
+                                                                maxlength="100" required style="font-weight:bold;">
+                                                            <small id="ocr_nama_hint" class="text-success ms-2"
+                                                                style="display:none;">Nama berhasil diambil dari foto
+                                                                KTP</small>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
-                                                        <label for="nomor_kk" class="col-sm-4 col-form-label form-label">Nomor KK</label>
+                                                        <label for="nomor_kk"
+                                                            class="col-sm-4 col-form-label form-label">Nomor KK</label>
                                                         <div class="col-sm-8">
-                                                            <input type="text" class="form-control" id="nomor_kk" name="nomor_kk" placeholder="16 digit Nomor KK" maxlength="16" required onkeypress="return hanyaAngka(event)">
+                                                            <input type="text" class="form-control" id="nomor_kk"
+                                                                name="nomor_kk" placeholder="16 digit Nomor KK"
+                                                                maxlength="16" required
+                                                                onkeypress="return hanyaAngka(event)">
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
-                                                        <label for="foto_kk" class="col-sm-4 col-form-label form-label">Foto KK</label>
+                                                        <label for="foto_kk"
+                                                            class="col-sm-4 col-form-label form-label">Foto KK</label>
                                                         <div class="col-sm-8">
-                                                            <input type="file" class="form-control" id="foto_kk" name="foto_kk" accept="image/*" required>
+                                                            <input type="file" class="form-control" id="foto_kk"
+                                                                name="foto_kk" accept="image/*" required>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        </div>
-                                        <!--end::Wrapper-->
-                                        </div>
-                                        <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-                                        <script>
-                                            // Preview Foto KTP & OCR
-                                            document.getElementById('foto_ktp').addEventListener('change', function(e) {
-                                                const file = e.target.files[0];
-                                                const img = document.getElementById('img_preview_ktp');
-                                                const namaInput = document.getElementById('nama_ktp');
-                                                const nikInput = document.getElementById('nomor_ktp');
-                                                const namaHint = document.getElementById('ocr_nama_hint');
-                                                const nikHint = document.getElementById('ocr_nik_hint');
-                                                // Reset
-                                                namaHint.style.display = 'none';
-                                                nikHint.style.display = 'none';
-
-                                                if (file) {
-                                                    const reader = new FileReader();
-                                                    reader.onload = function(ev) {
-                                                        img.src = ev.target.result;
-                                                        img.style.display = 'block';
-                                                    };
-                                                    reader.readAsDataURL(file);
-                                                } else {
-                                                    img.src = '';
-                                                    img.style.display = 'none';
-                                                }
-
-                                                // OCR KTP
-                                                if (!file) return;
-                                                Tesseract.recognize(
-                                                    file,
-                                                    'ind', // gunakan 'ind' untuk Bahasa Indonesia, fallback ke 'eng' jika tidak tersedia
-                                                    { logger: m => console.log(m) }
-                                                ).then(({ data: { text } }) => {
-                                                    // Regex sederhana untuk cari NIK (16 digit) dan Nama (huruf besar, baris kedua biasanya)
-                                                    let nikMatch = text.match(/\b\d{16}\b/);
-                                                    let namaMatch = null;
-                                                    // Cari baris yang kemungkinan besar adalah nama (huruf besar semua, tanpa angka)
-                                                    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-                                                    for (let i = 0; i < lines.length; i++) {
-                                                        // Cek baris yang mengandung "NIK" lalu ambil NIK di sebelahnya
-                                                        if (/NIK/i.test(lines[i])) {
-                                                            const nikLine = lines[i].replace(/[^0-9]/g, '');
-                                                            if (nikLine.length === 16) {
-                                                                nikMatch = [nikLine];
-                                                            }
-                                                        }
-                                                        // Cek baris yang mengandung "Nama" lalu ambil nama di sebelahnya
-                                                        if (/Nama/i.test(lines[i])) {
-                                                            const namaLine = lines[i].replace(/Nama\s*:?/i, '').trim();
-                                                            if (namaLine.length > 2 && /^[A-Z\s]+$/.test(namaLine)) {
-                                                                namaMatch = namaLine;
-                                                            } else if (lines[i+1] && /^[A-Z\s]+$/.test(lines[i+1])) {
-                                                                namaMatch = lines[i+1];
-                                                            }
-                                                        }
-                                                    }
-                                                    // Fallback: cari baris huruf besar tanpa angka
-                                                    if (!namaMatch) {
-                                                        for (let line of lines) {
-                                                            if (/^[A-Z\s]+$/.test(line) && !/\d/.test(line) && line.length > 3 && line.length < 50) {
-                                                                namaMatch = line;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                    if (nikMatch) {
-                                                        nikInput.value = nikMatch[0];
-                                                        nikHint.style.display = 'inline';
-                                                    }
-                                                    if (namaMatch) {
-                                                        namaInput.value = namaMatch;
-                                                        namaHint.style.display = 'inline';
-                                                    }
-                                                }).catch(err => {
-                                                    console.error('OCR gagal:', err);
-                                                });
-                                            });
-                                        </script>
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
                                 <!--end::Step 2-->
                                 <!--begin::Step 3-->
                                 <div data-kt-stepper-element="content">
                                     <!--begin::Wrapper-->
-                                    <div class="form" id="form-waktu">
+                                    <div class="w-100">
                                         <div class="pb-10 pb-lg-15 text-center">
-                                            <h1>Jadwal Layanan</h1>
+                                            <h1>Informasi Rekening</h1>
                                             <hr style="color: green ">
                                         </div>
-                                        <div class="container p-xxl-6 ">
+                                        <div class="container p-xxl-6">
                                             <div class="card-body">
                                                 <div class="form-group row">
                                                     <div class="row mb-3">
-                                                        <label for="tujuan"
-                                                            class="col-sm-4 col-form-label form-label ">Kantor
-                                                            Tujuan</label>
+                                                        <label for="nama_bank"
+                                                            class="col-sm-4 col-form-label form-label">Nama
+                                                            Bank</label>
                                                         <div class="col-sm-8">
-                                                            <select id='tujuan' class="form-control custom-select"
-                                                                name='tujuan'>
-                                                                <option value=''>-- Masukan Kantor Tujuan --</option>
-
-                                                                <!-- Read Departments -->
-                                                                {{-- @foreach ($kantor as $data)
-                                                                    <option value='{{ $data->nama_kota }}'>
-                                                                        {{ $data->nama_kota }}</option>
-                                                                @endforeach --}}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row mb-3">
-                                                        <label class="col-sm-4 col-form-label form-label">Tanggal
-                                                            Kunjungan:</label>
-                                                        <div class="col-sm-8">
-                                                            <input
-                                                                class="form-control p flatpickr-input valid datetimepicker"
-                                                                type="date" name="tanggal" id="tanggal">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <div class="row mb-3">
-                                                        <label class="col-sm-4 col-form-label form-label">Waktu
-                                                            Pelayanan:</label>
-                                                        <div class="col-sm-8">
-                                                            <select class="form-control custom-select" name="waktu"
-                                                                id="waktu">
-                                                                <option value="">Masukan waktu anda</option>
-                                                                <option value="08:00 - 10:00">08:00 - 10:00</option>
-                                                                <option value="10:00 - 12:00">10:00 - 12:00</option>
-                                                                <option value="13:00 - 15:00">13:00 - 15:00</option>
-                                                                <option value="15:00 - 17:00">15:00 - 17:00</option>
-                                                            </select>
+                                                            <input class="form-control" type="text"
+                                                                name="nama_bank" id="nama_bank"
+                                                                placeholder="Masukkan Nama Bank" required>
                                                         </div>
                                                     </div>
                                                     <div class="row mb-3">
-                                                        <label class="col-sm-4 col-form-label form-label">Layanan:</label>
+                                                        <label for="nomor_rekening"
+                                                            class="col-sm-4 col-form-label form-label">Nomor
+                                                            Rekening</label>
                                                         <div class="col-sm-8">
-                                                            <select class="form-control custom-select" name="layanan"
-                                                                id="layanan">
-                                                                <option value="">Silahkan masukan tujuan anda
-                                                                </option>
-                                                                {{-- @foreach ($layanan as $layan)
-                                                                    <option value='{{ $layan->layanan }}'>
-                                                                        {{ $layan->layanan }}</option>
-                                                                @endforeach --}}
-                                                            </select>
+                                                            <input class="form-control" type="text"
+                                                                name="nomor_rekening" id="nomor_rekening"
+                                                                placeholder="Masukkan Nomor Rekening" maxlength="30"
+                                                                required onkeypress="return hanyaAngka(event)">
                                                         </div>
-
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <label for="nama_pemilik"
+                                                            class="col-sm-4 col-form-label form-label">Nama Pemilik
+                                                            Rekening</label>
+                                                        <div class="col-sm-8">
+                                                            <input class="form-control" type="text"
+                                                                name="nama_pemilik" id="nama_pemilik"
+                                                                placeholder="Masukkan Nama Pemilik Rekening"
+                                                                maxlength="100" required>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -817,67 +739,65 @@
                                 <!--begin::Step 4-->
                                 <div data-kt-stepper-element="content">
                                     <!--begin::Wrapper-->
-                                    <div class="form active" id="form-confirm">
-                                        <h1 class="title form-title text-center">
-                                            Informasi Antrean
-                                        </h1>
+                                    <div class="form active" id="form-kontak-sosmed">
                                         <hr style="color: green">
-                                        <div class="container py-5 px-md-5 ">
+                                        <div class="container py-5 px-md-5">
                                             <fieldset>
                                                 <div class="row mb-3">
-                                                    <label for="conf-kanotr-tujuan"
-                                                        class="col-sm-4 col-form-label form-label">Kantor tujuan</label>
+                                                    <label for="email_cs"
+                                                        class="col-sm-4 col-form-label form-label">Email CS</label>
                                                     <div class="col-sm-8">
-                                                        <input class="form-control" type="text" name="tujuan"
-                                                            value="" id="conf-kantor-tujuan" disabled>
+                                                        <input class="form-control" type="email" name="email_cs"
+                                                            id="email_cs"
+                                                            placeholder="Masukkan Email Customer Service" required>
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
-                                                    <label for="conf-kanotr-tujuan"
-                                                        class="col-sm-4 col-form-label form-label">Alamat Kantor</label>
+                                                    <label for="wa_cs"
+                                                        class="col-sm-4 col-form-label form-label">Whatsapp CS</label>
                                                     <div class="col-sm-8">
-                                                        <textarea class="form-control" name="alamat" value="" id="conf-alamat-kantor" disabled cols="10"
-                                                            rows="5"></textarea>
+                                                        <input class="form-control" type="text" name="wa_cs"
+                                                            id="wa_cs" placeholder="Masukkan Nomor Whatsapp CS"
+                                                            required>
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
-                                                    <label for="conf-alamat"
-                                                        class="col-sm-4 col-form-label form-label">Jenis Layanan</label>
+                                                    <label for="instagram"
+                                                        class="col-sm-4 col-form-label form-label">Instagram</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="conf-layanan"
-                                                            disabled>
+                                                        <input class="form-control" type="text" name="instagram"
+                                                            id="instagram"
+                                                            placeholder="Masukkan Username/Link Instagram">
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
-                                                    <label for="conf-tanggal"
-                                                        class="col-sm-4 col-form-label form-label">Tanggal
-                                                        Kunjungan</label>
+                                                    <label for="facebook"
+                                                        class="col-sm-4 col-form-label form-label">Facebook</label>
                                                     <div class="col-sm-8">
-                                                        <input class="form-control" type="text"
-                                                            id="conf-tanggal-kunjungan" disabled>
+                                                        <input class="form-control" type="text" name="facebook"
+                                                            id="facebook"
+                                                            placeholder="Masukkan Username/Link Facebook">
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
-                                                    <label for="conf-sesi-pelayanan"
-                                                        class="col-sm-4 col-form-label form-label">Sesi Kunjungan</label>
+                                                    <label for="tiktok"
+                                                        class="col-sm-4 col-form-label form-label">Tiktok</label>
                                                     <div class="col-sm-8">
-                                                        <input class="form-control" type="text"
-                                                            id="conf-sesi-pelayanan" disabled>
+                                                        <input class="form-control" type="text" name="tiktok"
+                                                            id="tiktok"
+                                                            placeholder="Masukkan Username/Link Tiktok">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <label for="google_maps"
+                                                        class="col-sm-4 col-form-label form-label">Link Google
+                                                        Maps</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="url" name="google_maps"
+                                                            id="google_maps" placeholder="Masukkan Link Google Maps">
                                                     </div>
                                                 </div>
                                             </fieldset>
-                                            <div class="row mb-3">
-                                                <div class="h-captcha"
-                                                    data-sitekey="75992a63-43e1-4304-9c19-f90961c7f26b"><iframe
-                                                        src="https://newassets.hcaptcha.com/captcha/v1/1f7dc62/static/hcaptcha.html#frame=checkbox&amp;id=0eye8fgutumg&amp;host=antrean-bappenda.bogorkab.go.id&amp;sentry=true&amp;reportapi=https%3A%2F%2Faccounts.hcaptcha.com&amp;recaptchacompat=true&amp;custom=false&amp;hl=id&amp;tplinks=on&amp;sitekey=75992a63-43e1-4304-9c19-f90961c7f26b&amp;theme=light"
-                                                        title="widget containing checkbox for hCaptcha security challenge"
-                                                        tabindex="0" frameborder="0" scrolling="no"
-                                                        data-hcaptcha-widget-id="0eye8fgutumg" data-hcaptcha-response=""
-                                                        style="width: 303px; height: 78px; overflow: hidden;"></iframe>
-                                                    <textarea id="g-recaptcha-response-0eye8fgutumg" name="g-recaptcha-response" style="display: none;"></textarea>
-                                                    <textarea id="h-captcha-response-0eye8fgutumg" name="h-captcha-response" style="display: none;"></textarea>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     <!--end::Wrapper-->
@@ -887,115 +807,66 @@
                                 <div data-kt-stepper-element="content">
                                     <!--begin::Wrapper-->
                                     <div class="form active">
-                                        <h1 class="title form-title">
-                                            Tiket Antrean
+                                        <h1 class="title form-title text-center">
+                                            Jam Operasional Toko
                                         </h1>
                                         <hr class="mb-3">
-                                        <p class="p-2 col-lg-9 text-center mx-auto mb-5">
-                                            Silahkan screenshoot/cetak/foto tiket Anda.<br>
-                                            Harap datang 15 menit sebelum waktu kunjungan Anda
-                                        </p>
-
-                                        <div class="container bg-white shadow col-lg-10 row mx-auto tiket p-3">
-                                            <div class="container col-md-8 d-flex flex-column justify-content-around row">
-                                                {{-- @php $no= 1; @endphp --}}
-                                                {{-- @foreach ($daftar as $data) --}}
-                                                <div class="container text-center text-md-left">
-                                                    No. Tiket :
-                                                    <b>
-                                                        <h4><input style="text-align:center" type="text"
-                                                                id="no_tiket" disabled></h4>
-                                                    </b>
-                                                </div>
-                                                {{-- @endforeach --}}
-                                                <div class="container text-center text-md-left">
-                                                    Nama: <br>
-                                                    <b>
-                                                        <h4><input style="text-align:center" type="text"
-                                                                id="nama_tiket" disabled></h4>
-                                                    </b>
+                                        <div class="container py-4 px-md-5">
+                                            <div class="row mb-3">
+                                                <label class="col-sm-4 col-form-label form-label">Hari</label>
+                                                <div class="col-sm-8 d-flex flex-wrap align-items-center gap-2">
+                                                    <div class="form-check me-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="hari[]" id="senin" value="Senin">
+                                                        <label class="form-check-label" for="senin">Senin</label>
+                                                    </div>
+                                                    <div class="form-check me-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="hari[]" id="selasa" value="Selasa">
+                                                        <label class="form-check-label" for="selasa">Selasa</label>
+                                                    </div>
+                                                    <div class="form-check me-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="hari[]" id="rabu" value="Rabu">
+                                                        <label class="form-check-label" for="rabu">Rabu</label>
+                                                    </div>
+                                                    <div class="form-check me-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="hari[]" id="kamis" value="Kamis">
+                                                        <label class="form-check-label" for="kamis">Kamis</label>
+                                                    </div>
+                                                    <div class="form-check me-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="hari[]" id="jumat" value="Jumat">
+                                                        <label class="form-check-label" for="jumat">Jumat</label>
+                                                    </div>
+                                                    <div class="form-check me-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="hari[]" id="sabtu" value="Sabtu">
+                                                        <label class="form-check-label" for="sabtu">Sabtu</label>
+                                                    </div>
+                                                    <div class="form-check me-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            name="hari[]" id="minggu" value="Minggu">
+                                                        <label class="form-check-label" for="minggu">Minggu</label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="container col-12 col-md-4 p-3">
-                                                <div id="qr" class="p-2"><img crossorigin="anonymous"
-                                                        src="data:image/png;base64,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"
-                                                        width="200" height="200"
-                                                        style="width: 200px; height: 200px;"></div>
+                                            <div class="row mb-3">
+                                                <label for="jam_buka" class="col-sm-4 col-form-label form-label">Jam
+                                                    Buka</label>
+                                                <div class="col-sm-8">
+                                                    <input class="form-control" type="time" name="jam_buka"
+                                                        id="jam_buka" required>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="container p-3">
-                                            <fieldset>
-                                                <div class="row mb-3">
-                                                    <label for="input-kantor"
-                                                        class="col-sm-4 col-form-label form-label ">Kantor Tujuan</label>
-                                                    <div class="col-sm-8">
-                                                        <input class="form-control" type="text" id="tujuan_akhir"
-                                                            value="" disabled>
-                                                    </div>
+                                            <div class="row mb-3">
+                                                <label for="jam_tutup" class="col-sm-4 col-form-label form-label">Jam
+                                                    Tutup</label>
+                                                <div class="col-sm-8">
+                                                    <input class="form-control" type="time" name="jam_tutup"
+                                                        id="jam_tutup" required>
                                                 </div>
-                                                <div class="row mb-3">
-                                                    <label for="input-antrean"
-                                                        class="col-sm-4 col-form-label form-label">No. Antrean</label>
-                                                    <div class="col-sm-8">
-                                                        <input class="form-control" type="text" value=""
-                                                            id="no_antrian" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label for="input-kantor"
-                                                        class="col-sm-4 col-form-label form-label">Nama Kantor</label>
-                                                    <div class="col-sm-8">
-                                                        <input class="form-control" type="text" id="kantor"
-                                                            name="kantor" value="" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label for="input-tiket"
-                                                        class="col-sm-4 col-form-label form-label">NIK</label>
-                                                    <div class="col-sm-8 row align-items-center m-auto">
-                                                        <input class="form-control col" type="text" id="nik_akhir"
-                                                            value="" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label for="input-tiket"
-                                                        class="col-sm-4 col-form-label form-label">Layanan</label>
-                                                    <div class="col-sm-8 row align-items-center m-auto">
-                                                        <input class="form-control col" type="text" id="layanan_akhir"
-                                                            value="" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group">
-                                                    <label for="input-tiket"
-                                                        class="col-sm-4 col-form-label form-label">Tanggal & Waktu</label>
-                                                    <input class="form-control" type="text" id="tanggal_akhir"
-                                                        value="" disabled>
-                                                    &nbsp;
-                                                    <input class="form-control" type="text" id="waktu_akhir"
-                                                        value="" disabled>
-
-                                                </div>
-                                            </fieldset>
-                                            <small class="text-danger">
-                                                <b>Catatan</b> : Pengubahan jenis layanan dan waktu pelayanan hanya dapat
-                                                dilakukan maksimal H-1 sebelum pelayanan
-                                                <br>
-                                                <b>
-                                                    <p>**Tiket ini tidak berlaku jika Anda datang terlambat</p>
-                                                </b>
-                                                <b>
-                                                    <p>**Pengunjung wajib menunjukkan sertifikat vaksin covid-19</p>
-                                                </b>
-
-                                            </small>
-                                            <div class="container mb-3 mx-auto d-flex justify-content-end mt-5"
-                                                id="button-container">
-                                                <a href="" class="btn btn-sm bg-success rounded-pill mr-3"
-                                                    onclick="event.preventDefault(); printTiket()">Simpan Tiket</a>
-                                                <a class="btn-print btn-sm bg-success rounded-pill mr-3"
-                                                    onclick="window.print()">simpan PDF</a>
-                                                <a class="btn btn-sm bg-success rounded-pill mr-3"
-                                                    href="/">Selesai</a>
                                             </div>
                                         </div>
                                     </div>
@@ -1023,9 +894,9 @@
                                                 <span class="svg-icon svg-icon-3 ms-2 me-0">
                                                     <svg width="24" height="24" viewBox="0 0 24 24"
                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <rect opacity="0.5" x="18" y="13" width="13" height="2"
-                                                            rx="1" transform="rotate(-180 18 13)"
-                                                            fill="currentColor"></rect>
+                                                        <rect opacity="0.5" x="18" y="13" width="13"
+                                                            height="2" rx="1"
+                                                            transform="rotate(-180 18 13)" fill="currentColor"></rect>
                                                         <path
                                                             d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z"
                                                             fill="currentColor"></path>
@@ -1063,7 +934,91 @@
             <!--end::Content container-->
         </div>
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script>
+        // Preview Foto KTP & OCR
+        document.getElementById('foto_ktp').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const img = document.getElementById('img_preview_ktp');
+            const namaInput = document.getElementById('nama_ktp');
+            const nikInput = document.getElementById('nomor_ktp');
+            const namaHint = document.getElementById('ocr_nama_hint');
+            const nikHint = document.getElementById('ocr_nik_hint');
+            // Reset
+            namaHint.style.display = 'none';
+            nikHint.style.display = 'none';
 
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    img.src = ev.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                img.src = '';
+                img.style.display = 'none';
+            }
+
+            // OCR KTP
+            if (!file) return;
+            Tesseract.recognize(
+                file,
+                'ind', // gunakan 'ind' untuk Bahasa Indonesia, fallback ke 'eng' jika tidak tersedia
+                {
+                    logger: m => console.log(m)
+                }
+            ).then(({
+                data: {
+                    text
+                }
+            }) => {
+                // Regex sederhana untuk cari NIK (16 digit) dan Nama (huruf besar, baris kedua biasanya)
+                let nikMatch = text.match(/\b\d{16}\b/);
+                let namaMatch = null;
+                // Cari baris yang kemungkinan besar adalah nama (huruf besar semua, tanpa angka)
+                const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                for (let i = 0; i < lines.length; i++) {
+                    // Cek baris yang mengandung "NIK" lalu ambil NIK di sebelahnya
+                    if (/NIK/i.test(lines[i])) {
+                        const nikLine = lines[i].replace(/[^0-9]/g, '');
+                        if (nikLine.length === 16) {
+                            nikMatch = [nikLine];
+                        }
+                    }
+                    // Cek baris yang mengandung "Nama" lalu ambil nama di sebelahnya
+                    if (/Nama/i.test(lines[i])) {
+                        const namaLine = lines[i].replace(/Nama\s*:?/i, '').trim();
+                        if (namaLine.length > 2 && /^[A-Z\s]+$/.test(namaLine)) {
+                            namaMatch = namaLine;
+                        } else if (lines[i + 1] && /^[A-Z\s]+$/.test(lines[i + 1])) {
+                            namaMatch = lines[i + 1];
+                        }
+                    }
+                }
+                // Fallback: cari baris huruf besar tanpa angka
+                if (!namaMatch) {
+                    for (let line of lines) {
+                        if (/^[A-Z\s]+$/.test(line) && !/\d/.test(line) && line.length > 3 && line.length <
+                            50) {
+                            namaMatch = line;
+                            break;
+                        }
+                    }
+                }
+                if (nikMatch) {
+                    nikInput.value = nikMatch[0];
+                    nikHint.style.display = 'inline';
+                }
+                if (namaMatch) {
+                    namaInput.value = namaMatch;
+                    namaHint.style.display = 'inline';
+                }
+            }).catch(err => {
+                console.error('OCR gagal:', err);
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
