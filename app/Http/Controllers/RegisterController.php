@@ -1,14 +1,13 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
-use Laratrust\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Laratrust\Models\Role;
 
 class RegisterController extends Controller
 {
@@ -26,63 +25,61 @@ class RegisterController extends Controller
     {
         // Validasi input
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         // Buat user baru
         $user = \App\Models\User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => bcrypt($request->password),
         ]);
 
         // Login user setelah registrasi
         auth()->login($user);
 
-        return redirect()->route('home')->with('success', 'Registration successful!');
+        return redirect()->route('verifikasitoko')->with('success', 'Registration successful!');
     }
-public function registertoko(Request $request)
-{
-    // Validasi input
-    $validated = $request->validate([
-        'username' => 'required|string|max:255|unique:users,username',
-        'email' => 'required|email|max:255|unique:users,email',
-        'password' => 'required|string|min:8|confirmed',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-        // Buat user baru
-        $user = User::create([
-            'username' => $validated['username'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+    public function registertoko(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'username' => 'required|string|max:255|unique:users,username',
+            'email'    => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Ambil role 'toko'
-        $role = Role::where('name', 'toko')->firstOrFail();
+        DB::beginTransaction();
 
-        // Assign role menggunakan Laratrust
-        $user->roles()->attach($role->id);
+        try {
+            // Buat user baru
+            $user = User::create([
+                'username' => $validated['username'],
+                'email'    => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
-        DB::commit();
+            // Ambil role 'toko'
+            $role = Role::where('name', 'toko')->firstOrFail();
 
-        // Login user
-        auth()->login($user);
+            // Assign role menggunakan Laratrust
+            $user->roles()->attach($role->id);
 
-        // Redirect ke route 'verifikasi_toko'
-        return redirect()->route('verifikasi_toko')->with('success', 'Registrasi berhasil sebagai penjual.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Gagal register toko: ' . $e->getMessage());
+            DB::commit();
 
-        return redirect()->back()->withErrors(['register' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+            // Login user
+            auth()->login($user);
+
+            // Redirect ke route 'verifikasi_toko'
+            return redirect()->route('verifikasi_toko')->with('success', 'Registrasi berhasil sebagai penjual.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal register toko: ' . $e->getMessage());
+
+            return redirect()->back()->withErrors(['register' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
     }
-}
-
-
 
 }

@@ -37,10 +37,10 @@ Route::get('/', function () {
     return view('frontend.produk');
 });
 Route::middleware('guest')->group(function () {
-    Route::prefix('toko')->group(function () {
-        Route::get('eegisterToko', [RegisterController::class, 'showRegisterToko'])->name('RegisterToko');
-        Route::get('loginToko', [LoginController::class, 'showLoginToko'])->name('LoginToko');
-    });
+    // Route::prefix('toko')->group(function () {
+    Route::get('registertoko', [RegisterController::class, 'showRegisterToko'])->name('registertoko');
+    Route::get('loginToko', [LoginController::class, 'showLoginToko'])->name('LoginToko');
+    // });
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::get('register', [RegisterController::class, 'showRegisterForm'])->name('register2');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -77,6 +77,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard-toko', function () {
             return view('toko.dashboard');
         });
+
+        Route::get('/dashboard-toko', [IzinTokoController::class, 'dashboard_toko'])->name('dashboardtoko');
+        Route::get('/verifikasi-toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasitoko');
+        Route::post('/verifikasi-toko/{step}', [IzinTokoController::class, 'verifikasi_toko_store'])->name('verifikasitokostore');
+        Route::get('/verifikasi-toko/wait', [IzinTokoController::class, 'waitPage'])->name('verifikasi_toko.wait');
+
     });
 
     // Routes yang hanya untuk role "user"
@@ -158,6 +164,9 @@ Route::prefix('Manajemen-Toko')->group(function () {
         Route::put('update/{id}', [IzinTokoController::class, 'update'])->name('izin_toko.update');
         Route::post('destroy', [IzinTokoController::class, 'destroy'])->name('izin_toko.destroy');
         Route::post('destroy', [IzinTokoController::class, 'destroy'])->name('izin_toko.verifikasi');
+
+        Route::post('izinkan', [IzinTokoController::class, 'izinkan'])->name('izin_toko.izinkan');
+        Route::post('tidak_izinkan', [IzinTokoController::class, 'tidak_izinkan'])->name('izin_toko.tidak_izinkan');
     });
     Route::prefix('Toko')->group(function () {
         Route::get('/', [TokoController::class, 'index'])->name('toko.index');
@@ -284,21 +293,21 @@ Route::prefix('FrontEnd')->group(function () {
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
-Route::prefix('Toko')->group(function () {
-    Route::get('/LoginToko', function () {
-        return view('toko.auth.login');
-    });
-    // Route::get('/RegisterToko', function () {
-    //     return view('toko.auth.register');
-    // });
-    Route::get('/Dashboard-Toko', function () {
-        return view('toko.dashboard');
-    })->name('dashboard.toko');
-    // Route::get('/Verifikasi-Toko', function () {
-    //     return view('toko.verifikasi');
-    // })->name('verifikasi.toko');
-    Route::get('Verifikasi-Toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
-});
+// Route::prefix('Toko')->group(function () {
+//     Route::get('/LoginToko', function () {
+//         return view('toko.auth.login');
+//     });
+//     // Route::get('/RegisterToko', function () {
+//     //     return view('toko.auth.register');
+//     // });
+//     Route::get('/Dashboard-Toko', function () {
+//         return view('toko.dashboard');
+//     })->name('dashboard.toko');
+//     // Route::get('/Verifikasi-Toko', function () {
+//     //     return view('toko.verifikasi');
+//     // })->name('verifikasi.toko');
+//     Route::get('Verifikasi-Toko', [IzinTokoController::class, 'verifikasi_toko'])->name('verifikasi_toko')->middleware('auth');
+// });
 // Route::middleware(['auth'])->group(function () {
 // });
 // Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');

@@ -20,11 +20,31 @@ class LoginController extends Controller
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->value('roles.name');
 
+        // Jika role adalah 'toko', cek status toko
+        if ($role === 'toko') {
+            $toko = DB::table('tokos')
+                ->where('pemilik_toko_id', $user->id)
+                ->whereNull('deleted_at')
+                ->orderByDesc('id')
+                ->first();
+
+            if ($toko) {
+                if (in_array($toko->status_toko, ['proses', 'tidak_diizinkan'])) {
+                    return '/verifikasi-toko/wait';
+                } elseif ($toko->status_toko === 'izinkan') {
+                    return '/dashboard-toko';
+                }
+            }
+
+            // Jika belum pernah mengajukan toko
+            return '/verifikasi-toko/wait';
+        }
+
+        // Redirect default untuk role lainnya
         return match ($role) {
             'superadmin', 'admin' => '/dashboard-admin',
             'user'                => '/Home',
-            'toko'                => '/dashboard-toko',
-            default               => '/'
+            default               => '/',
         };
     }
 

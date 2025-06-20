@@ -24,11 +24,11 @@
   </head>
   <body class="app sidebar-mini">
     <!-- Navbar-->
-    @include('backend.component.navbar')
+    @include('toko.component.navbar')
     <!-- Sidebar menu-->
-    @include('backend.component.sidebar')
+    @include('toko.component.sidebar')
 
-    @yield('content')
+    @yield('contenttoko')
 
     <!-- Essential javascripts for application to work-->
     <script src="{{ asset('assets_backend/js/jquery-3.7.0.min.js')}}"></script>
