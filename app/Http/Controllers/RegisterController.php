@@ -72,8 +72,8 @@ class RegisterController extends Controller
             // Login user
             auth()->login($user);
 
-            // Redirect ke route 'verifikasi_toko'
-            return redirect()->route('verifikasi_toko')->with('success', 'Registrasi berhasil sebagai penjual.');
+            // Redirect ke route 'verifikasitoko'
+            return redirect()->route('verifikasitoko')->with('success', 'Registrasi berhasil sebagai penjual.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Gagal register toko: ' . $e->getMessage());
